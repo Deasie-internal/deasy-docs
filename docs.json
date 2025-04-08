@@ -7,15 +7,6 @@
     "light": "#f8f9fa",
     "dark": "#343a40"
   },
-  "api": {
-    "mdx": {
-      "server": "https://prod-deasy-api-service-660949837227.us-east1.run.app/",
-      "auth": {
-        "method": "key",
-        "name": "x-token"
-      }
-    }
-  },
   "favicon": "./images/deasy_shrimp_icon.png",
   "navigation": {
     "tabs": [
