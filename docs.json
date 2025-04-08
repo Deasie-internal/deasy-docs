@@ -16,6 +16,9 @@
       }
     ]
   },
+  "appearance": {
+    "default": "dark"
+  },
   "logo": {
     "light": "/images/deasy_labs_lm.png",
     "dark": "/images/deasy_labs_dm.png"
