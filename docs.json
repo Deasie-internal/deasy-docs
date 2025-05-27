@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "linden",
+  "theme": "willow",
   "name": "Deasy Labs",
   "colors": {
     "primary": "#4FA892",
@@ -11,8 +11,12 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "API Reference",
+        "tab": "API Docs",
         "openapi": "./deasy-openapi.documented.json"
+      },
+      {
+        "tab": "Open Source Credits",
+        "pages": ["essentials/open-source-mentions"]
       }
     ]
   },
@@ -32,7 +36,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Deasy",
+      "label": "Try Deasy",
       "href": "https://metadata.dev"
     }
   }
