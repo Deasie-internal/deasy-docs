@@ -11,11 +11,11 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "API Reference",
+        "tab": "API Docs",
         "openapi": "./deasy-openapi.documented.json"
       },
       {
-        "tab": "Third Party Licenses",
+        "tab": "Open Source",
         "pages": ["essentials/open-source-mentions"]
       }
     ]
@@ -36,7 +36,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Access Deasy",
+      "label": "Try Deasy →",
       "href": "https://metadata.dev"
     }
   }
