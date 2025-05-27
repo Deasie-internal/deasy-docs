@@ -1,0 +1,237 @@
+/* Custom Deasy Labs Styles */
+
+/* Color Variables */
+:root {
+  --primary: #4fa892;
+  --primary-dark: #3e8674;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --info: #17a2b8;
+  --light: #f8f9fa;
+  --dark: #343a40;
+}
+
+/* Font Size Overrides */
+html {
+  font-size: 16px; /* Base for rem calculations */
+}
+
+body {
+  font-size: 0.85rem;
+}
+
+/* Typography Scale */
+.text-xs,
+.prose-xs {
+  font-size: 0.65rem !important;
+}
+.text-sm,
+.prose-sm {
+  font-size: 0.75rem !important;
+}
+.text-base {
+  font-size: 0.85rem !important;
+}
+.text-lg,
+.prose-lg {
+  font-size: 0.95rem !important;
+}
+.text-xl,
+.prose-xl {
+  font-size: 1.05rem !important;
+}
+.text-2xl,
+.prose-2xl {
+  font-size: 1.25rem !important;
+}
+.text-3xl,
+.prose-3xl {
+  font-size: 1.5rem !important;
+}
+
+/* Override Mintlify's default typography */
+#content-area p,
+#content-area li {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+#content-area h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+#content-area h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+#content-area h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+#content-area h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Code blocks */
+#content-area code {
+  font-size: 0.75rem;
+}
+
+#content-area pre code {
+  font-size: 0.75rem;
+}
+
+/* Navigation and Sidebar */
+#navbar {
+  font-size: 0.85rem;
+}
+
+#sidebar {
+  font-size: 0.75rem;
+}
+
+#sidebar a {
+  font-size: 0.75rem;
+}
+
+/* Table of Contents */
+#table-of-contents {
+  font-size: 0.75rem;
+}
+
+#table-of-contents a {
+  font-size: 0.75rem;
+}
+/* Links */
+a {
+  color: var(--primary);
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-warning {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Animation Classes */
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-pulse-warning {
+  animation: pulse-warning 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Apply animations to page transitions */
+#content-area > div {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Alert/Callout Styles */
+.callout-success,
+.alert-success {
+  background-color: var(--success);
+  color: white;
+}
+
+.callout-danger,
+.alert-danger {
+  background-color: var(--danger);
+  color: white;
+}
+
+.callout-warning,
+.alert-warning {
+  background-color: var(--warning);
+  color: #212529;
+}
+
+.callout-info,
+.alert-info {
+  background-color: var(--info);
+  color: white;
+}
+
+/* Navbar adjustments */
+#navbar {
+  padding: 0.75rem 1rem;
+}
+
+/* Footer adjustments */
+footer {
+  margin-top: 3rem;
+  font-size: 0.75rem;
+}
+
+/* Search bar */
+input[type="search"] {
+  font-size: 0.85rem;
+}
+
+/* Breadcrumbs */
+nav[aria-label="breadcrumb"] {
+  font-size: 0.75rem;
+}
+
+/* API Reference specific styles */
+.api-method {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Tabs */
+[role="tablist"] button {
+  font-size: 0.85rem;
+}
+
+/* Cards */
+.card {
+  border-radius: 0.375rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}

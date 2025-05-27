@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "linden",
+  "theme": "willow",
   "name": "Deasy Labs",
   "colors": {
     "primary": "#4FA892",
@@ -36,7 +36,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Try Deasy →",
+      "label": "Try Deasy",
       "href": "https://metadata.dev"
     }
   }
