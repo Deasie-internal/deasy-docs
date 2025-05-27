@@ -15,7 +15,7 @@
         "openapi": "./deasy-openapi.documented.json"
       },
       {
-        "tab": "Open Source",
+        "tab": "Open Source Credits",
         "pages": ["essentials/open-source-mentions"]
       }
     ]
