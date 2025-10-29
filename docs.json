@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "willow",
-  "name": "Deasy Labs",
+  "name": "Unstructured by Collibra",
   "colors": {
     "primary": "#4FA892",
     "light": "#f8f9fa",
@@ -12,7 +12,7 @@
     "tabs": [
       {
         "tab": "API Docs",
-        "openapi": "./deasy-openapi.documented.json"
+        "openapi": "./deasy-openapi-stainless.yml"
       },
       {
         "tab": "Open Source Credits",
@@ -36,7 +36,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Try Deasy",
+      "label": "Try Unstructured",
       "href": "https://metadata.dev"
     }
   }
