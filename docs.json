@@ -24,8 +24,8 @@
     "default": "dark"
   },
   "logo": {
-    "light": "/images/deasy_labs_lm.png",
-    "dark": "/images/deasy_labs_dm.png"
+    "light": "/images/collibra_lm_logo.png",
+    "dark": "/images/collibra_dm_logo.png"
   },
   "navbar": {
     "links": [
@@ -37,7 +37,7 @@
     "primary": {
       "type": "button",
       "label": "Try Unstructured",
-      "href": "https://metadata.dev"
+      "href": "https://www.collibra.com/"
     }
   }
 }

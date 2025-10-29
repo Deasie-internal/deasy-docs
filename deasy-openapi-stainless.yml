@@ -1021,12 +1021,12 @@ paths:
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
           \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.tags.pattern.suggestRegex({\
+          \ Password',\n});\n\nconst response = await client.tags.pattern.suggestPatterns({\
           \ description: 'description' });\n\nconsole.log(response.regex);"
       - lang: Python
         source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
           \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.tags.pattern.suggest_regex(\n    description=\"description\"\
+          \ = client.tags.pattern.suggest_patterns(\n    description=\"description\"\
           ,\n)\nprint(response.regex)"
   /taxonomy/upsert:
     post:
@@ -2366,12 +2366,12 @@ paths:
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
           \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.dataSlice.export.slice({\
-          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response);"
+          \ Password',\n});\n\nconst response = await client.dataSlice.export({ data_connector_name:\
+          \ 'data_connector_name' });\n\nconsole.log(response);"
       - lang: Python
         source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
           \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.data_slice.export.slice(\n    data_connector_name=\"data_connector_name\"\
+          \ = client.data_slice.export(\n    data_connector_name=\"data_connector_name\"\
           ,\n)\nprint(response)"
 components:
   schemas:
