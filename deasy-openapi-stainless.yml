@@ -592,18 +592,23 @@ paths:
         source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
           \    username=\"My Username\",\n    password=\"My Password\",\n)\ndestinations\
           \ = client.destination.list()\nprint(destinations.connectors)"
-  /dataslice/destination/delete:
+  /destination/delete:
     post:
       tags:
       - Destinations
       summary: Delete
-      description: Delete a destination
-      operationId: delete_dataslice_destination_delete_post
+      description: "Delete a destination connector.\n\n**Request Body**\n\n```json\n\
+        {\n  \"connector_name\": \"my-s3-destination\"\n}\n```\n\n| Field        \
+        \    | Type  | Description                                     |\n|------------------|-------|-------------------------------------------------|\n\
+        | connector_name   | str   | The profile name of the destination to delete.\
+        \  |\n\n**Response**\n\n- 200: Destination deleted successfully  \n    - Returns:\
+        \ `{ \"profile_id\": str }`"
+      operationId: delete_destination_route_destination_delete_post
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DeleteDestinationRequest'
+              $ref: '#/components/schemas/DeleteDestinationConnectorRequest'
         required: true
       responses:
         '200':
@@ -611,7 +616,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeleteDestinationResponse'
+                $ref: '#/components/schemas/ConnectorResponse'
         '403':
           description: Missing token
           content:
@@ -643,22 +648,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst destination = await client.destination.delete();\n\
-          \nconsole.log(destination.message);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndestination\
-          \ = client.destination.delete()\nprint(destination.message)"
   /dataslice/export/metadata/destination:
     post:
       tags:
       - Destinations
-      summary: Export Destination Route
-      description: Export to a destination
+      summary: Export
+      description: "Export dataslice metadata and/or nodes to a configured destination.\n\
+        \nThis endpoint supports exporting data from a dataslice or data connector\
+        \ to a destination \nsystem. For small datasets (fewer than 100 files), the\
+        \ export runs synchronously. For larger \ndatasets, the export is processed\
+        \ in the background and returns a tracker ID for monitoring progress.\n\n\
+        ## Request Body\n\n| Field                      | Type                   \
+        \    | Required | Description                                            \
+        \                                           |\n|----------------------------|----------------------------|----------|---------------------------------------------------------------------------------------------------|\n\
+        | `dataslice_id`             | `str`                      | No       | The\
+        \ ID of the dataslice to export. Required if `data_connector_name` is not\
+        \ provided.            |\n| `data_connector_name`      | `str`           \
+        \           | No       | The name of the data connector to export from. Required\
+        \ if `dataslice_id` is not provided.       |\n| `destination_name`       \
+        \  | `str`                      | No       | The name of the configured destination\
+        \ to export to.                                              |\n| `export_tags`\
+        \              | `List[str]`                | No       | List of specific\
+        \ tags to export. If empty, all tags are exported.                       \
+        \         |\n| `export_level`             | `ExportLevel`              | No\
+        \       | Level of export: `\"file\"`, `\"chunk\"`, or `\"both\"` (default:\
+        \ `\"both\"`).                          |\n| `export_nodes`             |\
+        \ `bool`                     | No       | Whether to export node data (default:\
+        \ `true`).                                                    |\n| `export_metadata`\
+        \          | `bool`                     | No       | Whether to export metadata\
+        \ (default: `true`).                                                     |\n\
+        | `metadata_format`          | `MetadataStorageFormat`    | No       | Format\
+        \ for metadata storage: `\"column_store\"` or `\"json_store\"`.          \
+        \                      |\n\n## Response\n\n- **200**: Export completed or\
+        \ initiated successfully\n    - Returns: `ExportDatasliceDestinationResponse`\
+        \ with:\n        - `message`: Status message\n        - `success`: Number\
+        \ of successfully exported items\n        - `failed`: Number of failed exports\n\
+        \        - `failed_items`: List of items that failed to export\n        -\
+        \ `failed_tags`: List of tags that failed to export (if applicable)\n    \
+        \    - `tracker_id`: Progress tracker ID for background exports (only for\
+        \ large datasets)\n- **400**: Bad Request (e.g., missing required parameters)\n\
+        - **500**: Internal Server Error\n\n## Example Request\n\n```json\n{\n  \"\
+        dataslice_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"destination_name\"\
+        : \"my-destination\",\n  \"export_tags\": [\"contracts\", \"invoices\"],\n\
+        \  \"export_level\": \"both\",\n  \"export_nodes\": true,\n  \"export_metadata\"\
+        : true,\n  \"metadata_format\": \"column_store\"\n}\n```\n\n## Example Response\
+        \ (Synchronous)\n\n```json\n{\n  \"message\": \"Export completed successfully\"\
+        ,\n  \"success\": 45,\n  \"failed\": 0,\n  \"failed_items\": [],\n  \"failed_tags\"\
+        : null,\n  \"tracker_id\": null\n}\n```\n\n## Example Response (Background\
+        \ Processing)\n\n```json\n{\n  \"message\": \"Export started in background.\
+        \ Use tracker_id to monitor progress.\",\n  \"success\": 0,\n  \"failed\"\
+        : 0,\n  \"failed_items\": [],\n  \"failed_tags\": null,\n  \"tracker_id\"\
+        : \"export-12345678-90ab-cdef-1234-567890abcdef\"\n}\n```"
       operationId: export_destination_route_dataslice_export_metadata_destination_post
       requestBody:
         content:
@@ -3056,7 +3096,7 @@ components:
           type: string
           format: date-time
           title: Updated At
-          default: '2025-10-29T16:23:44.988117'
+          default: '2025-10-29T16:46:24.476547'
         tuned:
           anyOf:
           - type: integer
@@ -3149,33 +3189,15 @@ components:
       - message
       - data
       title: DeleteDatasliceResponse
-    DeleteDestinationRequest:
+    DeleteDestinationConnectorRequest:
       properties:
-        destination_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Destination Name
-        delete_tags:
-          items: {}
-          type: array
-          title: Delete Tags
-          default: []
-      type: object
-      title: DeleteDestinationRequest
-    DeleteDestinationResponse:
-      properties:
-        message:
+        connector_name:
           type: string
-          title: Message
-        success:
-          type: boolean
-          title: Success
+          title: Connector Name
       type: object
       required:
-      - message
-      - success
-      title: DeleteDestinationResponse
+      - connector_name
+      title: DeleteDestinationConnectorRequest
     DetectBulkRequest:
       properties:
         data_connector_name:
