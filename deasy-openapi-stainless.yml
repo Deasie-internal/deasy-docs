@@ -9,11 +9,20 @@ paths:
     post:
       tags:
       - Data Sources
-      summary: Create Vdbconnector
-      description: "Create a new vdb connector\n\nAttributes:\n\n    connector_name:\
-        \ The profile name of the connector to create.\n\n    connector_body: The\
-        \ body of the connector to create."
-      operationId: create_vdbconnector_vdb_connector_create_post
+      summary: Create
+      description: "Create a new vector database (VDB) connector.\n\n## Request Body\n\
+        \n| Field             | Type          | Description                      \
+        \                |\n|-------------------|---------------|--------------------------------------------------|\n\
+        | `connector_name`  | `str`         | The profile name of the data source\
+        \ to create.   |\n| `connector_body`  | `VDBConfigs`  | Configuration object\
+        \ for the VDB connector.      |\n\n## Response\n\n- **200**: VDB connector\
+        \ created successfully  \n    - Returns: `{ \"profile_id\": str }`\n- **500**:\
+        \ Internal Server Error (e.g., failed to store secret)\n\n## Example\n\n```json\n\
+        {\n  \"connector_name\": \"my-pinecone-db\",\n  \"connector_body\": {\n  \
+        \  \"vector_db_type\": \"pinecone\",\n    \"api_key\": \"your-api-key\",\n\
+        \    \"environment\": \"us-east-1-aws\",\n    \"index_name\": \"my-index\"\
+        \n  }\n}\n```"
+      operationId: create_data_source_route_vdb_connector_create_post
       requestBody:
         content:
           application/json:
@@ -79,9 +88,16 @@ paths:
     post:
       tags:
       - Data Sources
-      summary: List Vdbconnector
-      description: List all the vdb connectors
-      operationId: list_vdbconnector_vdb_connector_list_post
+      summary: List
+      description: "List all vector database (VDB) connectors for the authenticated\
+        \ user.\n\n## Response\n\n- **200**: Successfully retrieved list of VDB connectors\
+        \  \n    - Returns: `{ \"connectors\": VDBConfigDict }`\n\n## Example Response\n\
+        \n```json\n{\n  \"connectors\": {\n    \"my-pinecone-db\": {\n      \"vector_db_type\"\
+        : \"pinecone\",\n      \"environment\": \"us-east-1-aws\",\n      \"index_name\"\
+        : \"my-index\"\n    },\n    \"my-qdrant-db\": {\n      \"vector_db_type\"\
+        : \"qdrant\",\n      \"url\": \"https://qdrant.example.com\"\n    }\n  }\n\
+        }\n```"
+      operationId: list_data_sources_route_vdb_connector_list_post
       responses:
         '200':
           description: Successful Response
@@ -128,11 +144,20 @@ paths:
     post:
       tags:
       - Data Sources
-      summary: Update Vdbconnector
-      description: "Update a vdb connector\n\nAttributes:\n\n    connector_name: The\
-        \ profile name of the connector to update.\n\n    connector_body: The body\
-        \ of the connector to update."
-      operationId: update_vdbconnector_vdb_connector_update_post
+      summary: Update
+      description: "Update an existing data source configuration.\n\n## Request Body\n\
+        \n| Field             | Type          | Description                      \
+        \                |\n|-------------------|---------------|--------------------------------------------------|\n\
+        | `connector_name`  | `str`         | The profile name of the data source\
+        \ to update.   |\n| `connector_body`  | `VDBConfigs`  | Updated configuration\
+        \ object for the VDB.        |\n\n## Response\n\n- **200**: VDB connector\
+        \ updated successfully  \n    - Returns: `{ \"profile_id\": str }`\n- **500**:\
+        \ Internal Server Error (e.g., failed to store secret)\n\n## Example\n\n```json\n\
+        {\n  \"connector_name\": \"my-pinecone-db\",\n  \"connector_body\": {\n  \
+        \  \"vector_db_type\": \"pinecone\",\n    \"api_key\": \"updated-api-key\"\
+        ,\n    \"environment\": \"us-west-1-aws\",\n    \"index_name\": \"my-index\"\
+        \n  }\n}\n```"
+      operationId: update_data_source_route_vdb_connector_update_post
       requestBody:
         content:
           application/json:
@@ -198,10 +223,18 @@ paths:
     post:
       tags:
       - Data Sources
-      summary: Delete Vdb Connector
-      description: "Delete a vdb connector\n\nAttributes:\n\n    connector_name: The\
-        \ profile name of the connector to delete."
-      operationId: delete_vdb_connector_vdb_connector_delete_post
+      summary: Delete
+      description: "Delete a data source and all associated data.\n\nThis operation\
+        \ will:\n- Delete all vector data stored in the VDB\n- Remove the connector\
+        \ configuration\n- Clean up connection sharing metadata if enabled\n\n## Request\
+        \ Body\n\n| Field             | Type   | Description                     \
+        \                 |\n|-------------------|--------|--------------------------------------------------|\n\
+        | `connector_name`  | `str`  | The profile name of the data source to delete.\
+        \   |\n\n## Response\n\n- **200**: VDB connector deleted successfully  \n\
+        \    - Returns: `{ \"profile_id\": str }`\n- **404**: Connector not found\n\
+        - **500**: Internal Server Error (e.g., failed to store secret)\n\n## Example\n\
+        \n```json\n{\n  \"connector_name\": \"my-pinecone-db\"\n}\n```"
+      operationId: delete_data_source_route_vdb_connector_delete_post
       requestBody:
         content:
           application/json:
@@ -261,9 +294,29 @@ paths:
     post:
       tags:
       - Data Sources
-      summary: Ocr Ingest
-      description: OCR and ingest data into Unstructured.
-      operationId: ocr_ingest_ocr_ingest_post
+      summary: Ingest
+      description: "Process documents with OCR and ingest them into the vector database.\n\
+        \nThis endpoint performs optical character recognition on documents and stores\
+        \ the extracted data.\nFor large file counts, processing may be delegated\
+        \ to Cloud Run Jobs.\n\n## Request Body\n\n| Field                   | Type\
+        \           | Description                                                |\n\
+        |-------------------------|----------------|------------------------------------------------------------|\n\
+        | `data_connector_name`   | `str`          | Name of the data connector to\
+        \ use.                         |\n| `llm_profile_name`      | `str`      \
+        \    | LLM profile for enhanced processing.                       |\n| `file_names`\
+        \            | `List[str]`    | Specific files to process. If omitted, processes\
+        \ all.      |\n| `job_id`                | `str`          | Custom job ID\
+        \ for tracking. Auto-generated if not provided.|\n| `clean_up_out_of_sync`\
+        \  | `bool`         | Remove files from VDB not in source. Default: `true`.\
+        \      |\n| `file_count_to_run`     | `int`          | Limit number of files\
+        \ to process.                          |\n| `use_llm`               | `bool`\
+        \         | Use LLM for enhanced extraction. Default: `false`.         |\n\
+        \n## Response\n\n- **200**: OCR job started successfully  \n    - Returns:\
+        \ Job tracking information\n- **400**: Bad Request (e.g., invalid data connector,\
+        \ unsupported VDB type)\n- **500**: Internal Server Error\n\n## Example\n\n\
+        ```json\n{\n  \"data_connector_name\": \"my-documents\",\n  \"use_llm\": true,\n\
+        \  \"clean_up_out_of_sync\": true,\n  \"file_count_to_run\": 100\n}\n```"
+      operationId: ocr_ingest_route_ocr_ingest_post
       requestBody:
         content:
           application/json:
@@ -322,9 +375,32 @@ paths:
     post:
       tags:
       - Data Sources
-      summary: List Metadata
-      description: Retrieve metadata data from Unstructured database
-      operationId: list_metadata_data_metadata_list_post
+      summary: List Ingested Data
+      description: "Retrieve metadata from documents ingested into Unstructured.\n\
+        \n## Request Body\n\n| Field                      | Type                |\
+        \ Description                                           |\n|----------------------------|---------------------|-------------------------------------------------------|\n\
+        | `data_connector_name`      | `str`               | Name of the data connector\
+        \ to query.                  |\n| `group_by`                 | `str`     \
+        \          | Group results by `file` or `node`. Default: `file`.   |\n| `metadata_keys`\
+        \            | `List[str]`         | Specific metadata keys to retrieve. \
+        \                  |\n| `file_names`               | `List[str]`         |\
+        \ Filter by specific file names.                        |\n| `point_ids` \
+        \               | `List[str]`         | Filter by specific node/point IDs.\
+        \                    |\n| `metadata_key_filters`     | `List[str]`       \
+        \  | Filter by presence of metadata keys.                  |\n| `metadata_value_filters`\
+        \   | `Dict[str, List]`   | Filter by specific metadata values.          \
+        \         |\n| `full_text_filters`        | `List[str]`         | Full-text\
+        \ search filters.                             |\n| `limit`               \
+        \     | `int`               | Maximum number of results to return.       \
+        \           |\n| `with_vectors`             | `bool`              | Include\
+        \ vector embeddings. Default: `false`.          |\n\n## Response\n\n- **200**:\
+        \ Successfully retrieved metadata  \n    - Returns: `{ \"metadata\": Dict\
+        \ }`\n- **500**: Internal Server Error (e.g., error fetching metadata)\n\n\
+        ## Example\n\n```json\n{\n  \"data_connector_name\": \"my-documents\",\n \
+        \ \"group_by\": \"file\",\n  \"metadata_keys\": [\"title\", \"author\", \"\
+        date\"],\n  \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"\
+        limit\": 100\n}\n```"
+      operationId: list_ingested_data_route_data_metadata_list_post
       requestBody:
         content:
           application/json:
@@ -384,11 +460,19 @@ paths:
     post:
       tags:
       - Destinations
-      summary: Create Destination
-      description: "Create a new destination\n\nAttributes:\n\n    connector_name:\
-        \ The profile name of the destination to create.\n    connector_body: The\
-        \ body of the destination to create."
-      operationId: create_destination_destination_create_post
+      summary: Create
+      description: "Create a new destination connector for data export.\n\n## Request\
+        \ Body\n\n| Field             | Type                  | Description      \
+        \                                |\n|-------------------|-----------------------|--------------------------------------------------|\n\
+        | `connector_name`  | `str`                 | The profile name of the destination\
+        \ to create.   |\n| `connector_body`  | `DestinationConfigs`  | Configuration\
+        \ object for the destination.        |\n\n## Response\n\n- **200**: Destination\
+        \ created successfully  \n    - Returns: `{ \"profile_id\": str }`\n- **500**:\
+        \ Internal Server Error (e.g., failed to store secret)\n\n## Example\n\n```json\n\
+        {\n  \"connector_name\": \"my-destination\",\n  \"connector_body\": {\n  \
+        \  \"type\": \"s3\",\n    \"config\": {\n      \"bucket\": \"my-bucket\",\n\
+        \      \"region\": \"us-east-1\"\n    }\n  }\n}\n```"
+      operationId: create_destination_route_destination_create_post
       requestBody:
         content:
           application/json:
@@ -456,16 +540,23 @@ paths:
     post:
       tags:
       - Destinations
-      summary: List Destinations
-      description: List all the destinations
-      operationId: list_destinations_destination_list_post
+      summary: List
+      description: "List all destinations for the authenticated user.\n\n## Response\n\
+        \n- **200**: Successfully retrieved list of destinations  \n    - Returns:\
+        \ `{ \"connectors\": DestinationConfigDict }`\n\n## Example Response\n\n```json\n\
+        {\n  \"connectors\": {\n    \"my-s3-destination\": {\n      \"type\": \"s3\"\
+        ,\n      \"config\": {\n        \"bucket\": \"my-bucket\",\n        \"region\"\
+        : \"us-east-1\"\n      }\n    },\n    \"my-webhook-destination\": {\n    \
+        \  \"type\": \"webhook\",\n      \"config\": {\n        \"url\": \"https://api.example.com/webhook\"\
+        \n      }\n    }\n  }\n}\n```"
+      operationId: list_destinations_route_destination_list_post
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListLLMConnectorResponse'
+                $ref: '#/components/schemas/ListDestinationConnectorResponse'
         '403':
           description: Missing token
           content:
@@ -505,9 +596,9 @@ paths:
     post:
       tags:
       - Destinations
-      summary: Delete Dataslice Destination
+      summary: Delete
       description: Delete a destination
-      operationId: delete_dataslice_destination_dataslice_destination_delete_post
+      operationId: delete_dataslice_destination_delete_post
       requestBody:
         content:
           application/json:
@@ -566,9 +657,9 @@ paths:
     post:
       tags:
       - Destinations
-      summary: Export To Destination
+      summary: Export Destination Route
       description: Export to a destination
-      operationId: export_to_destination_dataslice_export_metadata_destination_post
+      operationId: export_destination_route_dataslice_export_metadata_destination_post
       requestBody:
         content:
           application/json:
@@ -628,9 +719,18 @@ paths:
       tags:
       - Tags
       summary: Upsert Tag
-      description: "Upsert a tag\n\nAttributes:\n\n    tag_data: The tag data to upsert\
-        \ the tag with."
-      operationId: upsert_tag_tags_upsert_post
+      description: "Insert or update a tag definition.\n\n## Request Body\n\n| Field\
+        \      | Type            | Description                                   \
+        \   |\n|------------|-----------------|--------------------------------------------------|\n\
+        | `tag_data` | `DeasyInputTag` | Tag data structure containing tag definition.\
+        \    |\n\n## Response\n\n- **200**: Tag upserted successfully  \n    - Returns:\
+        \ `{ \"tag_name\": str, \"tag\": DeasyTag, \"available_values_added\": List[str]\
+        \ }`\n- **400**: Bad Request (e.g., invalid tag data)\n- **500**: Internal\
+        \ Server Error\n\n## Example\n\n```json\n{\n  \"tag_data\": {\n    \"name\"\
+        : \"category\",\n    \"description\": \"Document category classification\"\
+        ,\n    \"type\": \"select\",\n    \"available_values\": [\"invoice\", \"receipt\"\
+        , \"contract\"]\n  }\n}\n```"
+      operationId: upsert_tag_route_tags_upsert_post
       requestBody:
         content:
           application/json:
@@ -691,8 +791,15 @@ paths:
       tags:
       - Tags
       summary: List Tags
-      description: Lists all tags
-      operationId: list_tags_tags_list_get
+      description: "List all tags for the authenticated user.\n\n## Response\n\n-\
+        \ **200**: Tags retrieved successfully  \n    - Returns: `{ \"tags\": List[DeasyTag]\
+        \ }`\n- **500**: Internal Server Error\n\n## Example Response\n\n```json\n\
+        {\n  \"tags\": [\n    {\n      \"name\": \"category\",\n      \"description\"\
+        : \"Document category\",\n      \"type\": \"select\",\n      \"available_values\"\
+        : [\"invoice\", \"receipt\"]\n    },\n    {\n      \"name\": \"date\",\n \
+        \     \"description\": \"Document date\",\n      \"type\": \"date\"\n    }\n\
+        \  ]\n}\n```"
+      operationId: list_tags_route_tags_list_get
       responses:
         '200':
           description: Successful Response
@@ -739,9 +846,14 @@ paths:
       tags:
       - Tags
       summary: Delete Tag
-      description: "Delete a tag\n\nAttributes:\n\n    tag_name: The name of the tag\
-        \ to delete."
-      operationId: delete_tag_tags_delete_delete
+      description: "Delete a tag by name. Tag must not be in use by any graphs or\
+        \ dataslices.\n\n## Query Parameters\n\n| Parameter  | Type  | Description\
+        \                          |\n|------------|-------|--------------------------------------|\n\
+        | `tag_name` | `str` | Name of the tag to delete.           |\n\n## Response\n\
+        \n- **200**: Tag deleted successfully  \n    - Returns: `{ \"tag_name\": str\
+        \ }`\n- **500**: Internal Server Error (e.g., tag still in use)\n\n## Example\n\
+        \n```\nDELETE /tags/delete?tag_name=category\n```"
+      operationId: delete_tag_route_tags_delete_delete
       parameters:
       - name: tag_name
         in: query
@@ -801,13 +913,26 @@ paths:
     post:
       tags:
       - Tags
-      summary: Suggest Regex
-      description: "Generate a regex pattern based on a natural language description\n\
-        \nAttributes:\n\n    llm_profile_name: The name of the llm profile to use\
-        \ for generating the regex.\n    description: Natural language description\
-        \ of what to match (e.g., \"phone numbers in format (XXX) XXX-XXXX\").\n \
-        \   examples: Optional list of example strings that should match the pattern."
-      operationId: suggest_regex_suggest_regex_post
+      summary: Suggest Patterns
+      description: "Generate a regex pattern based on a natural language description\
+        \ using AI.\n\n## Request Body\n\n| Field              | Type           |\
+        \ Description                                                            \
+        \                  |\n|--------------------|----------------|------------------------------------------------------------------------------------------|\n\
+        | `description`      | `str`          | Natural language description of what\
+        \ to match (e.g., \"phone numbers in format (XXX) XXX-XXXX\"). |\n| `llm_profile_name`\
+        \ | `str`          | Optional. The name of the LLM profile to use for generating\
+        \ the regex.                   |\n| `examples`         | `List[str]`    |\
+        \ Optional. List of example strings that should match the pattern.       \
+        \                  |\n\n## Response\n\n- **200**: Regex pattern generated\
+        \ successfully  \n    - Returns: `{ \"regex\": str, \"explanation\": str }`\n\
+        - **400**: Bad Request (e.g., invalid request data)\n- **500**: Internal Server\
+        \ Error\n\n## Example\n\n```json\n{\n  \"description\": \"phone numbers in\
+        \ format (XXX) XXX-XXXX\",\n  \"llm_profile_name\": \"default\",\n  \"examples\"\
+        : [\n    \"(123) 456-7890\",\n    \"(555) 123-4567\"\n  ]\n}\n```\n\n## Example\
+        \ Response\n\n```json\n{\n  \"regex\": \"\\(\\d{3}\\) \\d{3}-\\d{4}\",\n \
+        \ \"explanation\": \"Matches phone numbers in the format (XXX) XXX-XXXX where\
+        \ X is a digit\"\n}\n```"
+      operationId: suggest_patterns_route_suggest_regex_post
       requestBody:
         content:
           application/json:
@@ -867,12 +992,23 @@ paths:
     post:
       tags:
       - Taxonomies
-      summary: Upsert Taxonomy
-      description: "Upsert a schema in the database.\n\nAttributes:\n\n    schema_name:\
-        \ The stored name of the schema to upsert.\n    new_schema_name: The new name\
-        \ of the schema to upsert.\n    schema_description: The description of the\
-        \ schema to upsert.\n    schema_data: The data of the schema to upsert."
-      operationId: upsert_taxonomy_taxonomy_upsert_post
+      summary: Upsert
+      description: "Insert or update a taxonomy (schema/hierarchy) in the database.\n\
+        \n## Request Body\n\n| Field                  | Type             | Description\
+        \                                                          |\n|------------------------|------------------|----------------------------------------------------------------------|\n\
+        | `taxonomy_name`        | `str`            | Name of the taxonomy to upsert.\
+        \                                      |\n| `new_taxonomy_name`    | `Optional[str]`\
+        \  | New name for the taxonomy (when updating).                          \
+        \ |\n| `taxonomy_description` | `Optional[str]`  | Description of the taxonomy.\
+        \                                         |\n| `taxonomy_data`        | `Optional[Dict]`\
+        \ | The taxonomy/hierarchy data structure.                               |\n\
+        \n## Response\n\n- **200**: Taxonomy upserted successfully  \n    - Returns:\
+        \ `{ \"taxonomy_name\": str }`\n- **500**: Internal Server Error\n\n## Example\n\
+        \n```json\n{\n  \"taxonomy_name\": \"document-categories\",\n  \"taxonomy_description\"\
+        : \"Main document classification taxonomy\",\n  \"taxonomy_data\": {\n   \
+        \ \"invoice\": [\"purchase_invoice\", \"sales_invoice\"],\n    \"receipt\"\
+        : [\"expense_receipt\", \"payment_receipt\"]\n  }\n}\n```"
+      operationId: upsert_taxonomy_route_taxonomy_upsert_post
       requestBody:
         content:
           application/json:
@@ -931,10 +1067,16 @@ paths:
     post:
       tags:
       - Taxonomies
-      summary: List Taxonomies
-      description: "List all schemas for the authenticated user.\n\nAttributes:\n\n\
-        \    schema_ids: The ids of the schemas to retrieve."
-      operationId: list_taxonomies_taxonomy_list_post
+      summary: List
+      description: "List all taxonomies (schemas/hierarchies) for the authenticated\
+        \ user.\n\n## Request Body\n\n| Field          | Type                  | Description\
+        \                                                          |\n|----------------|-----------------------|----------------------------------------------------------------------|\n\
+        | `taxonomy_ids` | `Optional[List[str]]` | List of specific taxonomy IDs to\
+        \ retrieve. If omitted, returns all taxonomies. |\n\n## Response\n\n- **200**:\
+        \ Taxonomies retrieved successfully  \n    - Returns: `{ \"taxonomies\": List[DeasySchema]\
+        \ }`\n- **500**: Internal Server Error\n\n## Example\n\n```json\n{\n  \"taxonomy_ids\"\
+        : [\"document-categories\", \"sentiment-types\"]\n}\n```"
+      operationId: list_taxonomies_route_taxonomy_list_post
       requestBody:
         content:
           application/json:
@@ -993,10 +1135,15 @@ paths:
     delete:
       tags:
       - Taxonomies
-      summary: Delete Taxonomy
-      description: "Delete a taxonomy by name.\n\nAttributes:\n\n    taxonomy_name:\
-        \ The name of the taxonomy to delete."
-      operationId: delete_taxonomy_taxonomy_delete_delete
+      summary: Delete
+      description: "Delete a taxonomy (schema/hierarchy) by name.\n\n## Query Parameters\n\
+        \n| Parameter       | Type  | Description                             |\n\
+        |-----------------|-------|-----------------------------------------|\n| `taxonomy_name`\
+        \ | `str` | Name of the taxonomy to delete.         |\n\n## Response\n\n-\
+        \ **200**: Taxonomy deleted successfully  \n    - Returns: `{ \"taxonomy_name\"\
+        : str }`\n- **500**: Internal Server Error\n\n## Example\n\n```\nDELETE /taxonomy/delete?taxonomy_name=document-categories\n\
+        ```"
+      operationId: delete_taxonomy_route_taxonomy_delete_delete
       parameters:
       - name: taxonomy_name
         in: query
@@ -1056,24 +1203,46 @@ paths:
     post:
       tags:
       - Taxonomies
-      summary: Suggest Taxonomy
+      summary: Suggest Schema
       description: "Suggest a hierarchical tag taxonomy based on file content and\
-        \ existing metadata\n\nAttributes:\n\n    data_connector_name: The name of\
-        \ the vector database profile to use for accessing file content.\n    llm_profile_name:\
-        \ Optional name of the language model profile to use for generating suggestions.\
-        \ Defaults to DeasyLabs compute\n    file_names: Optional list of specific\
-        \ files to analyze for the hierarchy suggestion.\n    dataslice_id: Optional\
-        \ ID of a dataslice to pull files from for the hierarchy suggestion.\n   \
-        \ current_tree: Optional existing hierarchy tree to build upon.\n    node:\
-        \ Optional node location of the existing hierarchy tree to build upon.\n \
-        \   condition: Optional filtering condition to select specific files for analysis.\n\
-        \    user_context: Optional user-provided context to guide the suggestion\
-        \ process.\n    context_level: Level at which to analyze content ('file' or\
-        \ 'chunk'). Defaults to 'file'.\n    max_height: Maximum depth of the generated\
-        \ hierarchy tree. Defaults to 2.\n    use_existing_tags: Whether to incorporate\
-        \ existing tags in suggestions. Defaults to False.\n    use_extracted_tags:\
-        \ Whether to use previously extracted tags. Defaults to False."
-      operationId: suggest_taxonomy_suggest_schema_post
+        \ existing metadata.\n\n## Request Body\n\n| Field                   | Type\
+        \                   | Description                                        \
+        \                          |\n|-------------------------|------------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name`   | `str`                  | Name of the data connector\
+        \ (vector database profile) to use.                 |\n| `llm_profile_name`\
+        \      | `Optional[str]`        | Name of the LLM profile to use for generating\
+        \ suggestions.                   |\n| `file_names`            | `Optional[List[str]]`\
+        \  | List of specific files to analyze for the hierarchy suggestion.     \
+        \         |\n| `dataslice_id`          | `Optional[str]`        | ID of a\
+        \ dataslice to pull files from for the suggestion.                     |\n\
+        | `progress_tracking_id`  | `Optional[str]`        | Custom tracking ID for\
+        \ monitoring the suggestion progress.                   |\n| `schema_name`\
+        \           | `Optional[str]`        | Name for the suggested schema/taxonomy.\
+        \                                      |\n| `current_tree`          | `Optional[Dict]`\
+        \       | Existing hierarchy tree to build upon.                         \
+        \              |\n| `condition`             | `Optional[Condition]`  | Filtering\
+        \ condition to select specific files for analysis.                   |\n|\
+        \ `node`                  | `Optional[GraphNode]`  | Node location in the\
+        \ existing hierarchy tree to build upon. Default: `{}`    |\n| `user_context`\
+        \          | `Optional[str]`        | User-provided context to guide the suggestion\
+        \ process.                       |\n| `context_level`         | `Optional[str]`\
+        \        | Level at which to analyze content: `file` or `chunk`. Default:\
+        \ `\"file\"`      |\n| `max_height`            | `Optional[int]`        |\
+        \ Maximum depth of the generated hierarchy tree. Default: `2`            \
+        \      |\n| `use_existing_tags`     | `Optional[bool]`       | Whether to\
+        \ incorporate existing tags in suggestions. Default: `false`        |\n| `use_extracted_tags`\
+        \    | `Optional[bool]`       | Whether to use previously extracted tags.\
+        \ Default: `false`                   |\n| `use_mix_llm_and_source`| `Optional[bool]`\
+        \       | Whether to mix LLM-generated and source-based tags. Default: `false`\
+        \         |\n\n## Response\n\n- **200**: Schema suggestion generated successfully\
+        \  \n    - Returns: `{ \"status_code\": int, \"message\": str, \"suggestion\"\
+        : Dict, \"suggested_tags\": Optional[Dict], \"node\": Optional[GraphNode],\
+        \ \"tag_not_found_rates\": Optional[Dict] }`\n- **500**: Internal Server Error\n\
+        \n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n\
+        \  \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"context_level\"\
+        : \"file\",\n  \"max_height\": 3,\n  \"use_existing_tags\": true,\n  \"user_context\"\
+        : \"Suggest categories for financial documents\"\n}\n```"
+      operationId: suggest_schema_route_suggest_schema_post
       requestBody:
         content:
           application/json:
@@ -1133,12 +1302,23 @@ paths:
     post:
       tags:
       - Metadata
-      summary: Delete Metadata
-      description: "Delete metadata for specified files and tags\n\nAttributes:\n\
-        \    vector_db_config: The vector database configuration to use.\n    file_names:\
-        \ The files to delete the metadata for.\n    tags: The tags to delete the\
-        \ metadata for.\n    conditions: The conditions to delete the metadata for."
-      operationId: delete_metadata_metadata_delete_post
+      summary: Delete
+      description: "Delete metadata for specified files, tags, and/or conditions.\n\
+        \n## Request Body\n\n| Field                 | Type                | Description\
+        \                                                                  |\n|-----------------------|---------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`               | Name of the data connector\
+        \ (vector database profile) to delete metadata from.|\n| `file_names`    \
+        \      | `Optional[List[str]]` | List of file names to delete metadata for.\
+        \                                  |\n| `tags`                | `Optional[List[str]]`\
+        \ | List of tags to filter which metadata to delete.                     \
+        \       |\n| `conditions`          | `Optional[Condition]` | Additional conditions\
+        \ to filter which metadata to delete.                   |\n\n## Response\n\
+        \n- **200**: Metadata deleted successfully  \n    - Returns: `{ \"chunk_deleted_count\"\
+        : int, \"file_deleted_count\": int }`\n- **500**: Internal Server Error\n\n\
+        ## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n \
+        \ \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"tags\": [\"\
+        archived\", \"old\"]\n}\n```"
+      operationId: delete_metadata_route_metadata_delete_post
       requestBody:
         content:
           application/json:
@@ -1198,15 +1378,27 @@ paths:
     post:
       tags:
       - Metadata
-      summary: Get List Paginated Metadata
-      description: "Get paginated filtered metadata based on conditions\n\nAttributes:\n\
-        \n    data_connector_name: The name of the vdb profile to include in the dataslice.\n\
-        \    dataslice_id: The dataslice for getting files from.\n    conditions:\
-        \ The conditions to filter the files by.\n    tag_names: The names of the\
-        \ tags to include in the metadata.\n    include_chunk_level: Whether to include\
-        \ the chunk-level metadata.\n    offset: The offset to start the pagination\
-        \ from.\n    limit: The limit to the number of metadata to return."
-      operationId: get_list_paginated_metadata_metadata_list_paginated_post
+      summary: List Paginated
+      description: "Get paginated filtered metadata based on conditions.\n\n## Request\
+        \ Body\n\n| Field                 | Type                  | Description  \
+        \                                                                |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`                 | Name of the data connector\
+        \ (vector database profile).                        |\n| `dataslice_id`  \
+        \      | `Optional[str]`       | ID of the dataslice to get files from.  \
+        \                                     |\n| `tag_names`           | `Optional[List[str]]`\
+        \ | List of tag names to include in the metadata.                        \
+        \        |\n| `include_chunk_level` | `Optional[bool]`      | Whether to include\
+        \ chunk-level metadata. Default: `true`                     |\n| `offset`\
+        \              | `Optional[int]`       | Pagination offset to start from.\
+        \ Default: `0`                                |\n| `limit`               |\
+        \ `Optional[int]`       | Maximum number of metadata items to return. Default:\
+        \ `50`                    |\n\n## Response\n\n- **200**: Metadata retrieved\
+        \ successfully  \n    - Returns: `{ \"metadata\": Deasy_Metadata, \"next_offset\"\
+        : Optional[int] }`\n- **500**: Internal Server Error\n\n## Example\n\n```json\n\
+        {\n  \"data_connector_name\": \"my-connector\",\n  \"dataslice_id\": \"abc123\"\
+        ,\n  \"tag_names\": [\"category\", \"date\"],\n  \"include_chunk_level\":\
+        \ true,\n  \"offset\": 0,\n  \"limit\": 50\n}\n```"
+      operationId: list_paginated_metadata_route_metadata_list_paginated_post
       requestBody:
         content:
           application/json:
@@ -1266,20 +1458,30 @@ paths:
     post:
       tags:
       - Metadata
-      summary: Get List Metadata
-      description: "Get paginated filtered metadata based on conditions - supports\
-        \ shared connections\n\nAttributes:\n\n    data_connector_name: The name of\
-        \ the vdb profile to include in the dataslice.\n    dataslice_id: The dataslice\
-        \ for getting files from.\n    conditions: The conditions to filter the files\
-        \ by.\n    tag_names: The names of the tags to include in the metadata.\n\
-        \    include_chunk_level: Whether to include the chunk-level metadata.\n \
-        \   file_names: The names of the files to include in the metadata.\n    chunk_ids:\
-        \ The ids of the chunks to include in the metadata.\n    group_by: The group\
-        \ by to group the metadata by.\nReturns:\n\n    metadata: The metadata for\
-        \ the files.\n    without chunk_ids -> {filename: {tag_id: {chunk_level: {chunk_id:\
-        \ metadata, ...}, file_level: metadata}}}\n    with chunk_ids -> {chunk_id:\
-        \ {metadata}}"
-      operationId: get_list_metadata_metadata_list_post
+      summary: List
+      description: "Get filtered metadata based on conditions. Supports shared connections.\n\
+        \n## Request Body\n\n| Field                 | Type                  | Description\
+        \                                                                  |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`                 | Name of the data connector\
+        \ (vector database profile).                        |\n| `dataslice_id`  \
+        \      | `Optional[str]`       | ID of the dataslice to get files from.  \
+        \                                     |\n| `tag_names`           | `Optional[List[str]]`\
+        \ | List of tag names to include in the metadata.                        \
+        \        |\n| `include_chunk_level` | `Optional[bool]`      | Whether to include\
+        \ chunk-level metadata. Default: `true`                     |\n| `file_names`\
+        \          | `Optional[List[str]]` | List of specific file names to include\
+        \ in the metadata.                      |\n| `chunk_ids`           | `Optional[List[str]]`\
+        \ | List of specific chunk IDs to include in the metadata.               \
+        \        |\n\n## Response\n\n- **200**: Metadata retrieved successfully  \n\
+        \    - Without `chunk_ids`: Returns metadata grouped by filename, tag, and\
+        \ level  \n      `{filename: {tag_id: {chunk_level: {chunk_id: metadata},\
+        \ file_level: metadata}}}`\n    - With `chunk_ids`: Returns metadata by chunk\
+        \ ID  \n      `{chunk_id: {metadata}}`\n- **500**: Internal Server Error\n\
+        \n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n\
+        \  \"dataslice_id\": \"abc123\",\n  \"tag_names\": [\"category\", \"date\"\
+        ],\n  \"include_chunk_level\": true,\n  \"file_names\": [\"document1.pdf\"\
+        , \"document2.pdf\"]\n}\n```"
+      operationId: list_metadata_route_metadata_list_post
       requestBody:
         content:
           application/json:
@@ -1339,12 +1541,23 @@ paths:
     post:
       tags:
       - Metadata
-      summary: Upsert Metadata
-      description: "Upsert metadata for files and tags\n\nAttributes:\n\n    data_connector_name:\
-        \ The name of the vdb profile to include in the dataslice.\n    dataslice_id:\
-        \ The dataslice for getting files from.\n    metadata: The metadata to upsert\
-        \ with the form {file_name: {tag_name: tag_value}}."
-      operationId: upsert_metadata_metadata_upsert_post
+      summary: Upsert
+      description: "Insert or update metadata for files and tags.\n\n## Request Body\n\
+        \n| Field                 | Type                  | Description          \
+        \                                                        |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `Optional[str]`       | Name of the data connector\
+        \ (vector database profile).                        |\n| `dataslice_id`  \
+        \      | `Optional[str]`       | ID of the dataslice to upsert metadata for.\
+        \                                  |\n| `metadata`            | `Deasy_Metadata`\
+        \      | Metadata to upsert in the form `{file_name: {tag_name: tag_value}}`.\
+        \         |\n\n## Response\n\n- **200**: Metadata upserted successfully  \n\
+        \    - Returns: `{ \"success\": bool }`\n- **500**: Internal Server Error\n\
+        \n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n\
+        \  \"metadata\": {\n    \"document1.pdf\": {\n      \"category\": \"invoice\"\
+        ,\n      \"date\": \"2024-01-15\"\n    },\n    \"document2.pdf\": {\n    \
+        \  \"category\": \"receipt\",\n      \"status\": \"processed\"\n    }\n  }\n\
+        }\n```"
+      operationId: upsert_metadata_route_metadata_upsert_post
       requestBody:
         content:
           application/json:
@@ -1404,20 +1617,37 @@ paths:
     post:
       tags:
       - Metadata
-      summary: Classify Endpoint
-      description: "Classify files specified in the request with the provided tags\n\
-        \nAttributes:\n\n    data_connector_name: The name of the vdb profile to use\
-        \ for classification.\n    llm_profile_name: The name of the llm profile to\
-        \ use for classification.\n    file_names: The names of the files to classify.\n\
-        \    tag_names: The names of the tags to use for classification if tag datas\
-        \ are not provided.\n    tag_datas: The data of the tags to use for classification.\n\
-        \    overwrite: Whether to overwrite existing tags.\n    hierarchy_name: The\
-        \ name of the graph to use for classification if hierarchy data is not provided.\n\
-        \    hierarchy_data: The data of the graph to use for classification.\n  \
-        \  dataslice_id: The id of the dataslice to use for classification file filtering.\n\
-        \    soft_run: If true, the classification will not save to Deasy and will\
-        \ attempt to return the results."
-      operationId: classify_endpoint_classify_post
+      summary: Generate
+      description: "Classify specified files with the provided tags.\n\n## Request\
+        \ Body\n\n| Field                 | Type                  | Description  \
+        \                                                                |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`                 | Name of the data connector\
+        \ (vector database profile) to use for classification. |\n| `llm_profile_name`\
+        \    | `Optional[str]`       | Name of the LLM profile to use for classification.\
+        \                           |\n| `file_names`          | `Optional[List[str]]`\
+        \ | Names of specific files to classify.                                 \
+        \        |\n| `tag_names`           | `Optional[List[str]]` | Names of tags\
+        \ to use for classification (if `tag_datas` not provided).       |\n| `tag_datas`\
+        \           | `Optional[Dict]`      | Tag data to use for classification.\
+        \                                          |\n| `overwrite`           | `bool`\
+        \                | Whether to overwrite existing tags. Default: `false`  \
+        \                       |\n| `job_id`              | `Optional[str]`     \
+        \  | Custom job ID for tracking the classification task.                 \
+        \         |\n| `soft_run`            | `bool`                | If `true`,\
+        \ classification will not save to Deasy and will return results. Default:\
+        \ `false` |\n| `hierarchy_name`      | `Optional[str]`       | Name of the\
+        \ hierarchy/graph to use (if `hierarchy_data` not provided).       |\n| `hierarchy_data`\
+        \      | `Optional[Dict]`      | Hierarchy/graph data to use for classification.\
+        \ Default: `{}`                |\n| `dataslice_id`        | `Optional[str]`\
+        \       | ID of the dataslice to use for file filtering.                 \
+        \              |\n\n## Response\n\n- **200**: Classification completed or\
+        \ job started successfully  \n    - Returns: `{ \"message\": str, \"job_id\"\
+        : str, \"results\": Optional[Dict] }`\n- **500**: Internal Server Error\n\n\
+        ## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n \
+        \ \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"tag_names\"\
+        : [\"category\", \"sentiment\"],\n  \"overwrite\": false,\n  \"soft_run\"\
+        : false\n}\n```"
+      operationId: generate_route_classify_post
       requestBody:
         content:
           application/json:
@@ -1477,20 +1707,36 @@ paths:
     post:
       tags:
       - Metadata
-      summary: Classify Bulk Endpoint
-      description: "Classify all files in data source in batches with the provided\
-        \ tags\n\nAttributes:\n\n    data_connector_name: The name of the vdb profile\
-        \ to use for classification.\n    llm_profile_name: The name of the llm profile\
-        \ to use for classification.\n    total_data_sets: The total number of files\
-        \ to classify.\n    tag_names: The names of the tags to use for classification\
-        \ if tag datas are not provided.\n    tag_datas: The data of the tags to use\
-        \ for classification.\n    overwrite: Whether to overwrite existing tags.\n\
-        \    hierarchy_name: The name of the graph to use for classification if hierarchy\
-        \ data is not provided.\n    hierarchy_data: The data of the graph to use\
-        \ for classification.\n    dataslice_id: The id of the dataslice to use for\
-        \ classification file filtering.\n    conditions: The conditions to use for\
-        \ classification file filtering."
-      operationId: classify_bulk_endpoint_classify_bulk_post
+      summary: Generate Batch
+      description: "Classify all files in a data source in batches with the provided\
+        \ tags.\n\n## Request Body\n\n| Field                 | Type             \
+        \     | Description                                                      \
+        \            |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`                 | Name of the data connector\
+        \ (vector database profile) to use for classification. |\n| `llm_profile_name`\
+        \    | `Optional[str]`       | Name of the LLM profile to use for classification.\
+        \                           |\n| `total_data_sets`     | `Optional[int]` \
+        \      | Total number of files to classify.                              \
+        \             |\n| `tag_names`           | `Optional[List[str]]` | Names of\
+        \ tags to use for classification (if `tag_datas` not provided).       |\n\
+        | `tag_datas`           | `Optional[Dict]`      | Tag data to use for classification.\
+        \                                          |\n| `overwrite`           | `bool`\
+        \                | Whether to overwrite existing tags. Default: `false`  \
+        \                       |\n| `job_id`              | `Optional[str]`     \
+        \  | Custom job ID for tracking the classification task.                 \
+        \         |\n| `hierarchy_name`      | `Optional[str]`       | Name of the\
+        \ hierarchy/graph to use (if `hierarchy_data` not provided).       |\n| `hierarchy_data`\
+        \      | `Optional[Dict]`      | Hierarchy/graph data to use for classification.\
+        \ Default: `{}`                |\n| `dataslice_id`        | `Optional[str]`\
+        \       | ID of the dataslice to use for file filtering.                 \
+        \              |\n| `conditions`          | `Optional[Condition]` | Conditions\
+        \ to use for file filtering.                                        |\n\n\
+        ## Response\n\n- **200**: Classification job started successfully  \n    -\
+        \ Returns: `{ \"message\": str, \"job_id\": str }`\n- **500**: Internal Server\
+        \ Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\"\
+        ,\n  \"tag_names\": [\"category\", \"sentiment\"],\n  \"overwrite\": false,\n\
+        \  \"dataslice_id\": \"abc123\"\n}\n```"
+      operationId: generate_batch_route_classify_bulk_post
       requestBody:
         content:
           application/json:
@@ -1550,17 +1796,40 @@ paths:
     post:
       tags:
       - Metadata
-      summary: Detect Sensitivity Endpoint
-      description: "Detect sensitive data in files using pattern-based detection\n\
-        \nAttributes:\n\n    data_connector_name: The name of the vdb profile to use.\n\
-        \    llm_profile_name: Optional LLM profile (used for endpoint manager init).\n\
-        \    file_names: The names of the files to scan for sensitive data.\n    dataslice_id:\
-        \ The id of the dataslice to use for file filtering.\n    conditions: Additional\
-        \ filtering conditions.\n    overwrite: Whether to overwrite existing sensitivity\
-        \ tags.\n    soft_run: If true, returns detection results without saving.\n\
-        \    taxonomy_name: Name of the sensitivity taxonomy to use.\n    min_confidence:\
-        \ Minimum confidence threshold for detections."
-      operationId: detect_sensitivity_endpoint_sensitivity_detect_post
+      summary: Detect
+      description: "Detect sensitive data in files using pattern-based detection (PII,\
+        \ PHI, financial data, etc.).\n\nSupports various entity types including SSNs,\
+        \ credit cards, emails, phone numbers, and custom patterns.\n\n## Request\
+        \ Body\n\n| Field                     | Type                  | Description\
+        \                                                                  |\n|---------------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name`     | `str`                 | Name of the data connector\
+        \ (vector database profile) to use.                 |\n| `llm_profile_name`\
+        \        | `Optional[str]`       | Optional LLM profile (used for endpoint\
+        \ manager init).                       |\n| `file_names`              | `Optional[List[str]]`\
+        \ | Names of specific files to scan for sensitive data.                  \
+        \        |\n| `dataslice_id`            | `Optional[str]`       | ID of the\
+        \ dataslice to use for file filtering.                               |\n|\
+        \ `conditions`              | `Optional[Condition]` | Additional filtering\
+        \ conditions.                                             |\n| `overwrite`\
+        \               | `bool`                | Whether to overwrite existing sensitivity\
+        \ tags. Default: `false`             |\n| `soft_run`                | `bool`\
+        \                | If `true`, returns detection results without saving. Default:\
+        \ `false`        |\n| `taxonomy_name`           | `Optional[str]`       |\
+        \ Name of the sensitivity taxonomy to use. Default: `\"Default Sensitivity\
+        \ (v1)\"` |\n| `min_confidence`          | `float`               | Minimum\
+        \ confidence threshold for detections (0.0-1.0). Default: `0.6`        |\n\
+        | `selected_entity_types`   | `Optional[List[str]]` | Filter by specific entity\
+        \ types (e.g., \"SSN\", \"EMAIL\", \"CREDIT_CARD\").       |\n| `job_id` \
+        \                 | `Optional[str]`       | Custom job ID for tracking the\
+        \ detection task.                               |\n\n## Response\n\n- **200**:\
+        \ Sensitivity detection completed or job started successfully  \n    - Returns:\
+        \ `{ \"message\": str, \"job_id\": str, \"results\": Optional[Dict] }`\n-\
+        \ **500**: Internal Server Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\"\
+        : \"my-connector\",\n  \"file_names\": [\"contract.pdf\", \"employee_records.pdf\"\
+        ],\n  \"taxonomy_name\": \"Default Sensitivity (v1)\",\n  \"min_confidence\"\
+        : 0.75,\n  \"selected_entity_types\": [\"SSN\", \"EMAIL\", \"CREDIT_CARD\"\
+        ],\n  \"soft_run\": false,\n  \"overwrite\": true\n}\n```"
+      operationId: detect_route_sensitivity_detect_post
       requestBody:
         content:
           application/json:
@@ -1620,16 +1889,35 @@ paths:
     post:
       tags:
       - Metadata
-      summary: Detect Sensitivity Bulk Endpoint
-      description: "Detect sensitive data in bulk across a dataslice or entire datasource\n\
-        \nAttributes:\n\n    data_connector_name: The name of the vdb profile to use.\n\
-        \    llm_profile_name: Optional LLM profile (used for endpoint manager init).\n\
-        \    total_data_sets: Total number of files to process.\n    dataslice_id:\
-        \ The id of the dataslice to use.\n    conditions: Additional filtering conditions.\n\
-        \    overwrite: Whether to overwrite existing sensitivity tags.\n    taxonomy_name:\
-        \ Name of the sensitivity taxonomy to use.\n    min_confidence: Minimum confidence\
-        \ threshold for detections."
-      operationId: detect_sensitivity_bulk_endpoint_sensitivity_detect_bulk_post
+      summary: Detect Batch
+      description: "Detect sensitive data in bulk across a dataslice or entire data\
+        \ source.\n\nProcesses multiple files in batches to identify PII, PHI, financial\
+        \ data, and other sensitive information.\n\n## Request Body\n\n| Field   \
+        \              | Type                  | Description                     \
+        \                                             |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`                 | Name of the data connector\
+        \ (vector database profile) to use.                 |\n| `llm_profile_name`\
+        \    | `Optional[str]`       | Optional LLM profile (used for endpoint manager\
+        \ init).                       |\n| `total_data_sets`     | `Optional[int]`\
+        \       | Total number of files to process.                              \
+        \              |\n| `dataslice_id`        | `Optional[str]`       | ID of\
+        \ the dataslice to use for file filtering.                               |\n\
+        | `conditions`          | `Optional[Condition]` | Additional filtering conditions.\
+        \                                             |\n| `overwrite`           |\
+        \ `bool`                | Whether to overwrite existing sensitivity tags.\
+        \ Default: `false`             |\n| `taxonomy_name`       | `Optional[str]`\
+        \       | Name of the sensitivity taxonomy to use. Default: `\"Default Sensitivity\
+        \ (v1)\"` |\n| `min_confidence`      | `float`               | Minimum confidence\
+        \ threshold for detections (0.0-1.0). Default: `0.6`        |\n| `job_id`\
+        \              | `Optional[str]`       | Custom job ID for tracking the detection\
+        \ task.                               |\n\n## Response\n\n- **200**: Bulk\
+        \ sensitivity detection job started successfully  \n    - Returns: `{ \"message\"\
+        : str, \"job_id\": str }`\n- **500**: Internal Server Error\n\n## Example\n\
+        \n```json\n{\n  \"data_connector_name\": \"my-connector\",\n  \"dataslice_id\"\
+        : \"employee-records\",\n  \"taxonomy_name\": \"Default Sensitivity (v1)\"\
+        ,\n  \"min_confidence\": 0.75,\n  \"overwrite\": true,\n  \"total_data_sets\"\
+        : 1000\n}\n```"
+      operationId: detect_batch_route_sensitivity_detect_bulk_post
       requestBody:
         content:
           application/json:
@@ -1689,9 +1977,15 @@ paths:
     post:
       tags:
       - Task Tracking
-      summary: Get Task Progress
-      description: Get the status of a task.
-      operationId: get_task_progress_progress_tracker_task_status_post
+      summary: Get Task Status
+      description: "Get the status of a task by job ID.\n\n## Request Body\n\n| Field\
+        \    | Type  | Description                                      |\n|----------|-------|--------------------------------------------------|\n\
+        | `job_id` | `str` | The unique identifier for the job to check.      |\n\n\
+        ## Response\n\n- **200**: Task status retrieved successfully  \n    - Returns:\
+        \ `{ \"percent_complete\": float, \"tags_created\": Optional[int], \"status\"\
+        : str }`\n- **404**: Job ID not found\n\n## Example\n\n```json\n{\n  \"job_id\"\
+        : \"abc123-def456-ghi789\"\n}\n```"
+      operationId: get_task_status_route_progress_tracker_task_status_post
       requestBody:
         content:
           application/json:
@@ -1750,17 +2044,33 @@ paths:
     post:
       tags:
       - Data Slices
-      summary: Create Dataslice
-      description: "Create a new data slice based on given conditions\n\nAttributes:\n\
-        \n    dataslice_name: The name of the dataslice to create.\n    condition:\
-        \ The conditions to qualify files for the dataslice.\n    condition_new: The\
-        \ new conditions to qualify files for the dataslice.\n    description: The\
-        \ description of the dataslice to create.\n    status: The status of the dataslice\
-        \ to create.\n    data_points: The data points to include in the dataslice.\n\
-        \    latest_graph: The latest graph to include in the dataslice.\n    graph_id:\
-        \ The id of the graph to include in the dataslice.\n    data_connector_name:\
-        \ The name of the vdb profile to include in the dataslice."
-      operationId: create_dataslice_dataslice_create_post
+      summary: Create
+      description: "Create a new data slice based on specified conditions.\n\n## Request\
+        \ Body\n\n| Field             | Type           | Description             \
+        \                                                   |\n|-------------------|----------------|----------------------------------------------------------------------------|\n\
+        | `dataslice_name`  | `str`          | The name to assign to the newly created\
+        \ data slice.                        |\n| `condition`       | `Optional[List[Dict]]`\
+        \ | (Legacy) List of file qualifying conditions.                         |\n\
+        | `condition_new`   | `Optional[Any]` | New format: advanced file qualifying\
+        \ conditions.                           |\n| `description`     | `Optional[str]`\
+        \ | Description of the data slice.                                       \
+        \      |\n| `status`          | `str`          | The status of the data slice\
+        \ (e.g., active).                               |\n| `data_points`     | `Optional[int]`\
+        \ | Number of data points in the data slice.                             \
+        \      |\n| `latest_graph`    | `Optional[Dict]` | Most recent graph reference/metadata.\
+        \                                      |\n| `graph_id`        | `Optional[str]`\
+        \ | ID of the related graph, if applicable.                              \
+        \      |\n| `data_connector_name` | `str`      | Name of the data connector\
+        \ (vector database profile).                      |\n| `parent_dataslice_id`\
+        \ | `Optional[str]` | (Optional) Parent data slice ID, for lineage.      \
+        \                  |\n\n## Response\n\n- **201**: Data slice created successfully\
+        \  \n    - Returns: `{ \"dataslice_id\": \"<uuid>\" }`\n- **500**: Internal\
+        \ Server Error.\n\n## Example\n\n```json\n{\n  \"dataslice_name\": \"Customer\
+        \ Purchases Q2\",\n  \"condition\": [\n    { \"field\": \"created_date\",\
+        \ \"op\": \"gte\", \"value\": \"2024-04-01\" }\n  ],\n  \"description\": \"\
+        Purchase data from Q2 2024\",\n  \"status\": \"active\",\n  \"data_points\"\
+        : 4000,\n  \"data_connector_name\": \"prod-warehouse\"\n}\n```"
+      operationId: create_dataslice_route_dataslice_create_post
       requestBody:
         content:
           application/json:
@@ -1822,10 +2132,16 @@ paths:
     delete:
       tags:
       - Data Slices
-      summary: Delete Dataslice
-      description: "Delete a data slice\n\nAttributes:\n\n    dataslice_id: The id\
-        \ of the dataslice to delete."
-      operationId: delete_dataslice_dataslice_delete_delete
+      summary: Delete
+      description: "Delete a single data slice by its unique identifier.\n\n## Request\
+        \ Body\n\n| Field             | Type           | Description             \
+        \                                                   |\n|-------------------|----------------|----------------------------------------------------------------------------|\n\
+        | `dataslice_id`    | `str`        | The unique identifier of the data slice\
+        \ to delete.                        |\n\n### Response\n\nReturns a confirmation\
+        \ message of the successful deletion and any associated data.\n\n```json\n\
+        {\n  \"message\": \"Data slice deleted successfully\",\n  \"data\": {\n  \
+        \  // Details of deletion outcome\n  }\n}\n```"
+      operationId: delete_dataslice_route_dataslice_delete_delete
       parameters:
       - name: dataslice_id
         in: query
@@ -1885,12 +2201,19 @@ paths:
     get:
       tags:
       - Data Slices
-      summary: List Dataslices
-      description: List all dataslices
-      operationId: list_dataslices_dataslice_list_get
+      summary: List
+      description: "Retrieve all data slices associated with the currently authenticated\
+        \ user.\n\n### Response\n\nReturns a JSON object containing a list of dataslices:\n\
+        \n```json\n{\n  \"dataslices\": [\n    {\n      \"dataslice_id\": \"string\"\
+        ,\n      \"dataslice_name\": \"string\",\n      \"description\": \"string\"\
+        ,\n      \"status\": \"active\",\n      \"data_points\": 123,\n      \"latest_graph\"\
+        : { /* graph details */ },\n      \"graph_id\": \"string\",\n      \"data_connector_name\"\
+        : \"string\",\n      \"parent_dataslice_id\": \"string or null\"\n    },\n\
+        \    ...\n  ]\n}\n```"
+      operationId: list_dataslices_route_dataslice_list_get
       responses:
         '200':
-          description: Successful Response
+          description: A list of dataslices the user can access.
           content:
             application/json:
               schema:
@@ -1934,15 +2257,28 @@ paths:
     post:
       tags:
       - Data Slices
-      summary: Export Dataslice
-      description: "Export file-level/chunk-level metadata for a data slice\n\nAttributes:\n\
-        \n    data_connector_name: The name of the vdb profile to export metadata\
-        \ from.\n    dataslice_id: The id of the dataslice to export metadata from.\n\
-        \    export_file_level: Whether to export file-level metadata or chunk-level\
-        \ metadata.\n    export_format: The format to export the metadata in, JSON\
-        \ or CSV.\n    selected_metadata_fields: The metadata fields to include in\
-        \ the export."
-      operationId: export_dataslice_dataslice_export_metadata_post
+      summary: Export
+      description: "Export metadata for a specific data slice or the entire data connector,\
+        \ in JSON or CSV format.\n\n## Request Body\n\n| Field                   \
+        \   | Type                  | Description                                \
+        \                                        |\n|----------------------------|-----------------------|------------------------------------------------------------------------------------|\n\
+        | `data_connector_name`      | `str`                 | Name of the data source\
+        \ to export metadata from.                                   |\n| `dataslice_id`\
+        \             | `Optional[str]`       | ID of the dataslice to export metadata\
+        \ from. If omitted, all data is included.     |\n| `export_file_level`   \
+        \     | `bool`                | `True` for file-level export, `False` for\
+        \ chunk-level export.                      |\n| `export_format`          \
+        \  | `Optional[ExportFormat]` | Desired export format: `json` or `csv` (e.g.,\
+        \ `\"json\"`, `\"csv\"`).               |\n| `selected_metadata_fields` |\
+        \ `Optional[List[str]]` | List of metadata fields to include in the export.\
+        \                                  |\n\n## Response\n\n- **200**: Metadata\
+        \ exported successfully  \n    - Returns: A streaming file response containing\
+        \ the exported metadata in the requested format.\n- **500**: Internal Server\
+        \ Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\": \"example-connector\"\
+        ,\n  \"dataslice_id\": \"abc123\",\n  \"export_file_level\": true,\n  \"export_format\"\
+        : \"json\",\n  \"selected_metadata_fields\": [\"field1\", \"field2\"]\n}\n\
+        ```"
+      operationId: export_data_slice_dataslice_export_metadata_post
       requestBody:
         content:
           application/json:
@@ -2370,14 +2706,6 @@ components:
       - connector_name
       - connector_body
       title: CreateVDBConnectorRequest
-    DeasyComputeConfig:
-      properties:
-        llmType:
-          type: string
-          title: Llmtype
-          default: deasy_compute
-      type: object
-      title: DeasyComputeConfig
     DeasyDataslice:
       properties:
         dataslice_id:
@@ -2728,7 +3056,7 @@ components:
           type: string
           format: date-time
           title: Updated At
-          default: '2025-10-29T13:29:36.422145'
+          default: '2025-10-29T16:23:44.988117'
         tuned:
           anyOf:
           - type: integer
@@ -3171,19 +3499,20 @@ components:
       required:
       - dataslices
       title: ListDataslicesResponse
-    ListLLMConnectorResponse:
+    ListDestinationConnectorResponse:
       properties:
         connectors:
           additionalProperties:
             anyOf:
-            - $ref: '#/components/schemas/DeasyComputeConfig'
-            - $ref: '#/components/schemas/OpenAIConfig'
+            - $ref: '#/components/schemas/SharepointDestinationConfig'
+            - $ref: '#/components/schemas/PostgresDestinationConfig'
+            - $ref: '#/components/schemas/AzureSQLDestinationConfig'
           type: object
           title: Connectors
       type: object
       required:
       - connectors
-      title: ListLLMConnectorResponse
+      title: ListDestinationConnectorResponse
     ListMetadataRequest:
       properties:
         data_connector_name:
@@ -3700,41 +4029,6 @@ components:
       required:
       - data_connector_name
       title: OCRIngestRequest
-    OpenAIConfig:
-      properties:
-        llmType:
-          type: string
-          title: Llmtype
-          default: openai
-        api_key:
-          type: string
-          title: Api Key
-        temperature:
-          type: number
-          title: Temperature
-          default: 0
-        rpm_completion:
-          type: integer
-          title: Rpm Completion
-        tpm_completion:
-          type: integer
-          title: Tpm Completion
-        rpm_embedding:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Rpm Embedding
-        tpm_embedding:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Tpm Embedding
-      type: object
-      required:
-      - api_key
-      - rpm_completion
-      - tpm_completion
-      title: OpenAIConfig
     PSQLConnectorConfig:
       properties:
         type:
