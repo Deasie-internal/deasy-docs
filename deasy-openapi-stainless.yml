@@ -5,16 +5,16 @@ info:
 servers:
 - url: /rest/unstructured
 paths:
-  /vdb_connector/create:
+  /data_connector/create:
     post:
       tags:
-      - Data Sources
+      - Data Connectors
       summary: Create
       description: "Create a new vector database (VDB) connector.\n\n## Request Body\n\
         \n| Field             | Type          | Description                      \
         \                |\n|-------------------|---------------|--------------------------------------------------|\n\
-        | `connector_name`  | `str`         | The profile name of the data source\
-        \ to create.   |\n| `connector_body`  | `VDBConfigs`  | Configuration object\
+        | `connector_name`  | `str`         | The profile name of the data connector\
+        \ to create.|\n| `connector_body`  | `VDBConfigs`  | Configuration object\
         \ for the VDB connector.      |\n\n## Response\n\n- **200**: VDB connector\
         \ created successfully  \n    - Returns: `{ \"profile_id\": str }`\n- **500**:\
         \ Internal Server Error (e.g., failed to store secret)\n\n## Example\n\n```json\n\
@@ -22,7 +22,7 @@ paths:
         \  \"vector_db_type\": \"pinecone\",\n    \"api_key\": \"your-api-key\",\n\
         \    \"environment\": \"us-east-1-aws\",\n    \"index_name\": \"my-index\"\
         \n  }\n}\n```"
-      operationId: create_data_source_route_vdb_connector_create_post
+      operationId: create_data_source_route_data_connector_create_post
       requestBody:
         content:
           application/json:
@@ -68,14 +68,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst connectorResponse = await client.dataSource.create({\n\
-          \  connector_body: {\n    collection_name: 'collection_name',\n    database_name:\
-          \ 'database_name',\n    db_user: 'db_user',\n    name: 'name',\n    password:\
-          \ 'password',\n    port: 'port',\n    url: 'url',\n  },\n  connector_name:\
-          \ 'connector_name',\n});\n\nconsole.log(connectorResponse.profile_id);"
       - lang: Python
         source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
           \    username=\"My Username\",\n    password=\"My Password\",\n)\nconnector_response\
@@ -84,72 +76,24 @@ paths:
           \        \"db_user\": \"db_user\",\n        \"name\": \"name\",\n      \
           \  \"password\": \"password\",\n        \"port\": \"port\",\n        \"\
           url\": \"url\",\n    },\n    connector_name=\"connector_name\",\n)\nprint(connector_response.profile_id)"
-  /vdb_connector/list:
-    post:
-      tags:
-      - Data Sources
-      summary: List
-      description: "List all vector database (VDB) connectors for the authenticated\
-        \ user.\n\n## Response\n\n- **200**: Successfully retrieved list of VDB connectors\
-        \  \n    - Returns: `{ \"connectors\": VDBConfigDict }`\n\n## Example Response\n\
-        \n```json\n{\n  \"connectors\": {\n    \"my-pinecone-db\": {\n      \"vector_db_type\"\
-        : \"pinecone\",\n      \"environment\": \"us-east-1-aws\",\n      \"index_name\"\
-        : \"my-index\"\n    },\n    \"my-qdrant-db\": {\n      \"vector_db_type\"\
-        : \"qdrant\",\n      \"url\": \"https://qdrant.example.com\"\n    }\n  }\n\
-        }\n```"
-      operationId: list_data_sources_route_vdb_connector_list_post
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListVDBConnectorResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
           \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst listVdbConnector = await client.dataSource.list();\n\
-          \nconsole.log(listVdbConnector.connectors);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nlist_vdb_connector\
-          \ = client.data_source.list()\nprint(list_vdb_connector.connectors)"
-  /vdb_connector/update:
+          \ Password',\n});\n\nconst connectorResponse = await client.dataSource.create({\n\
+          \  connector_body: {\n    collection_name: 'collection_name',\n    database_name:\
+          \ 'database_name',\n    db_user: 'db_user',\n    name: 'name',\n    password:\
+          \ 'password',\n    port: 'port',\n    url: 'url',\n  },\n  connector_name:\
+          \ 'connector_name',\n});\n\nconsole.log(connectorResponse.profile_id);"
+  /data_connector/update:
     post:
       tags:
-      - Data Sources
+      - Data Connectors
       summary: Update
-      description: "Update an existing data source configuration.\n\n## Request Body\n\
-        \n| Field             | Type          | Description                      \
-        \                |\n|-------------------|---------------|--------------------------------------------------|\n\
-        | `connector_name`  | `str`         | The profile name of the data source\
-        \ to update.   |\n| `connector_body`  | `VDBConfigs`  | Updated configuration\
+      description: "Update an existing data connector configuration.\n\n## Request\
+        \ Body\n\n| Field             | Type          | Description              \
+        \                        |\n|-------------------|---------------|--------------------------------------------------|\n\
+        | `connector_name`  | `str`         | The profile name of the data connector\
+        \ to update.|\n| `connector_body`  | `VDBConfigs`  | Updated configuration\
         \ object for the VDB.        |\n\n## Response\n\n- **200**: VDB connector\
         \ updated successfully  \n    - Returns: `{ \"profile_id\": str }`\n- **500**:\
         \ Internal Server Error (e.g., failed to store secret)\n\n## Example\n\n```json\n\
@@ -157,7 +101,7 @@ paths:
         \  \"vector_db_type\": \"pinecone\",\n    \"api_key\": \"updated-api-key\"\
         ,\n    \"environment\": \"us-west-1-aws\",\n    \"index_name\": \"my-index\"\
         \n  }\n}\n```"
-      operationId: update_data_source_route_vdb_connector_update_post
+      operationId: update_data_source_route_data_connector_update_post
       requestBody:
         content:
           application/json:
@@ -203,14 +147,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst connectorResponse = await client.dataSource.update({\n\
-          \  connector_body: {\n    collection_name: 'collection_name',\n    database_name:\
-          \ 'database_name',\n    db_user: 'db_user',\n    name: 'name',\n    password:\
-          \ 'password',\n    port: 'port',\n    url: 'url',\n  },\n  connector_name:\
-          \ 'connector_name',\n});\n\nconsole.log(connectorResponse.profile_id);"
       - lang: Python
         source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
           \    username=\"My Username\",\n    password=\"My Password\",\n)\nconnector_response\
@@ -219,22 +155,86 @@ paths:
           \        \"db_user\": \"db_user\",\n        \"name\": \"name\",\n      \
           \  \"password\": \"password\",\n        \"port\": \"port\",\n        \"\
           url\": \"url\",\n    },\n    connector_name=\"connector_name\",\n)\nprint(connector_response.profile_id)"
-  /vdb_connector/delete:
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst connectorResponse = await client.dataSource.update({\n\
+          \  connector_body: {\n    collection_name: 'collection_name',\n    database_name:\
+          \ 'database_name',\n    db_user: 'db_user',\n    name: 'name',\n    password:\
+          \ 'password',\n    port: 'port',\n    url: 'url',\n  },\n  connector_name:\
+          \ 'connector_name',\n});\n\nconsole.log(connectorResponse.profile_id);"
+  /data_connector/list:
     post:
       tags:
-      - Data Sources
+      - Data Connectors
+      summary: List
+      description: "List all vector database (VDB) connectors for the authenticated\
+        \ user.\n\n## Response\n\n- **200**: Successfully retrieved list of VDB connectors\
+        \  \n    - Returns: `{ \"connectors\": VDBConfigDict }`\n\n## Example Response\n\
+        \n```json\n{\n  \"connectors\": {\n    \"my-pinecone-db\": {\n      \"vector_db_type\"\
+        : \"pinecone\",\n      \"environment\": \"us-east-1-aws\",\n      \"index_name\"\
+        : \"my-index\"\n    },\n    \"my-qdrant-db\": {\n      \"vector_db_type\"\
+        : \"qdrant\",\n      \"url\": \"https://qdrant.example.com\"\n    }\n  }\n\
+        }\n```"
+      operationId: list_data_sources_route_data_connector_list_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListVDBConnectorResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nlist_vdb_connector\
+          \ = client.data_source.list()\nprint(list_vdb_connector.connectors)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst listVdbConnector = await client.dataSource.list();\n\
+          \nconsole.log(listVdbConnector.connectors);"
+  /data_connector/delete:
+    post:
+      tags:
+      - Data Connectors
       summary: Delete
-      description: "Delete a data source and all associated data.\n\nThis operation\
+      description: "Delete a data connector and all associated data.\n\nThis operation\
         \ will:\n- Delete all vector data stored in the VDB\n- Remove the connector\
         \ configuration\n- Clean up connection sharing metadata if enabled\n\n## Request\
         \ Body\n\n| Field             | Type   | Description                     \
         \                 |\n|-------------------|--------|--------------------------------------------------|\n\
-        | `connector_name`  | `str`  | The profile name of the data source to delete.\
-        \   |\n\n## Response\n\n- **200**: VDB connector deleted successfully  \n\
-        \    - Returns: `{ \"profile_id\": str }`\n- **404**: Connector not found\n\
-        - **500**: Internal Server Error (e.g., failed to store secret)\n\n## Example\n\
-        \n```json\n{\n  \"connector_name\": \"my-pinecone-db\"\n}\n```"
-      operationId: delete_data_source_route_vdb_connector_delete_post
+        | `connector_name`  | `str`  | The profile name of the data connector to delete.|\n\
+        \n## Response\n\n- **200**: VDB connector deleted successfully  \n    - Returns:\
+        \ `{ \"profile_id\": str }`\n- **404**: Connector not found\n- **500**: Internal\
+        \ Server Error (e.g., failed to store secret)\n\n## Example\n\n```json\n{\n\
+        \  \"connector_name\": \"my-pinecone-db\"\n}\n```"
+      operationId: delete_data_source_route_data_connector_delete_post
       requestBody:
         content:
           application/json:
@@ -280,42 +280,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst connectorResponse = await client.dataSource.delete({\
-          \ connector_name: 'connector_name' });\n\nconsole.log(connectorResponse.profile_id);"
       - lang: Python
         source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
           \    username=\"My Username\",\n    password=\"My Password\",\n)\nconnector_response\
           \ = client.data_source.delete(\n    connector_name=\"connector_name\",\n\
           )\nprint(connector_response.profile_id)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst connectorResponse = await client.dataSource.delete({\
+          \ connector_name: 'connector_name' });\n\nconsole.log(connectorResponse.profile_id);"
   /ocr/ingest:
     post:
       tags:
-      - Data Sources
+      - Data Connectors
       summary: Ingest
-      description: "Process documents with OCR and ingest them into the vector database.\n\
+      description: "Process documents with OCR and ingest them into Unstructured.\n\
         \nThis endpoint performs optical character recognition on documents and stores\
-        \ the extracted data.\nFor large file counts, processing may be delegated\
-        \ to Cloud Run Jobs.\n\n## Request Body\n\n| Field                   | Type\
+        \ the extracted data.\n\n## Request Body\n\n| Field                   | Type\
         \           | Description                                                |\n\
         |-------------------------|----------------|------------------------------------------------------------|\n\
         | `data_connector_name`   | `str`          | Name of the data connector to\
-        \ use.                         |\n| `llm_profile_name`      | `str`      \
-        \    | LLM profile for enhanced processing.                       |\n| `file_names`\
-        \            | `List[str]`    | Specific files to process. If omitted, processes\
-        \ all.      |\n| `job_id`                | `str`          | Custom job ID\
-        \ for tracking. Auto-generated if not provided.|\n| `clean_up_out_of_sync`\
-        \  | `bool`         | Remove files from VDB not in source. Default: `true`.\
-        \      |\n| `file_count_to_run`     | `int`          | Limit number of files\
-        \ to process.                          |\n| `use_llm`               | `bool`\
-        \         | Use LLM for enhanced extraction. Default: `false`.         |\n\
-        \n## Response\n\n- **200**: OCR job started successfully  \n    - Returns:\
-        \ Job tracking information\n- **400**: Bad Request (e.g., invalid data connector,\
-        \ unsupported VDB type)\n- **500**: Internal Server Error\n\n## Example\n\n\
-        ```json\n{\n  \"data_connector_name\": \"my-documents\",\n  \"use_llm\": true,\n\
-        \  \"clean_up_out_of_sync\": true,\n  \"file_count_to_run\": 100\n}\n```"
+        \ use.                         |\n| `file_names`            | `List[str]`\
+        \    | Specific files to process. If omitted, processes all.      |\n| `job_id`\
+        \                | `str`          | Custom job ID for tracking. Auto-generated\
+        \ if not provided.|\n| `clean_up_out_of_sync`  | `bool`         | Remove files\
+        \ from VDB not in source. Default: `true`.      |\n| `file_count_to_run` \
+        \    | `int`          | Limit number of files to process.                \
+        \          |\n| `use_llm`               | `bool`         | Use LLM for enhanced\
+        \ extraction. Default: `false`.         |\n\n## Response\n\n- **200**: OCR\
+        \ job started successfully  \n    - Returns: Job tracking information\n- **400**:\
+        \ Bad Request (e.g., invalid data connector, unsupported VDB type)\n- **500**:\
+        \ Internal Server Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\"\
+        : \"my-documents\",\n  \"use_llm\": true,\n  \"clean_up_out_of_sync\": true,\n\
+        \  \"file_count_to_run\": 100\n}\n```"
       operationId: ocr_ingest_route_ocr_ingest_post
       requestBody:
         content:
@@ -361,20 +359,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.dataSource.ingest({ data_connector_name:\
-          \ 'data_connector_name' });\n\nconsole.log(response);"
       - lang: Python
         source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
           \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
           \ = client.data_source.ingest(\n    data_connector_name=\"data_connector_name\"\
           ,\n)\nprint(response)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.dataSource.ingest({ data_connector_name:\
+          \ 'data_connector_name' });\n\nconsole.log(response);"
   /data/metadata/list:
     post:
       tags:
-      - Data Sources
+      - Data Connectors
       summary: List Ingested Data
       description: "Retrieve metadata from documents ingested into Unstructured.\n\
         \n## Request Body\n\n| Field                      | Type                |\
@@ -446,16 +444,1623 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.dataSource.listIngestedData({\
-          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.metadata);"
       - lang: Python
         source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
           \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
           \ = client.data_source.list_ingested_data(\n    data_connector_name=\"data_connector_name\"\
           ,\n)\nprint(response.metadata)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.dataSource.listIngestedData({\
+          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.metadata);"
+  /tags/upsert:
+    post:
+      tags:
+      - Tags
+      summary: Upsert
+      description: "Insert or update a tag definition.\n\n## Request Body\n\n| Field\
+        \      | Type            | Description                                   \
+        \   |\n|------------|-----------------|--------------------------------------------------|\n\
+        | `tag_data` | `DeasyInputTag` | Tag data structure containing tag definition.\
+        \    |\n\n## Response\n\n- **200**: Tag upserted successfully  \n    - Returns:\
+        \ `{ \"tag_name\": str, \"tag\": DeasyTag, \"available_values_added\": List[str]\
+        \ }`\n- **400**: Bad Request (e.g., invalid tag data)\n- **500**: Internal\
+        \ Server Error\n\n## Example\n\n```json\n{\n  \"tag_data\": {\n    \"name\"\
+        : \"category\",\n    \"description\": \"Document category classification\"\
+        ,\n    \"type\": \"select\",\n    \"available_values\": [\"invoice\", \"receipt\"\
+        , \"contract\"]\n  }\n}\n```"
+      operationId: upsert_tag_route_tags_upsert_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertTagRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpsertTagResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.tags.upsert(\n    tag_data={\n        \"name\": \"name\",\n \
+          \       \"output_type\": \"output_type\",\n    },\n)\nprint(response.available_values_added)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.tags.upsert({ tag_data:\
+          \ { name: 'name', output_type: 'output_type' } });\n\nconsole.log(response.available_values_added);"
+  /tags/list:
+    get:
+      tags:
+      - Tags
+      summary: List
+      description: "List all tags for the authenticated user.\n\n## Response\n\n-\
+        \ **200**: Tags retrieved successfully  \n    - Returns: `{ \"tags\": List[DeasyTag]\
+        \ }`\n- **500**: Internal Server Error\n\n## Example Response\n\n```json\n\
+        {\n  \"tags\": [\n    {\n      \"name\": \"category\",\n      \"description\"\
+        : \"Document category\",\n      \"type\": \"select\",\n      \"available_values\"\
+        : [\"invoice\", \"receipt\"]\n    },\n    {\n      \"name\": \"date\",\n \
+        \     \"description\": \"Document date\",\n      \"type\": \"date\"\n    }\n\
+        \  ]\n}\n```"
+      operationId: list_tags_route_tags_list_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTagsResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntags =\
+          \ client.tags.list()\nprint(tags.tags)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst tags = await client.tags.list();\n\nconsole.log(tags.tags);"
+  /tags/delete:
+    delete:
+      tags:
+      - Tags
+      summary: Delete
+      description: "Delete a tag by name. Tag must not be in use by any graphs or\
+        \ dataslices.\n\n## Query Parameters\n\n| Parameter  | Type  | Description\
+        \                          |\n|------------|-------|--------------------------------------|\n\
+        | `tag_name` | `str` | Name of the tag to delete.           |\n\n## Response\n\
+        \n- **200**: Tag deleted successfully  \n    - Returns: `{ \"tag_name\": str\
+        \ }`\n- **500**: Internal Server Error (e.g., tag still in use)\n\n## Example\n\
+        \n```\nDELETE /tags/delete?tag_name=category\n```"
+      operationId: delete_tag_route_tags_delete_delete
+      parameters:
+      - name: tag_name
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Tag Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntag_response\
+          \ = client.tags.delete(\n    tag_name=\"tag_name\",\n)\nprint(tag_response.tag_name)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst tagResponse = await client.tags.delete({ tag_name:\
+          \ 'tag_name' });\n\nconsole.log(tagResponse.tag_name);"
+  /suggest_regex:
+    post:
+      tags:
+      - Tags
+      summary: Suggest Patterns
+      description: "Generate a regex pattern based on a natural language description\
+        \ using AI.\n\n## Request Body\n\n| Field              | Type           |\
+        \ Description                                                            \
+        \                  |\n|--------------------|----------------|------------------------------------------------------------------------------------------|\n\
+        | `description`      | `str`          | Natural language description of what\
+        \ to match (e.g., \"phone numbers in format (XXX) XXX-XXXX\"). |\n| `examples`\
+        \         | `List[str]`    | Optional. List of example strings that should\
+        \ match the pattern.                         |\n\n## Response\n\n- **200**:\
+        \ Regex pattern generated successfully  \n    - Returns: `{ \"regex\": str,\
+        \ \"explanation\": str }`\n- **400**: Bad Request (e.g., invalid request data)\n\
+        - **500**: Internal Server Error\n\n## Example\n\n```json\n{\n  \"description\"\
+        : \"phone numbers in format (XXX) XXX-XXXX\",\n  \"examples\": [\n    \"(123)\
+        \ 456-7890\",\n    \"(555) 123-4567\"\n  ]\n}\n```\n\n## Example Response\n\
+        \n```json\n{\n  \"regex\": \"\\(\\d{3}\\) \\d{3}-\\d{4}\",\n  \"explanation\"\
+        : \"Matches phone numbers in the format (XXX) XXX-XXXX where X is a digit\"\
+        \n}\n```"
+      operationId: suggest_patterns_route_suggest_regex_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuggestRegexRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuggestRegexResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.tags.pattern.suggest_patterns(\n    description=\"description\"\
+          ,\n)\nprint(response.regex)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.tags.pattern.suggestPatterns({\
+          \ description: 'description' });\n\nconsole.log(response.regex);"
+  /taxonomy/upsert:
+    post:
+      tags:
+      - Taxonomies
+      summary: Upsert
+      description: "Insert or update a taxonomy (schema/hierarchy) in the database.\n\
+        \n## Request Body\n\n| Field                  | Type             | Description\
+        \                                                          |\n|------------------------|------------------|----------------------------------------------------------------------|\n\
+        | `taxonomy_name`        | `str`            | Name of the taxonomy to upsert.\
+        \                                      |\n| `new_taxonomy_name`    | `Optional[str]`\
+        \  | New name for the taxonomy (when updating).                          \
+        \ |\n| `taxonomy_description` | `Optional[str]`  | Description of the taxonomy.\
+        \                                         |\n| `taxonomy_data`        | `Optional[Dict]`\
+        \ | The taxonomy/hierarchy data structure.                               |\n\
+        \n## Response\n\n- **200**: Taxonomy upserted successfully  \n    - Returns:\
+        \ `{ \"taxonomy_name\": str }`\n- **500**: Internal Server Error\n\n## Example\n\
+        \n```json\n{\n  \"taxonomy_name\": \"document-categories\",\n  \"taxonomy_description\"\
+        : \"Main document classification taxonomy\",\n  \"taxonomy_data\": {\n   \
+        \ \"invoice\": [\"purchase_invoice\", \"sales_invoice\"],\n    \"receipt\"\
+        : [\"expense_receipt\", \"payment_receipt\"]\n  }\n}\n```"
+      operationId: upsert_taxonomy_route_taxonomy_upsert_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertTaxonomyRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxonomyOperationResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntaxonomy_operation_response\
+          \ = client.taxonomy.upsert(\n    taxonomy_name=\"taxonomy_name\",\n)\nprint(taxonomy_operation_response.taxonomy_name)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst taxonomyOperationResponse = await client.taxonomy.upsert({\
+          \ taxonomy_name: 'taxonomy_name' });\n\nconsole.log(taxonomyOperationResponse.taxonomy_name);"
+  /taxonomy/list:
+    post:
+      tags:
+      - Taxonomies
+      summary: List
+      description: "List all taxonomies (schemas/hierarchies) for the authenticated\
+        \ user.\n\n## Request Body\n\n| Field          | Type                  | Description\
+        \                                                          |\n|----------------|-----------------------|----------------------------------------------------------------------|\n\
+        | `taxonomy_ids` | `Optional[List[str]]` | List of specific taxonomy IDs to\
+        \ retrieve. If omitted, returns all taxonomies. |\n\n## Response\n\n- **200**:\
+        \ Taxonomies retrieved successfully  \n    - Returns: `{ \"taxonomies\": List[DeasySchema]\
+        \ }`\n- **500**: Internal Server Error\n\n## Example\n\n```json\n{\n  \"taxonomy_ids\"\
+        : [\"document-categories\", \"sentiment-types\"]\n}\n```"
+      operationId: list_taxonomies_route_taxonomy_list_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListTaxonomiesRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTaxonomiesResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntaxonomies\
+          \ = client.taxonomy.list()\nprint(taxonomies.taxonomies)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst taxonomies = await client.taxonomy.list();\n\n\
+          console.log(taxonomies.taxonomies);"
+  /taxonomy/delete:
+    delete:
+      tags:
+      - Taxonomies
+      summary: Delete
+      description: "Delete a taxonomy (schema/hierarchy) by name.\n\n## Query Parameters\n\
+        \n| Parameter       | Type  | Description                             |\n\
+        |-----------------|-------|-----------------------------------------|\n| `taxonomy_name`\
+        \ | `str` | Name of the taxonomy to delete.         |\n\n## Response\n\n-\
+        \ **200**: Taxonomy deleted successfully  \n    - Returns: `{ \"taxonomy_name\"\
+        : str }`\n- **500**: Internal Server Error\n\n## Example\n\n```\nDELETE /taxonomy/delete?taxonomy_name=document-categories\n\
+        ```"
+      operationId: delete_taxonomy_route_taxonomy_delete_delete
+      parameters:
+      - name: taxonomy_name
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Taxonomy Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxonomyOperationResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntaxonomy_operation_response\
+          \ = client.taxonomy.delete(\n    taxonomy_name=\"taxonomy_name\",\n)\nprint(taxonomy_operation_response.taxonomy_name)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst taxonomyOperationResponse = await client.taxonomy.delete({\
+          \ taxonomy_name: 'taxonomy_name' });\n\nconsole.log(taxonomyOperationResponse.taxonomy_name);"
+  /suggest_schema:
+    post:
+      tags:
+      - Taxonomies
+      summary: Suggest
+      description: "Suggest a tag taxonomy based on file content and existing metadata.\n\
+        \n## Request Body\n\n| Field                   | Type                   |\
+        \ Description                                                            \
+        \      |\n|-------------------------|------------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name`   | `str`                  | Name of the data connector\
+        \ (vector database profile) to use.                 |\n| `file_names`    \
+        \        | `Optional[List[str]]`  | List of specific files to analyze for\
+        \ the hierarchy suggestion.              |\n| `dataslice_id`          | `Optional[str]`\
+        \        | ID of a dataslice to pull files from for the suggestion.      \
+        \               |\n| `progress_tracking_id`  | `Optional[str]`        | Custom\
+        \ tracking ID for monitoring the suggestion progress.                   |\n\
+        | `schema_name`           | `Optional[str]`        | Name for the suggested\
+        \ schema/taxonomy.                                      |\n| `current_tree`\
+        \          | `Optional[Dict]`       | Existing hierarchy tree to build upon.\
+        \                                       |\n| `condition`             | `Optional[Condition]`\
+        \  | Filtering condition to select specific files for analysis.          \
+        \         |\n| `node`                  | `Optional[GraphNode]`  | Node location\
+        \ in the existing hierarchy tree to build upon. Default: `{}`    |\n| `user_context`\
+        \          | `Optional[str]`        | User-provided context to guide the suggestion\
+        \ process.                       |\n| `context_level`         | `Optional[str]`\
+        \        | Level at which to analyze content: `file` or `chunk`. Default:\
+        \ `\"file\"`      |\n| `max_height`            | `Optional[int]`        |\
+        \ Maximum depth of the generated hierarchy tree. Default: `2`            \
+        \      |\n| `use_existing_tags`     | `Optional[bool]`       | Whether to\
+        \ incorporate existing tags in suggestions. Default: `false`        |\n| `use_extracted_tags`\
+        \    | `Optional[bool]`       | Whether to use previously extracted tags.\
+        \ Default: `false`                   |\n| `use_mix_llm_and_source`| `Optional[bool]`\
+        \       | Whether to mix LLM-generated and source-based tags. Default: `false`\
+        \         |\n\n## Response\n\n- **200**: Schema suggestion generated successfully\
+        \  \n    - Returns: `{ \"status_code\": int, \"message\": str, \"suggestion\"\
+        : Dict, \"suggested_tags\": Optional[Dict], \"node\": Optional[GraphNode],\
+        \ \"tag_not_found_rates\": Optional[Dict] }`\n- **500**: Internal Server Error\n\
+        \n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n\
+        \  \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"context_level\"\
+        : \"file\",\n  \"max_height\": 3,\n  \"use_existing_tags\": true,\n  \"user_context\"\
+        : \"Suggest categories for financial documents\"\n}\n```"
+      operationId: suggest_schema_route_suggest_schema_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetadataSuggestionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataSuggestionResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.taxonomy.suggest(\n    data_connector_name=\"data_connector_name\"\
+          ,\n)\nprint(response.suggestion)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.taxonomy.suggest({ data_connector_name:\
+          \ 'data_connector_name' });\n\nconsole.log(response.suggestion);"
+  /classify:
+    post:
+      tags:
+      - Metadata
+      summary: Generate
+      description: "Classify specified files with the provided tags.\n\n## Request\
+        \ Body\n\n| Field                 | Type                  | Description  \
+        \                                                                |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`                 | Name of the data connector\
+        \ (vector database profile) to use for classification. |\n| `file_names` \
+        \         | `Optional[List[str]]` | Names of specific files to classify. \
+        \                                        |\n| `tag_names`           | `Optional[List[str]]`\
+        \ | Names of tags to use for classification (if `tag_datas` not provided).\
+        \       |\n| `tag_datas`           | `Optional[Dict]`      | Tag data to use\
+        \ for classification.                                          |\n| `overwrite`\
+        \           | `bool`                | Whether to overwrite existing tags.\
+        \ Default: `false`                         |\n| `job_id`              | `Optional[str]`\
+        \       | Custom job ID for tracking the classification task.            \
+        \              |\n| `soft_run`            | `bool`                | If `true`,\
+        \ classification will not save to Deasy and will return results. Default:\
+        \ `false` |\n| `hierarchy_name`      | `Optional[str]`       | Name of the\
+        \ hierarchy/graph to use (if `hierarchy_data` not provided).       |\n| `hierarchy_data`\
+        \      | `Optional[Dict]`      | Hierarchy/graph data to use for classification.\
+        \ Default: `{}`                |\n| `dataslice_id`        | `Optional[str]`\
+        \       | ID of the dataslice to use for file filtering.                 \
+        \              |\n\n## Response\n\n- **200**: Classification completed or\
+        \ job started successfully  \n    - Returns: `{ \"message\": str, \"job_id\"\
+        : str, \"results\": Optional[Dict] }`\n- **500**: Internal Server Error\n\n\
+        ## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n \
+        \ \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"tag_names\"\
+        : [\"category\", \"sentiment\"],\n  \"overwrite\": false,\n  \"soft_run\"\
+        : false\n}\n```"
+      operationId: generate_route_classify_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassifyRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassifyResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.metadata.generate.generate(\n    data_connector_name=\"data_connector_name\"\
+          ,\n)\nprint(response.message)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.metadata.generate.generate({\
+          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.message);"
+  /classify_bulk:
+    post:
+      tags:
+      - Metadata
+      summary: Generate Batch
+      description: "Classify all files in a data connector in batches with the provided\
+        \ tags.\n\n## Request Body\n\n| Field                 | Type             \
+        \     | Description                                                      \
+        \            |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`                 | Name of the data connector\
+        \ (vector database profile) to use for classification. |\n| `total_data_sets`\
+        \     | `Optional[int]`       | Total number of files to classify.       \
+        \                                    |\n| `tag_names`           | `Optional[List[str]]`\
+        \ | Names of tags to use for classification (if `tag_datas` not provided).\
+        \       |\n| `tag_datas`           | `Optional[Dict]`      | Tag data to use\
+        \ for classification.                                          |\n| `overwrite`\
+        \           | `bool`                | Whether to overwrite existing tags.\
+        \ Default: `false`                         |\n| `job_id`              | `Optional[str]`\
+        \       | Custom job ID for tracking the classification task.            \
+        \              |\n| `hierarchy_name`      | `Optional[str]`       | Name of\
+        \ the hierarchy/graph to use (if `hierarchy_data` not provided).       |\n\
+        | `hierarchy_data`      | `Optional[Dict]`      | Hierarchy/graph data to\
+        \ use for classification. Default: `{}`                |\n| `dataslice_id`\
+        \        | `Optional[str]`       | ID of the dataslice to use for file filtering.\
+        \                               |\n| `conditions`          | `Optional[Condition]`\
+        \ | Conditions to use for file filtering.                                \
+        \        |\n\n## Response\n\n- **200**: Classification job started successfully\
+        \  \n    - Returns: `{ \"message\": str, \"job_id\": str }`\n- **500**: Internal\
+        \ Server Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\": \"\
+        my-connector\",\n  \"tag_names\": [\"category\", \"sentiment\"],\n  \"overwrite\"\
+        : false,\n  \"dataslice_id\": \"abc123\"\n}\n```"
+      operationId: generate_batch_route_classify_bulk_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassifyBulkRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassifyBulkResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.metadata.generate.generate_batch(\n    data_connector_name=\"\
+          data_connector_name\",\n)\nprint(response.message)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.metadata.generate.generateBatch({\
+          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.message);"
+  /sensitivity/detect:
+    post:
+      tags:
+      - Metadata
+      summary: Detect
+      description: "Detect sensitive data in files using pattern-based detection (PII,\
+        \ PHI, financial data, etc.).\n\nSupports various entity types including SSNs,\
+        \ credit cards, emails, phone numbers, and custom patterns.\n\n## Request\
+        \ Body\n\n| Field                     | Type                  | Description\
+        \                                                                    |\n|---------------------------|-----------------------|--------------------------------------------------------------------------------|\n\
+        | `data_connector_name`     | `str`                 | Name of the data connector\
+        \ (vector database profile) to use.                   |\n| `file_names`  \
+        \            | `Optional[List[str]]` | Names of specific files to scan for\
+        \ sensitive data.                            |\n| `dataslice_id`         \
+        \   | `Optional[str]`       | ID of the dataslice to use for file filtering.\
+        \                                 |\n| `conditions`              | `Optional[Condition]`\
+        \ | Additional filtering conditions.                                     \
+        \          |\n| `overwrite`               | `bool`                | Whether\
+        \ to overwrite existing sensitivity tags. Default: `false`               |\n\
+        | `soft_run`                | `bool`                | If `true`, returns detection\
+        \ results without saving. Default: `false`          |\n| `taxonomy_name` \
+        \          | `Optional[str]`       | Name of the sensitivity taxonomy to use.\
+        \ Default: `\"Default Sensitivity (v1)\"` |\n| `min_confidence`          |\
+        \ `float`               | Minimum confidence threshold for detections (0.0-1.0).\
+        \ Default: `0.6`          |\n| `selected_entity_types`   | `Optional[List[str]]`\
+        \ | Filter by specific entity types (e.g., \"SSN\", \"EMAIL\", \"CREDIT_CARD\"\
+        ).         |\n| `job_id`                  | `Optional[str]`       | Custom\
+        \ job ID for tracking the detection task.                                \
+        \ |\n\n## Response\n\n- **200**: Sensitivity detection completed or job started\
+        \ successfully  \n    - Returns: `{ \"message\": str, \"job_id\": str, \"\
+        results\": Optional[Dict] }`\n- **500**: Internal Server Error\n\n## Example\n\
+        \n```json\n{\n  \"data_connector_name\": \"my-connector\",\n  \"file_names\"\
+        : [\"contract.pdf\", \"employee_records.pdf\"],\n  \"taxonomy_name\": \"Default\
+        \ Sensitivity (v1)\",\n  \"min_confidence\": 0.75,\n  \"selected_entity_types\"\
+        : [\"SSN\", \"EMAIL\", \"CREDIT_CARD\"],\n  \"soft_run\": false,\n  \"overwrite\"\
+        : true\n}\n```"
+      operationId: detect_route_sensitivity_detect_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetectRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetectResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.metadata.detect_sensitive.detect(\n    data_connector_name=\"\
+          data_connector_name\",\n)\nprint(response.job_id)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.metadata.detectSensitive.detect({\
+          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.job_id);"
+  /sensitivity/detect_bulk:
+    post:
+      tags:
+      - Metadata
+      summary: Detect Batch
+      description: "Detect sensitive data in bulk across a dataslice or entire data\
+        \ connector.\n\nProcesses multiple files in batches to identify PII, PHI,\
+        \ financial data, and other sensitive information.\n\n## Request Body\n\n\
+        | Field                 | Type                  | Description            \
+        \                                                        |\n|-----------------------|-----------------------|--------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`                 | Name of the data connector\
+        \ (vector database profile) to use.                   |\n| `total_data_sets`\
+        \     | `Optional[int]`       | Total number of files to process.        \
+        \                                      |\n| `dataslice_id`        | `Optional[str]`\
+        \       | ID of the dataslice to use for file filtering.                 \
+        \                |\n| `conditions`          | `Optional[Condition]` | Additional\
+        \ filtering conditions.                                               |\n\
+        | `overwrite`           | `bool`                | Whether to overwrite existing\
+        \ sensitivity tags. Default: `false`               |\n| `taxonomy_name`  \
+        \     | `Optional[str]`       | Name of the sensitivity taxonomy to use. Default:\
+        \ `\"Default Sensitivity (v1)\"` |\n| `min_confidence`      | `float`    \
+        \           | Minimum confidence threshold for detections (0.0-1.0). Default:\
+        \ `0.6`          |\n| `job_id`              | `Optional[str]`       | Custom\
+        \ job ID for tracking the detection task.                                \
+        \ |\n\n## Response\n\n- **200**: Bulk sensitivity detection job started successfully\
+        \  \n    - Returns: `{ \"message\": str, \"job_id\": str }`\n- **500**: Internal\
+        \ Server Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\": \"\
+        my-connector\",\n  \"dataslice_id\": \"employee-records\",\n  \"taxonomy_name\"\
+        : \"Default Sensitivity (v1)\",\n  \"min_confidence\": 0.75,\n  \"overwrite\"\
+        : true,\n  \"total_data_sets\": 1000\n}\n```"
+      operationId: detect_batch_route_sensitivity_detect_bulk_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetectBulkRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetectBulkResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.metadata.detect_sensitive.detect_batch(\n    data_connector_name=\"\
+          data_connector_name\",\n)\nprint(response.job_id)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.metadata.detectSensitive.detectBatch({\n\
+          \  data_connector_name: 'data_connector_name',\n});\n\nconsole.log(response.job_id);"
+  /metadata/upsert:
+    post:
+      tags:
+      - Metadata
+      summary: Upsert
+      description: "Insert or update metadata for files and tags.\n\n## Request Body\n\
+        \n| Field                 | Type                  | Description          \
+        \                                                        |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `Optional[str]`       | Name of the data connector\
+        \ (vector database profile).                        |\n| `dataslice_id`  \
+        \      | `Optional[str]`       | ID of the dataslice to upsert metadata for.\
+        \                                  |\n| `metadata`            | `Deasy_Metadata`\
+        \      | Metadata to upsert in the form `{file_name: {tag_name: tag_value}}`.\
+        \         |\n\n## Response\n\n- **200**: Metadata upserted successfully  \n\
+        \    - Returns: `{ \"success\": bool }`\n- **500**: Internal Server Error\n\
+        \n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n\
+        \  \"metadata\": {\n    \"document1.pdf\": {\n      \"category\": \"invoice\"\
+        ,\n      \"date\": \"2024-01-15\"\n    },\n    \"document2.pdf\": {\n    \
+        \  \"category\": \"receipt\",\n      \"status\": \"processed\"\n    }\n  }\n\
+        }\n```"
+      operationId: upsert_metadata_route_metadata_upsert_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertMetadataRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpsertMetadataResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.metadata.upsert(\n    metadata={\n        \"foo\": {\n      \
+          \      \"foo\": {}\n        }\n    },\n)\nprint(response.success)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.metadata.upsert({ metadata:\
+          \ { foo: { foo: {} } } });\n\nconsole.log(response.success);"
+  /metadata/list:
+    post:
+      tags:
+      - Metadata
+      summary: List
+      description: "Get filtered metadata based on conditions. Supports shared connections.\n\
+        \n## Request Body\n\n| Field                 | Type                  | Description\
+        \                                                                  |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`                 | Name of the data connector\
+        \ (vector database profile).                        |\n| `dataslice_id`  \
+        \      | `Optional[str]`       | ID of the dataslice to get files from.  \
+        \                                     |\n| `tag_names`           | `Optional[List[str]]`\
+        \ | List of tag names to include in the metadata.                        \
+        \        |\n| `include_chunk_level` | `Optional[bool]`      | Whether to include\
+        \ chunk-level metadata. Default: `true`                     |\n| `file_names`\
+        \          | `Optional[List[str]]` | List of specific file names to include\
+        \ in the metadata.                      |\n| `chunk_ids`           | `Optional[List[str]]`\
+        \ | List of specific chunk IDs to include in the metadata.               \
+        \        |\n\n## Response\n\n- **200**: Metadata retrieved successfully  \n\
+        \    - Without `chunk_ids`: Returns metadata grouped by filename, tag, and\
+        \ level  \n      `{filename: {tag_id: {chunk_level: {chunk_id: metadata},\
+        \ file_level: metadata}}}`\n    - With `chunk_ids`: Returns metadata by chunk\
+        \ ID  \n      `{chunk_id: {metadata}}`\n- **500**: Internal Server Error\n\
+        \n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n\
+        \  \"dataslice_id\": \"abc123\",\n  \"tag_names\": [\"category\", \"date\"\
+        ],\n  \"include_chunk_level\": true,\n  \"file_names\": [\"document1.pdf\"\
+        , \"document2.pdf\"]\n}\n```"
+      operationId: list_metadata_route_metadata_list_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListMetadataRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListMetadataResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nmetadata\
+          \ = client.metadata.list(\n    data_connector_name=\"data_connector_name\"\
+          ,\n)\nprint(metadata.metadata)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst metadata = await client.metadata.list({ data_connector_name:\
+          \ 'data_connector_name' });\n\nconsole.log(metadata.metadata);"
+  /metadata/list_paginated:
+    post:
+      tags:
+      - Metadata
+      summary: List Paginated
+      description: "Get paginated filtered metadata based on conditions.\n\n## Request\
+        \ Body\n\n| Field                 | Type                  | Description  \
+        \                                                                |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`                 | Name of the data connector\
+        \ (vector database profile).                        |\n| `dataslice_id`  \
+        \      | `Optional[str]`       | ID of the dataslice to get files from.  \
+        \                                     |\n| `tag_names`           | `Optional[List[str]]`\
+        \ | List of tag names to include in the metadata.                        \
+        \        |\n| `include_chunk_level` | `Optional[bool]`      | Whether to include\
+        \ chunk-level metadata. Default: `true`                     |\n| `offset`\
+        \              | `Optional[int]`       | Pagination offset to start from.\
+        \ Default: `0`                                |\n| `limit`               |\
+        \ `Optional[int]`       | Maximum number of metadata items to return. Default:\
+        \ `50`                    |\n\n## Response\n\n- **200**: Metadata retrieved\
+        \ successfully  \n    - Returns: `{ \"metadata\": Deasy_Metadata, \"next_offset\"\
+        : Optional[int] }`\n- **500**: Internal Server Error\n\n## Example\n\n```json\n\
+        {\n  \"data_connector_name\": \"my-connector\",\n  \"dataslice_id\": \"abc123\"\
+        ,\n  \"tag_names\": [\"category\", \"date\"],\n  \"include_chunk_level\":\
+        \ true,\n  \"offset\": 0,\n  \"limit\": 50\n}\n```"
+      operationId: list_paginated_metadata_route_metadata_list_paginated_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListPaginatedMetadataRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPaginatedMetadataResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.metadata.list_paginated(\n    data_connector_name=\"data_connector_name\"\
+          ,\n)\nprint(response.metadata)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.metadata.listPaginated({\
+          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.metadata);"
+  /metadata/delete:
+    post:
+      tags:
+      - Metadata
+      summary: Delete
+      description: "Delete metadata for specified files, tags, and/or conditions.\n\
+        \n## Request Body\n\n| Field                 | Type                | Description\
+        \                                                                  |\n|-----------------------|---------------------|------------------------------------------------------------------------------|\n\
+        | `data_connector_name` | `str`               | Name of the data connector\
+        \ (vector database profile) to delete metadata from.|\n| `file_names`    \
+        \      | `Optional[List[str]]` | List of file names to delete metadata for.\
+        \                                  |\n| `tags`                | `Optional[List[str]]`\
+        \ | List of tags to filter which metadata to delete.                     \
+        \       |\n| `conditions`          | `Optional[Condition]` | Additional conditions\
+        \ to filter which metadata to delete.                   |\n\n## Response\n\
+        \n- **200**: Metadata deleted successfully  \n    - Returns: `{ \"chunk_deleted_count\"\
+        : int, \"file_deleted_count\": int }`\n- **500**: Internal Server Error\n\n\
+        ## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n \
+        \ \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"tags\": [\"\
+        archived\", \"old\"]\n}\n```"
+      operationId: delete_metadata_route_metadata_delete_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__models__models_metadata__DeleteMetadataRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/app__models__models_metadata__DeleteMetadataResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nmetadata\
+          \ = client.metadata.delete(\n    data_connector_name=\"data_connector_name\"\
+          ,\n)\nprint(metadata.chunk_deleted_count)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst metadata = await client.metadata.delete({ data_connector_name:\
+          \ 'data_connector_name' });\n\nconsole.log(metadata.chunk_deleted_count);"
+  /progress_tracker/task_status:
+    post:
+      tags:
+      - Task Tracking
+      summary: Get Status
+      description: "Get the status of a task by job ID.\n\n## Request Body\n\n| Field\
+        \    | Type  | Description                                      |\n|----------|-------|--------------------------------------------------|\n\
+        | `job_id` | `str` | The unique identifier for the job to check.      |\n\n\
+        ## Response\n\n- **200**: Task status retrieved successfully  \n    - Returns:\
+        \ `{ \"percent_complete\": float, \"tags_created\": Optional[int], \"status\"\
+        : str }`\n- **404**: Job ID not found\n\n## Example\n\n```json\n{\n  \"job_id\"\
+        : \"abc123-def456-ghi789\"\n}\n```"
+      operationId: get_task_status_route_progress_tracker_task_status_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskStatusRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatusResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.task_status.get_status(\n    job_id=\"job_id\",\n)\nprint(response.percent_complete)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.taskStatus.getStatus({\
+          \ job_id: 'job_id' });\n\nconsole.log(response.percent_complete);"
+  /dataslice/create:
+    post:
+      tags:
+      - Data Slices
+      summary: Create
+      description: "Create a new data slice based on specified conditions.\n\n## Request\
+        \ Body\n\n| Field             | Type           | Description             \
+        \                                                   |\n|-------------------|----------------|----------------------------------------------------------------------------|\n\
+        | `dataslice_name`  | `str`          | The name to assign to the newly created\
+        \ data slice.                        |\n| `condition`       | `Optional[List[Dict]]`\
+        \ | (Legacy) List of file qualifying conditions.                         |\n\
+        | `condition_new`   | `Optional[Any]` | New format: advanced file qualifying\
+        \ conditions.                           |\n| `description`     | `Optional[str]`\
+        \ | Description of the data slice.                                       \
+        \      |\n| `status`          | `str`          | The status of the data slice\
+        \ (e.g., active).                               |\n| `data_points`     | `Optional[int]`\
+        \ | Number of data points in the data slice.                             \
+        \      |\n| `latest_graph`    | `Optional[Dict]` | Most recent graph reference/metadata.\
+        \                                      |\n| `graph_id`        | `Optional[str]`\
+        \ | ID of the related graph, if applicable.                              \
+        \      |\n| `data_connector_name` | `str`      | Name of the data connector\
+        \ (vector database profile).                      |\n| `parent_dataslice_id`\
+        \ | `Optional[str]` | (Optional) Parent data slice ID, for lineage.      \
+        \                  |\n\n## Response\n\n- **201**: Data slice created successfully\
+        \  \n    - Returns: `{ \"dataslice_id\": \"<uuid>\" }`\n- **500**: Internal\
+        \ Server Error.\n\n## Example\n\n```json\n{\n  \"dataslice_name\": \"Customer\
+        \ Purchases Q2\",\n  \"condition\": [\n    { \"field\": \"created_date\",\
+        \ \"op\": \"gte\", \"value\": \"2024-04-01\" }\n  ],\n  \"description\": \"\
+        Purchase data from Q2 2024\",\n  \"status\": \"active\",\n  \"data_points\"\
+        : 4000,\n  \"data_connector_name\": \"prod-warehouse\"\n}\n```"
+      operationId: create_dataslice_route_dataslice_create_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDatasliceRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDatasliceResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndata_slice\
+          \ = client.data_slice.create(\n    data_connector_name=\"data_connector_name\"\
+          ,\n    dataslice_name=\"dataslice_name\",\n)\nprint(data_slice.dataslice_id)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst dataSlice = await client.dataSlice.create({\n\
+          \  data_connector_name: 'data_connector_name',\n  dataslice_name: 'dataslice_name',\n\
+          });\n\nconsole.log(dataSlice.dataslice_id);"
+  /dataslice/list:
+    get:
+      tags:
+      - Data Slices
+      summary: List
+      description: "Retrieve all data slices associated with the currently authenticated\
+        \ user.\n\n### Response\n\nReturns a JSON object containing a list of dataslices:\n\
+        \n```json\n{\n  \"dataslices\": [\n    {\n      \"dataslice_id\": \"string\"\
+        ,\n      \"dataslice_name\": \"string\",\n      \"description\": \"string\"\
+        ,\n      \"status\": \"active\",\n      \"data_points\": 123,\n      \"latest_graph\"\
+        : { /* graph details */ },\n      \"graph_id\": \"string\",\n      \"data_connector_name\"\
+        : \"string\",\n      \"parent_dataslice_id\": \"string or null\"\n    },\n\
+        \    ...\n  ]\n}\n```"
+      operationId: list_dataslices_route_dataslice_list_get
+      responses:
+        '200':
+          description: A list of dataslices the user can access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListDataslicesResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndata_slices\
+          \ = client.data_slice.list()\nprint(data_slices.dataslices)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst dataSlices = await client.dataSlice.list();\n\
+          \nconsole.log(dataSlices.dataslices);"
+  /dataslice/delete:
+    delete:
+      tags:
+      - Data Slices
+      summary: Delete
+      description: "Delete a single data slice by its unique identifier.\n\n## Request\
+        \ Body\n\n| Field             | Type           | Description             \
+        \                                                   |\n|-------------------|----------------|----------------------------------------------------------------------------|\n\
+        | `dataslice_id`    | `str`        | The unique identifier of the data slice\
+        \ to delete.                        |\n\n### Response\n\nReturns a confirmation\
+        \ message of the successful deletion and any associated data.\n\n```json\n\
+        {\n  \"message\": \"Data slice deleted successfully\",\n  \"data\": {\n  \
+        \  // Details of deletion outcome\n  }\n}\n```"
+      operationId: delete_dataslice_route_dataslice_delete_delete
+      parameters:
+      - name: dataslice_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Dataslice Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteDatasliceResponse'
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndata_slice\
+          \ = client.data_slice.delete(\n    dataslice_id=\"dataslice_id\",\n)\nprint(data_slice.data)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst dataSlice = await client.dataSlice.delete({ dataslice_id:\
+          \ 'dataslice_id' });\n\nconsole.log(dataSlice.data);"
+  /dataslice/export/metadata:
+    post:
+      tags:
+      - Data Slices
+      summary: Export
+      description: "Export metadata for a specific data slice or the entire data connector,\
+        \ in JSON or CSV format.\n\n## Request Body\n\n| Field                   \
+        \   | Type                  | Description                                \
+        \                                        |\n|----------------------------|-----------------------|------------------------------------------------------------------------------------|\n\
+        | `data_connector_name`      | `str`                 | Name of the data connector\
+        \ to export metadata from.                                |\n| `dataslice_id`\
+        \             | `Optional[str]`       | ID of the dataslice to export metadata\
+        \ from. If omitted, all data is included.     |\n| `export_file_level`   \
+        \     | `bool`                | `True` for file-level export, `False` for\
+        \ chunk-level export.                      |\n| `export_format`          \
+        \  | `Optional[ExportFormat]` | Desired export format: `json` or `csv` (e.g.,\
+        \ `\"json\"`, `\"csv\"`).               |\n| `selected_metadata_fields` |\
+        \ `Optional[List[str]]` | List of metadata fields to include in the export.\
+        \                                  |\n\n## Response\n\n- **200**: Metadata\
+        \ exported successfully  \n    - Returns: A streaming file response containing\
+        \ the exported metadata in the requested format.\n- **500**: Internal Server\
+        \ Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\": \"example-connector\"\
+        ,\n  \"dataslice_id\": \"abc123\",\n  \"export_file_level\": true,\n  \"export_format\"\
+        : \"json\",\n  \"selected_metadata_fields\": [\"field1\", \"field2\"]\n}\n\
+        ```"
+      operationId: export_data_slice_dataslice_export_metadata_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportDatasliceMetadataRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '403':
+          description: Missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '500':
+          description: Internal Server Error. An unexpected error occurred while processing
+            the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+      x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.data_slice.export(\n    data_connector_name=\"data_connector_name\"\
+          ,\n)\nprint(response)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst response = await client.dataSlice.export({ data_connector_name:\
+          \ 'data_connector_name' });\n\nconsole.log(response);"
   /destination/create:
     post:
       tags:
@@ -518,15 +2123,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst connectorResponse = await client.destination.create({\n\
-          \  connector_body: {\n    client_id: 'client_id',\n    client_secret: 'client_secret',\n\
-          \    documents_library_folder_name: 'documents_library_folder_name',\n \
-          \   name: 'name',\n    sharepoint_site_name: 'sharepoint_site_name',\n \
-          \   tenant_id: 'tenant_id',\n  },\n  connector_name: 'connector_name',\n\
-          });\n\nconsole.log(connectorResponse.profile_id);"
       - lang: Python
         source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
           \    username=\"My Username\",\n    password=\"My Password\",\n)\nconnector_response\
@@ -536,6 +2132,15 @@ paths:
           ,\n        \"name\": \"name\",\n        \"sharepoint_site_name\": \"sharepoint_site_name\"\
           ,\n        \"tenant_id\": \"tenant_id\",\n    },\n    connector_name=\"\
           connector_name\",\n)\nprint(connector_response.profile_id)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
+          \ Password',\n});\n\nconst connectorResponse = await client.destination.create({\n\
+          \  connector_body: {\n    client_id: 'client_id',\n    client_secret: 'client_secret',\n\
+          \    documents_library_folder_name: 'documents_library_folder_name',\n \
+          \   name: 'name',\n    sharepoint_site_name: 'sharepoint_site_name',\n \
+          \   tenant_id: 'tenant_id',\n  },\n  connector_name: 'connector_name',\n\
+          });\n\nconsole.log(connectorResponse.profile_id);"
   /destination/list:
     post:
       tags:
@@ -583,15 +2188,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndestinations\
+          \ = client.destination.list()\nprint(destinations.connectors)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
           \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
           \ Password',\n});\n\nconst destinations = await client.destination.list();\n\
           \nconsole.log(destinations.connectors);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndestinations\
-          \ = client.destination.list()\nprint(destinations.connectors)"
   /destination/delete:
     post:
       tags:
@@ -745,1634 +2350,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
+      - lang: Python
+        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
+          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
+          \ = client.destination.export()\nprint(response.tracker_id)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
           \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
           \ Password',\n});\n\nconst response = await client.destination.export();\n\
           \nconsole.log(response.tracker_id);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.destination.export()\nprint(response.tracker_id)"
-  /tags/upsert:
-    post:
-      tags:
-      - Tags
-      summary: Upsert Tag
-      description: "Insert or update a tag definition.\n\n## Request Body\n\n| Field\
-        \      | Type            | Description                                   \
-        \   |\n|------------|-----------------|--------------------------------------------------|\n\
-        | `tag_data` | `DeasyInputTag` | Tag data structure containing tag definition.\
-        \    |\n\n## Response\n\n- **200**: Tag upserted successfully  \n    - Returns:\
-        \ `{ \"tag_name\": str, \"tag\": DeasyTag, \"available_values_added\": List[str]\
-        \ }`\n- **400**: Bad Request (e.g., invalid tag data)\n- **500**: Internal\
-        \ Server Error\n\n## Example\n\n```json\n{\n  \"tag_data\": {\n    \"name\"\
-        : \"category\",\n    \"description\": \"Document category classification\"\
-        ,\n    \"type\": \"select\",\n    \"available_values\": [\"invoice\", \"receipt\"\
-        , \"contract\"]\n  }\n}\n```"
-      operationId: upsert_tag_route_tags_upsert_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpsertTagRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UpsertTagResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.tags.upsert({ tag_data:\
-          \ { name: 'name', output_type: 'output_type' } });\n\nconsole.log(response.available_values_added);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.tags.upsert(\n    tag_data={\n        \"name\": \"name\",\n \
-          \       \"output_type\": \"output_type\",\n    },\n)\nprint(response.available_values_added)"
-  /tags/list:
-    get:
-      tags:
-      - Tags
-      summary: List Tags
-      description: "List all tags for the authenticated user.\n\n## Response\n\n-\
-        \ **200**: Tags retrieved successfully  \n    - Returns: `{ \"tags\": List[DeasyTag]\
-        \ }`\n- **500**: Internal Server Error\n\n## Example Response\n\n```json\n\
-        {\n  \"tags\": [\n    {\n      \"name\": \"category\",\n      \"description\"\
-        : \"Document category\",\n      \"type\": \"select\",\n      \"available_values\"\
-        : [\"invoice\", \"receipt\"]\n    },\n    {\n      \"name\": \"date\",\n \
-        \     \"description\": \"Document date\",\n      \"type\": \"date\"\n    }\n\
-        \  ]\n}\n```"
-      operationId: list_tags_route_tags_list_get
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListTagsResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst tags = await client.tags.list();\n\nconsole.log(tags.tags);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntags =\
-          \ client.tags.list()\nprint(tags.tags)"
-  /tags/delete:
-    delete:
-      tags:
-      - Tags
-      summary: Delete Tag
-      description: "Delete a tag by name. Tag must not be in use by any graphs or\
-        \ dataslices.\n\n## Query Parameters\n\n| Parameter  | Type  | Description\
-        \                          |\n|------------|-------|--------------------------------------|\n\
-        | `tag_name` | `str` | Name of the tag to delete.           |\n\n## Response\n\
-        \n- **200**: Tag deleted successfully  \n    - Returns: `{ \"tag_name\": str\
-        \ }`\n- **500**: Internal Server Error (e.g., tag still in use)\n\n## Example\n\
-        \n```\nDELETE /tags/delete?tag_name=category\n```"
-      operationId: delete_tag_route_tags_delete_delete
-      parameters:
-      - name: tag_name
-        in: query
-        required: true
-        schema:
-          type: string
-          title: Tag Name
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TagResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst tagResponse = await client.tags.delete({ tag_name:\
-          \ 'tag_name' });\n\nconsole.log(tagResponse.tag_name);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntag_response\
-          \ = client.tags.delete(\n    tag_name=\"tag_name\",\n)\nprint(tag_response.tag_name)"
-  /suggest_regex:
-    post:
-      tags:
-      - Tags
-      summary: Suggest Patterns
-      description: "Generate a regex pattern based on a natural language description\
-        \ using AI.\n\n## Request Body\n\n| Field              | Type           |\
-        \ Description                                                            \
-        \                  |\n|--------------------|----------------|------------------------------------------------------------------------------------------|\n\
-        | `description`      | `str`          | Natural language description of what\
-        \ to match (e.g., \"phone numbers in format (XXX) XXX-XXXX\"). |\n| `llm_profile_name`\
-        \ | `str`          | Optional. The name of the LLM profile to use for generating\
-        \ the regex.                   |\n| `examples`         | `List[str]`    |\
-        \ Optional. List of example strings that should match the pattern.       \
-        \                  |\n\n## Response\n\n- **200**: Regex pattern generated\
-        \ successfully  \n    - Returns: `{ \"regex\": str, \"explanation\": str }`\n\
-        - **400**: Bad Request (e.g., invalid request data)\n- **500**: Internal Server\
-        \ Error\n\n## Example\n\n```json\n{\n  \"description\": \"phone numbers in\
-        \ format (XXX) XXX-XXXX\",\n  \"llm_profile_name\": \"default\",\n  \"examples\"\
-        : [\n    \"(123) 456-7890\",\n    \"(555) 123-4567\"\n  ]\n}\n```\n\n## Example\
-        \ Response\n\n```json\n{\n  \"regex\": \"\\(\\d{3}\\) \\d{3}-\\d{4}\",\n \
-        \ \"explanation\": \"Matches phone numbers in the format (XXX) XXX-XXXX where\
-        \ X is a digit\"\n}\n```"
-      operationId: suggest_patterns_route_suggest_regex_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SuggestRegexRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuggestRegexResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.tags.pattern.suggestPatterns({\
-          \ description: 'description' });\n\nconsole.log(response.regex);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.tags.pattern.suggest_patterns(\n    description=\"description\"\
-          ,\n)\nprint(response.regex)"
-  /taxonomy/upsert:
-    post:
-      tags:
-      - Taxonomies
-      summary: Upsert
-      description: "Insert or update a taxonomy (schema/hierarchy) in the database.\n\
-        \n## Request Body\n\n| Field                  | Type             | Description\
-        \                                                          |\n|------------------------|------------------|----------------------------------------------------------------------|\n\
-        | `taxonomy_name`        | `str`            | Name of the taxonomy to upsert.\
-        \                                      |\n| `new_taxonomy_name`    | `Optional[str]`\
-        \  | New name for the taxonomy (when updating).                          \
-        \ |\n| `taxonomy_description` | `Optional[str]`  | Description of the taxonomy.\
-        \                                         |\n| `taxonomy_data`        | `Optional[Dict]`\
-        \ | The taxonomy/hierarchy data structure.                               |\n\
-        \n## Response\n\n- **200**: Taxonomy upserted successfully  \n    - Returns:\
-        \ `{ \"taxonomy_name\": str }`\n- **500**: Internal Server Error\n\n## Example\n\
-        \n```json\n{\n  \"taxonomy_name\": \"document-categories\",\n  \"taxonomy_description\"\
-        : \"Main document classification taxonomy\",\n  \"taxonomy_data\": {\n   \
-        \ \"invoice\": [\"purchase_invoice\", \"sales_invoice\"],\n    \"receipt\"\
-        : [\"expense_receipt\", \"payment_receipt\"]\n  }\n}\n```"
-      operationId: upsert_taxonomy_route_taxonomy_upsert_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpsertTaxonomyRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaxonomyOperationResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst taxonomyOperationResponse = await client.taxonomy.upsert({\
-          \ taxonomy_name: 'taxonomy_name' });\n\nconsole.log(taxonomyOperationResponse.taxonomy_name);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntaxonomy_operation_response\
-          \ = client.taxonomy.upsert(\n    taxonomy_name=\"taxonomy_name\",\n)\nprint(taxonomy_operation_response.taxonomy_name)"
-  /taxonomy/list:
-    post:
-      tags:
-      - Taxonomies
-      summary: List
-      description: "List all taxonomies (schemas/hierarchies) for the authenticated\
-        \ user.\n\n## Request Body\n\n| Field          | Type                  | Description\
-        \                                                          |\n|----------------|-----------------------|----------------------------------------------------------------------|\n\
-        | `taxonomy_ids` | `Optional[List[str]]` | List of specific taxonomy IDs to\
-        \ retrieve. If omitted, returns all taxonomies. |\n\n## Response\n\n- **200**:\
-        \ Taxonomies retrieved successfully  \n    - Returns: `{ \"taxonomies\": List[DeasySchema]\
-        \ }`\n- **500**: Internal Server Error\n\n## Example\n\n```json\n{\n  \"taxonomy_ids\"\
-        : [\"document-categories\", \"sentiment-types\"]\n}\n```"
-      operationId: list_taxonomies_route_taxonomy_list_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ListTaxonomiesRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListTaxonomiesResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst taxonomies = await client.taxonomy.list();\n\n\
-          console.log(taxonomies.taxonomies);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntaxonomies\
-          \ = client.taxonomy.list()\nprint(taxonomies.taxonomies)"
-  /taxonomy/delete:
-    delete:
-      tags:
-      - Taxonomies
-      summary: Delete
-      description: "Delete a taxonomy (schema/hierarchy) by name.\n\n## Query Parameters\n\
-        \n| Parameter       | Type  | Description                             |\n\
-        |-----------------|-------|-----------------------------------------|\n| `taxonomy_name`\
-        \ | `str` | Name of the taxonomy to delete.         |\n\n## Response\n\n-\
-        \ **200**: Taxonomy deleted successfully  \n    - Returns: `{ \"taxonomy_name\"\
-        : str }`\n- **500**: Internal Server Error\n\n## Example\n\n```\nDELETE /taxonomy/delete?taxonomy_name=document-categories\n\
-        ```"
-      operationId: delete_taxonomy_route_taxonomy_delete_delete
-      parameters:
-      - name: taxonomy_name
-        in: query
-        required: true
-        schema:
-          type: string
-          title: Taxonomy Name
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaxonomyOperationResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst taxonomyOperationResponse = await client.taxonomy.delete({\
-          \ taxonomy_name: 'taxonomy_name' });\n\nconsole.log(taxonomyOperationResponse.taxonomy_name);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntaxonomy_operation_response\
-          \ = client.taxonomy.delete(\n    taxonomy_name=\"taxonomy_name\",\n)\nprint(taxonomy_operation_response.taxonomy_name)"
-  /suggest_schema:
-    post:
-      tags:
-      - Taxonomies
-      summary: Suggest Schema
-      description: "Suggest a hierarchical tag taxonomy based on file content and\
-        \ existing metadata.\n\n## Request Body\n\n| Field                   | Type\
-        \                   | Description                                        \
-        \                          |\n|-------------------------|------------------------|------------------------------------------------------------------------------|\n\
-        | `data_connector_name`   | `str`                  | Name of the data connector\
-        \ (vector database profile) to use.                 |\n| `llm_profile_name`\
-        \      | `Optional[str]`        | Name of the LLM profile to use for generating\
-        \ suggestions.                   |\n| `file_names`            | `Optional[List[str]]`\
-        \  | List of specific files to analyze for the hierarchy suggestion.     \
-        \         |\n| `dataslice_id`          | `Optional[str]`        | ID of a\
-        \ dataslice to pull files from for the suggestion.                     |\n\
-        | `progress_tracking_id`  | `Optional[str]`        | Custom tracking ID for\
-        \ monitoring the suggestion progress.                   |\n| `schema_name`\
-        \           | `Optional[str]`        | Name for the suggested schema/taxonomy.\
-        \                                      |\n| `current_tree`          | `Optional[Dict]`\
-        \       | Existing hierarchy tree to build upon.                         \
-        \              |\n| `condition`             | `Optional[Condition]`  | Filtering\
-        \ condition to select specific files for analysis.                   |\n|\
-        \ `node`                  | `Optional[GraphNode]`  | Node location in the\
-        \ existing hierarchy tree to build upon. Default: `{}`    |\n| `user_context`\
-        \          | `Optional[str]`        | User-provided context to guide the suggestion\
-        \ process.                       |\n| `context_level`         | `Optional[str]`\
-        \        | Level at which to analyze content: `file` or `chunk`. Default:\
-        \ `\"file\"`      |\n| `max_height`            | `Optional[int]`        |\
-        \ Maximum depth of the generated hierarchy tree. Default: `2`            \
-        \      |\n| `use_existing_tags`     | `Optional[bool]`       | Whether to\
-        \ incorporate existing tags in suggestions. Default: `false`        |\n| `use_extracted_tags`\
-        \    | `Optional[bool]`       | Whether to use previously extracted tags.\
-        \ Default: `false`                   |\n| `use_mix_llm_and_source`| `Optional[bool]`\
-        \       | Whether to mix LLM-generated and source-based tags. Default: `false`\
-        \         |\n\n## Response\n\n- **200**: Schema suggestion generated successfully\
-        \  \n    - Returns: `{ \"status_code\": int, \"message\": str, \"suggestion\"\
-        : Dict, \"suggested_tags\": Optional[Dict], \"node\": Optional[GraphNode],\
-        \ \"tag_not_found_rates\": Optional[Dict] }`\n- **500**: Internal Server Error\n\
-        \n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n\
-        \  \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"context_level\"\
-        : \"file\",\n  \"max_height\": 3,\n  \"use_existing_tags\": true,\n  \"user_context\"\
-        : \"Suggest categories for financial documents\"\n}\n```"
-      operationId: suggest_schema_route_suggest_schema_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MetadataSuggestionRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MetadataSuggestionResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.taxonomy.suggest({ data_connector_name:\
-          \ 'data_connector_name' });\n\nconsole.log(response.suggestion);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.taxonomy.suggest(\n    data_connector_name=\"data_connector_name\"\
-          ,\n)\nprint(response.suggestion)"
-  /metadata/delete:
-    post:
-      tags:
-      - Metadata
-      summary: Delete
-      description: "Delete metadata for specified files, tags, and/or conditions.\n\
-        \n## Request Body\n\n| Field                 | Type                | Description\
-        \                                                                  |\n|-----------------------|---------------------|------------------------------------------------------------------------------|\n\
-        | `data_connector_name` | `str`               | Name of the data connector\
-        \ (vector database profile) to delete metadata from.|\n| `file_names`    \
-        \      | `Optional[List[str]]` | List of file names to delete metadata for.\
-        \                                  |\n| `tags`                | `Optional[List[str]]`\
-        \ | List of tags to filter which metadata to delete.                     \
-        \       |\n| `conditions`          | `Optional[Condition]` | Additional conditions\
-        \ to filter which metadata to delete.                   |\n\n## Response\n\
-        \n- **200**: Metadata deleted successfully  \n    - Returns: `{ \"chunk_deleted_count\"\
-        : int, \"file_deleted_count\": int }`\n- **500**: Internal Server Error\n\n\
-        ## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n \
-        \ \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"tags\": [\"\
-        archived\", \"old\"]\n}\n```"
-      operationId: delete_metadata_route_metadata_delete_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/app__models__models_metadata__DeleteMetadataRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/app__models__models_metadata__DeleteMetadataResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst metadata = await client.metadata.delete({ data_connector_name:\
-          \ 'data_connector_name' });\n\nconsole.log(metadata.chunk_deleted_count);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nmetadata\
-          \ = client.metadata.delete(\n    data_connector_name=\"data_connector_name\"\
-          ,\n)\nprint(metadata.chunk_deleted_count)"
-  /metadata/list_paginated:
-    post:
-      tags:
-      - Metadata
-      summary: List Paginated
-      description: "Get paginated filtered metadata based on conditions.\n\n## Request\
-        \ Body\n\n| Field                 | Type                  | Description  \
-        \                                                                |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
-        | `data_connector_name` | `str`                 | Name of the data connector\
-        \ (vector database profile).                        |\n| `dataslice_id`  \
-        \      | `Optional[str]`       | ID of the dataslice to get files from.  \
-        \                                     |\n| `tag_names`           | `Optional[List[str]]`\
-        \ | List of tag names to include in the metadata.                        \
-        \        |\n| `include_chunk_level` | `Optional[bool]`      | Whether to include\
-        \ chunk-level metadata. Default: `true`                     |\n| `offset`\
-        \              | `Optional[int]`       | Pagination offset to start from.\
-        \ Default: `0`                                |\n| `limit`               |\
-        \ `Optional[int]`       | Maximum number of metadata items to return. Default:\
-        \ `50`                    |\n\n## Response\n\n- **200**: Metadata retrieved\
-        \ successfully  \n    - Returns: `{ \"metadata\": Deasy_Metadata, \"next_offset\"\
-        : Optional[int] }`\n- **500**: Internal Server Error\n\n## Example\n\n```json\n\
-        {\n  \"data_connector_name\": \"my-connector\",\n  \"dataslice_id\": \"abc123\"\
-        ,\n  \"tag_names\": [\"category\", \"date\"],\n  \"include_chunk_level\":\
-        \ true,\n  \"offset\": 0,\n  \"limit\": 50\n}\n```"
-      operationId: list_paginated_metadata_route_metadata_list_paginated_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ListPaginatedMetadataRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListPaginatedMetadataResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.metadata.listPaginated({\
-          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.metadata);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.metadata.list_paginated(\n    data_connector_name=\"data_connector_name\"\
-          ,\n)\nprint(response.metadata)"
-  /metadata/list:
-    post:
-      tags:
-      - Metadata
-      summary: List
-      description: "Get filtered metadata based on conditions. Supports shared connections.\n\
-        \n## Request Body\n\n| Field                 | Type                  | Description\
-        \                                                                  |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
-        | `data_connector_name` | `str`                 | Name of the data connector\
-        \ (vector database profile).                        |\n| `dataslice_id`  \
-        \      | `Optional[str]`       | ID of the dataslice to get files from.  \
-        \                                     |\n| `tag_names`           | `Optional[List[str]]`\
-        \ | List of tag names to include in the metadata.                        \
-        \        |\n| `include_chunk_level` | `Optional[bool]`      | Whether to include\
-        \ chunk-level metadata. Default: `true`                     |\n| `file_names`\
-        \          | `Optional[List[str]]` | List of specific file names to include\
-        \ in the metadata.                      |\n| `chunk_ids`           | `Optional[List[str]]`\
-        \ | List of specific chunk IDs to include in the metadata.               \
-        \        |\n\n## Response\n\n- **200**: Metadata retrieved successfully  \n\
-        \    - Without `chunk_ids`: Returns metadata grouped by filename, tag, and\
-        \ level  \n      `{filename: {tag_id: {chunk_level: {chunk_id: metadata},\
-        \ file_level: metadata}}}`\n    - With `chunk_ids`: Returns metadata by chunk\
-        \ ID  \n      `{chunk_id: {metadata}}`\n- **500**: Internal Server Error\n\
-        \n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n\
-        \  \"dataslice_id\": \"abc123\",\n  \"tag_names\": [\"category\", \"date\"\
-        ],\n  \"include_chunk_level\": true,\n  \"file_names\": [\"document1.pdf\"\
-        , \"document2.pdf\"]\n}\n```"
-      operationId: list_metadata_route_metadata_list_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ListMetadataRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListMetadataResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst metadata = await client.metadata.list({ data_connector_name:\
-          \ 'data_connector_name' });\n\nconsole.log(metadata.metadata);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nmetadata\
-          \ = client.metadata.list(\n    data_connector_name=\"data_connector_name\"\
-          ,\n)\nprint(metadata.metadata)"
-  /metadata/upsert:
-    post:
-      tags:
-      - Metadata
-      summary: Upsert
-      description: "Insert or update metadata for files and tags.\n\n## Request Body\n\
-        \n| Field                 | Type                  | Description          \
-        \                                                        |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
-        | `data_connector_name` | `Optional[str]`       | Name of the data connector\
-        \ (vector database profile).                        |\n| `dataslice_id`  \
-        \      | `Optional[str]`       | ID of the dataslice to upsert metadata for.\
-        \                                  |\n| `metadata`            | `Deasy_Metadata`\
-        \      | Metadata to upsert in the form `{file_name: {tag_name: tag_value}}`.\
-        \         |\n\n## Response\n\n- **200**: Metadata upserted successfully  \n\
-        \    - Returns: `{ \"success\": bool }`\n- **500**: Internal Server Error\n\
-        \n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n\
-        \  \"metadata\": {\n    \"document1.pdf\": {\n      \"category\": \"invoice\"\
-        ,\n      \"date\": \"2024-01-15\"\n    },\n    \"document2.pdf\": {\n    \
-        \  \"category\": \"receipt\",\n      \"status\": \"processed\"\n    }\n  }\n\
-        }\n```"
-      operationId: upsert_metadata_route_metadata_upsert_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpsertMetadataRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UpsertMetadataResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.metadata.upsert({ metadata:\
-          \ { foo: { foo: {} } } });\n\nconsole.log(response.success);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.metadata.upsert(\n    metadata={\n        \"foo\": {\n      \
-          \      \"foo\": {}\n        }\n    },\n)\nprint(response.success)"
-  /classify:
-    post:
-      tags:
-      - Metadata
-      summary: Generate
-      description: "Classify specified files with the provided tags.\n\n## Request\
-        \ Body\n\n| Field                 | Type                  | Description  \
-        \                                                                |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
-        | `data_connector_name` | `str`                 | Name of the data connector\
-        \ (vector database profile) to use for classification. |\n| `llm_profile_name`\
-        \    | `Optional[str]`       | Name of the LLM profile to use for classification.\
-        \                           |\n| `file_names`          | `Optional[List[str]]`\
-        \ | Names of specific files to classify.                                 \
-        \        |\n| `tag_names`           | `Optional[List[str]]` | Names of tags\
-        \ to use for classification (if `tag_datas` not provided).       |\n| `tag_datas`\
-        \           | `Optional[Dict]`      | Tag data to use for classification.\
-        \                                          |\n| `overwrite`           | `bool`\
-        \                | Whether to overwrite existing tags. Default: `false`  \
-        \                       |\n| `job_id`              | `Optional[str]`     \
-        \  | Custom job ID for tracking the classification task.                 \
-        \         |\n| `soft_run`            | `bool`                | If `true`,\
-        \ classification will not save to Deasy and will return results. Default:\
-        \ `false` |\n| `hierarchy_name`      | `Optional[str]`       | Name of the\
-        \ hierarchy/graph to use (if `hierarchy_data` not provided).       |\n| `hierarchy_data`\
-        \      | `Optional[Dict]`      | Hierarchy/graph data to use for classification.\
-        \ Default: `{}`                |\n| `dataslice_id`        | `Optional[str]`\
-        \       | ID of the dataslice to use for file filtering.                 \
-        \              |\n\n## Response\n\n- **200**: Classification completed or\
-        \ job started successfully  \n    - Returns: `{ \"message\": str, \"job_id\"\
-        : str, \"results\": Optional[Dict] }`\n- **500**: Internal Server Error\n\n\
-        ## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n \
-        \ \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"tag_names\"\
-        : [\"category\", \"sentiment\"],\n  \"overwrite\": false,\n  \"soft_run\"\
-        : false\n}\n```"
-      operationId: generate_route_classify_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClassifyRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClassifyResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.metadata.generate.generate({\
-          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.message);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.metadata.generate.generate(\n    data_connector_name=\"data_connector_name\"\
-          ,\n)\nprint(response.message)"
-  /classify_bulk:
-    post:
-      tags:
-      - Metadata
-      summary: Generate Batch
-      description: "Classify all files in a data source in batches with the provided\
-        \ tags.\n\n## Request Body\n\n| Field                 | Type             \
-        \     | Description                                                      \
-        \            |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
-        | `data_connector_name` | `str`                 | Name of the data connector\
-        \ (vector database profile) to use for classification. |\n| `llm_profile_name`\
-        \    | `Optional[str]`       | Name of the LLM profile to use for classification.\
-        \                           |\n| `total_data_sets`     | `Optional[int]` \
-        \      | Total number of files to classify.                              \
-        \             |\n| `tag_names`           | `Optional[List[str]]` | Names of\
-        \ tags to use for classification (if `tag_datas` not provided).       |\n\
-        | `tag_datas`           | `Optional[Dict]`      | Tag data to use for classification.\
-        \                                          |\n| `overwrite`           | `bool`\
-        \                | Whether to overwrite existing tags. Default: `false`  \
-        \                       |\n| `job_id`              | `Optional[str]`     \
-        \  | Custom job ID for tracking the classification task.                 \
-        \         |\n| `hierarchy_name`      | `Optional[str]`       | Name of the\
-        \ hierarchy/graph to use (if `hierarchy_data` not provided).       |\n| `hierarchy_data`\
-        \      | `Optional[Dict]`      | Hierarchy/graph data to use for classification.\
-        \ Default: `{}`                |\n| `dataslice_id`        | `Optional[str]`\
-        \       | ID of the dataslice to use for file filtering.                 \
-        \              |\n| `conditions`          | `Optional[Condition]` | Conditions\
-        \ to use for file filtering.                                        |\n\n\
-        ## Response\n\n- **200**: Classification job started successfully  \n    -\
-        \ Returns: `{ \"message\": str, \"job_id\": str }`\n- **500**: Internal Server\
-        \ Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\"\
-        ,\n  \"tag_names\": [\"category\", \"sentiment\"],\n  \"overwrite\": false,\n\
-        \  \"dataslice_id\": \"abc123\"\n}\n```"
-      operationId: generate_batch_route_classify_bulk_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClassifyBulkRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClassifyBulkResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.metadata.generate.generateBatch({\
-          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.message);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.metadata.generate.generate_batch(\n    data_connector_name=\"\
-          data_connector_name\",\n)\nprint(response.message)"
-  /sensitivity/detect:
-    post:
-      tags:
-      - Metadata
-      summary: Detect
-      description: "Detect sensitive data in files using pattern-based detection (PII,\
-        \ PHI, financial data, etc.).\n\nSupports various entity types including SSNs,\
-        \ credit cards, emails, phone numbers, and custom patterns.\n\n## Request\
-        \ Body\n\n| Field                     | Type                  | Description\
-        \                                                                  |\n|---------------------------|-----------------------|------------------------------------------------------------------------------|\n\
-        | `data_connector_name`     | `str`                 | Name of the data connector\
-        \ (vector database profile) to use.                 |\n| `llm_profile_name`\
-        \        | `Optional[str]`       | Optional LLM profile (used for endpoint\
-        \ manager init).                       |\n| `file_names`              | `Optional[List[str]]`\
-        \ | Names of specific files to scan for sensitive data.                  \
-        \        |\n| `dataslice_id`            | `Optional[str]`       | ID of the\
-        \ dataslice to use for file filtering.                               |\n|\
-        \ `conditions`              | `Optional[Condition]` | Additional filtering\
-        \ conditions.                                             |\n| `overwrite`\
-        \               | `bool`                | Whether to overwrite existing sensitivity\
-        \ tags. Default: `false`             |\n| `soft_run`                | `bool`\
-        \                | If `true`, returns detection results without saving. Default:\
-        \ `false`        |\n| `taxonomy_name`           | `Optional[str]`       |\
-        \ Name of the sensitivity taxonomy to use. Default: `\"Default Sensitivity\
-        \ (v1)\"` |\n| `min_confidence`          | `float`               | Minimum\
-        \ confidence threshold for detections (0.0-1.0). Default: `0.6`        |\n\
-        | `selected_entity_types`   | `Optional[List[str]]` | Filter by specific entity\
-        \ types (e.g., \"SSN\", \"EMAIL\", \"CREDIT_CARD\").       |\n| `job_id` \
-        \                 | `Optional[str]`       | Custom job ID for tracking the\
-        \ detection task.                               |\n\n## Response\n\n- **200**:\
-        \ Sensitivity detection completed or job started successfully  \n    - Returns:\
-        \ `{ \"message\": str, \"job_id\": str, \"results\": Optional[Dict] }`\n-\
-        \ **500**: Internal Server Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\"\
-        : \"my-connector\",\n  \"file_names\": [\"contract.pdf\", \"employee_records.pdf\"\
-        ],\n  \"taxonomy_name\": \"Default Sensitivity (v1)\",\n  \"min_confidence\"\
-        : 0.75,\n  \"selected_entity_types\": [\"SSN\", \"EMAIL\", \"CREDIT_CARD\"\
-        ],\n  \"soft_run\": false,\n  \"overwrite\": true\n}\n```"
-      operationId: detect_route_sensitivity_detect_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DetectRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DetectResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.metadata.detectSensitive.detect({\
-          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.job_id);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.metadata.detect_sensitive.detect(\n    data_connector_name=\"\
-          data_connector_name\",\n)\nprint(response.job_id)"
-  /sensitivity/detect_bulk:
-    post:
-      tags:
-      - Metadata
-      summary: Detect Batch
-      description: "Detect sensitive data in bulk across a dataslice or entire data\
-        \ source.\n\nProcesses multiple files in batches to identify PII, PHI, financial\
-        \ data, and other sensitive information.\n\n## Request Body\n\n| Field   \
-        \              | Type                  | Description                     \
-        \                                             |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
-        | `data_connector_name` | `str`                 | Name of the data connector\
-        \ (vector database profile) to use.                 |\n| `llm_profile_name`\
-        \    | `Optional[str]`       | Optional LLM profile (used for endpoint manager\
-        \ init).                       |\n| `total_data_sets`     | `Optional[int]`\
-        \       | Total number of files to process.                              \
-        \              |\n| `dataslice_id`        | `Optional[str]`       | ID of\
-        \ the dataslice to use for file filtering.                               |\n\
-        | `conditions`          | `Optional[Condition]` | Additional filtering conditions.\
-        \                                             |\n| `overwrite`           |\
-        \ `bool`                | Whether to overwrite existing sensitivity tags.\
-        \ Default: `false`             |\n| `taxonomy_name`       | `Optional[str]`\
-        \       | Name of the sensitivity taxonomy to use. Default: `\"Default Sensitivity\
-        \ (v1)\"` |\n| `min_confidence`      | `float`               | Minimum confidence\
-        \ threshold for detections (0.0-1.0). Default: `0.6`        |\n| `job_id`\
-        \              | `Optional[str]`       | Custom job ID for tracking the detection\
-        \ task.                               |\n\n## Response\n\n- **200**: Bulk\
-        \ sensitivity detection job started successfully  \n    - Returns: `{ \"message\"\
-        : str, \"job_id\": str }`\n- **500**: Internal Server Error\n\n## Example\n\
-        \n```json\n{\n  \"data_connector_name\": \"my-connector\",\n  \"dataslice_id\"\
-        : \"employee-records\",\n  \"taxonomy_name\": \"Default Sensitivity (v1)\"\
-        ,\n  \"min_confidence\": 0.75,\n  \"overwrite\": true,\n  \"total_data_sets\"\
-        : 1000\n}\n```"
-      operationId: detect_batch_route_sensitivity_detect_bulk_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DetectBulkRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DetectBulkResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.metadata.detectSensitive.detectBatch({\n\
-          \  data_connector_name: 'data_connector_name',\n});\n\nconsole.log(response.job_id);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.metadata.detect_sensitive.detect_batch(\n    data_connector_name=\"\
-          data_connector_name\",\n)\nprint(response.job_id)"
-  /progress_tracker/task_status:
-    post:
-      tags:
-      - Task Tracking
-      summary: Get Task Status
-      description: "Get the status of a task by job ID.\n\n## Request Body\n\n| Field\
-        \    | Type  | Description                                      |\n|----------|-------|--------------------------------------------------|\n\
-        | `job_id` | `str` | The unique identifier for the job to check.      |\n\n\
-        ## Response\n\n- **200**: Task status retrieved successfully  \n    - Returns:\
-        \ `{ \"percent_complete\": float, \"tags_created\": Optional[int], \"status\"\
-        : str }`\n- **404**: Job ID not found\n\n## Example\n\n```json\n{\n  \"job_id\"\
-        : \"abc123-def456-ghi789\"\n}\n```"
-      operationId: get_task_status_route_progress_tracker_task_status_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TaskStatusRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskStatusResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.taskStatus.getStatus({\
-          \ job_id: 'job_id' });\n\nconsole.log(response.percent_complete);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.task_status.get_status(\n    job_id=\"job_id\",\n)\nprint(response.percent_complete)"
-  /dataslice/create:
-    post:
-      tags:
-      - Data Slices
-      summary: Create
-      description: "Create a new data slice based on specified conditions.\n\n## Request\
-        \ Body\n\n| Field             | Type           | Description             \
-        \                                                   |\n|-------------------|----------------|----------------------------------------------------------------------------|\n\
-        | `dataslice_name`  | `str`          | The name to assign to the newly created\
-        \ data slice.                        |\n| `condition`       | `Optional[List[Dict]]`\
-        \ | (Legacy) List of file qualifying conditions.                         |\n\
-        | `condition_new`   | `Optional[Any]` | New format: advanced file qualifying\
-        \ conditions.                           |\n| `description`     | `Optional[str]`\
-        \ | Description of the data slice.                                       \
-        \      |\n| `status`          | `str`          | The status of the data slice\
-        \ (e.g., active).                               |\n| `data_points`     | `Optional[int]`\
-        \ | Number of data points in the data slice.                             \
-        \      |\n| `latest_graph`    | `Optional[Dict]` | Most recent graph reference/metadata.\
-        \                                      |\n| `graph_id`        | `Optional[str]`\
-        \ | ID of the related graph, if applicable.                              \
-        \      |\n| `data_connector_name` | `str`      | Name of the data connector\
-        \ (vector database profile).                      |\n| `parent_dataslice_id`\
-        \ | `Optional[str]` | (Optional) Parent data slice ID, for lineage.      \
-        \                  |\n\n## Response\n\n- **201**: Data slice created successfully\
-        \  \n    - Returns: `{ \"dataslice_id\": \"<uuid>\" }`\n- **500**: Internal\
-        \ Server Error.\n\n## Example\n\n```json\n{\n  \"dataslice_name\": \"Customer\
-        \ Purchases Q2\",\n  \"condition\": [\n    { \"field\": \"created_date\",\
-        \ \"op\": \"gte\", \"value\": \"2024-04-01\" }\n  ],\n  \"description\": \"\
-        Purchase data from Q2 2024\",\n  \"status\": \"active\",\n  \"data_points\"\
-        : 4000,\n  \"data_connector_name\": \"prod-warehouse\"\n}\n```"
-      operationId: create_dataslice_route_dataslice_create_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateDatasliceRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateDatasliceResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst dataSlice = await client.dataSlice.create({\n\
-          \  data_connector_name: 'data_connector_name',\n  dataslice_name: 'dataslice_name',\n\
-          \  graph_id: 'graph_id',\n  latest_graph: { foo: 'bar' },\n});\n\nconsole.log(dataSlice.dataslice_id);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndata_slice\
-          \ = client.data_slice.create(\n    data_connector_name=\"data_connector_name\"\
-          ,\n    dataslice_name=\"dataslice_name\",\n    graph_id=\"graph_id\",\n\
-          \    latest_graph={\n        \"foo\": \"bar\"\n    },\n)\nprint(data_slice.dataslice_id)"
-  /dataslice/delete:
-    delete:
-      tags:
-      - Data Slices
-      summary: Delete
-      description: "Delete a single data slice by its unique identifier.\n\n## Request\
-        \ Body\n\n| Field             | Type           | Description             \
-        \                                                   |\n|-------------------|----------------|----------------------------------------------------------------------------|\n\
-        | `dataslice_id`    | `str`        | The unique identifier of the data slice\
-        \ to delete.                        |\n\n### Response\n\nReturns a confirmation\
-        \ message of the successful deletion and any associated data.\n\n```json\n\
-        {\n  \"message\": \"Data slice deleted successfully\",\n  \"data\": {\n  \
-        \  // Details of deletion outcome\n  }\n}\n```"
-      operationId: delete_dataslice_route_dataslice_delete_delete
-      parameters:
-      - name: dataslice_id
-        in: query
-        required: true
-        schema:
-          type: string
-          title: Dataslice Id
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeleteDatasliceResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst dataSlice = await client.dataSlice.delete({ dataslice_id:\
-          \ 'dataslice_id' });\n\nconsole.log(dataSlice.data);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndata_slice\
-          \ = client.data_slice.delete(\n    dataslice_id=\"dataslice_id\",\n)\nprint(data_slice.data)"
-  /dataslice/list:
-    get:
-      tags:
-      - Data Slices
-      summary: List
-      description: "Retrieve all data slices associated with the currently authenticated\
-        \ user.\n\n### Response\n\nReturns a JSON object containing a list of dataslices:\n\
-        \n```json\n{\n  \"dataslices\": [\n    {\n      \"dataslice_id\": \"string\"\
-        ,\n      \"dataslice_name\": \"string\",\n      \"description\": \"string\"\
-        ,\n      \"status\": \"active\",\n      \"data_points\": 123,\n      \"latest_graph\"\
-        : { /* graph details */ },\n      \"graph_id\": \"string\",\n      \"data_connector_name\"\
-        : \"string\",\n      \"parent_dataslice_id\": \"string or null\"\n    },\n\
-        \    ...\n  ]\n}\n```"
-      operationId: list_dataslices_route_dataslice_list_get
-      responses:
-        '200':
-          description: A list of dataslices the user can access.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListDataslicesResponse'
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst dataSlices = await client.dataSlice.list();\n\
-          \nconsole.log(dataSlices.dataslices);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndata_slices\
-          \ = client.data_slice.list()\nprint(data_slices.dataslices)"
-  /dataslice/export/metadata:
-    post:
-      tags:
-      - Data Slices
-      summary: Export
-      description: "Export metadata for a specific data slice or the entire data connector,\
-        \ in JSON or CSV format.\n\n## Request Body\n\n| Field                   \
-        \   | Type                  | Description                                \
-        \                                        |\n|----------------------------|-----------------------|------------------------------------------------------------------------------------|\n\
-        | `data_connector_name`      | `str`                 | Name of the data source\
-        \ to export metadata from.                                   |\n| `dataslice_id`\
-        \             | `Optional[str]`       | ID of the dataslice to export metadata\
-        \ from. If omitted, all data is included.     |\n| `export_file_level`   \
-        \     | `bool`                | `True` for file-level export, `False` for\
-        \ chunk-level export.                      |\n| `export_format`          \
-        \  | `Optional[ExportFormat]` | Desired export format: `json` or `csv` (e.g.,\
-        \ `\"json\"`, `\"csv\"`).               |\n| `selected_metadata_fields` |\
-        \ `Optional[List[str]]` | List of metadata fields to include in the export.\
-        \                                  |\n\n## Response\n\n- **200**: Metadata\
-        \ exported successfully  \n    - Returns: A streaming file response containing\
-        \ the exported metadata in the requested format.\n- **500**: Internal Server\
-        \ Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\": \"example-connector\"\
-        ,\n  \"dataslice_id\": \"abc123\",\n  \"export_file_level\": true,\n  \"export_format\"\
-        : \"json\",\n  \"selected_metadata_fields\": [\"field1\", \"field2\"]\n}\n\
-        ```"
-      operationId: export_data_slice_dataslice_export_metadata_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ExportDatasliceMetadataRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
-        '403':
-          description: Missing token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Too many requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-        '500':
-          description: Internal Server Error. An unexpected error occurred while processing
-            the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-      x-codeSamples:
-      - lang: JavaScript
-        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.dataSlice.export({ data_connector_name:\
-          \ 'data_connector_name' });\n\nconsole.log(response);"
-      - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.data_slice.export(\n    data_connector_name=\"data_connector_name\"\
-          ,\n)\nprint(response)"
 components:
   schemas:
     AzureSQLDestinationConfig:
@@ -2465,11 +2451,6 @@ components:
         data_connector_name:
           type: string
           title: Data Connector Name
-        llm_profile_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Llm Profile Name
         total_data_sets:
           anyOf:
           - type: integer
@@ -2537,11 +2518,6 @@ components:
         data_connector_name:
           type: string
           title: Data Connector Name
-        llm_profile_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Llm Profile Name
         file_names:
           anyOf:
           - items:
@@ -2683,11 +2659,15 @@ components:
           - type: 'null'
           title: Data Points
         latest_graph:
-          additionalProperties: true
-          type: object
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
           title: Latest Graph
         graph_id:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Graph Id
         data_connector_name:
           type: string
@@ -2700,8 +2680,6 @@ components:
       type: object
       required:
       - dataslice_name
-      - latest_graph
-      - graph_id
       - data_connector_name
       title: CreateDatasliceRequest
     CreateDatasliceResponse:
@@ -2881,6 +2859,16 @@ components:
           - type: 'null'
           title: Enhance File Metadata
           default: true
+        group:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Group
+        min_confidence:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Min Confidence
         strategy:
           anyOf:
           - type: string
@@ -2979,6 +2967,16 @@ components:
           - type: 'null'
           title: Enhance File Metadata
           default: true
+        group:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Group
+        min_confidence:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Min Confidence
         strategy:
           anyOf:
           - type: string
@@ -3096,7 +3094,7 @@ components:
           type: string
           format: date-time
           title: Updated At
-          default: '2025-10-29T16:46:24.476547'
+          default: '2025-10-30T14:52:26.000751'
         tuned:
           anyOf:
           - type: integer
@@ -3203,11 +3201,6 @@ components:
         data_connector_name:
           type: string
           title: Data Connector Name
-        llm_profile_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Llm Profile Name
         total_data_sets:
           anyOf:
           - type: integer
@@ -3265,11 +3258,6 @@ components:
         data_connector_name:
           type: string
           title: Data Connector Name
-        llm_profile_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Llm Profile Name
         file_names:
           anyOf:
           - items:
@@ -3825,11 +3813,6 @@ components:
         data_connector_name:
           type: string
           title: Data Connector Name
-        llm_profile_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Llm Profile Name
         file_names:
           anyOf:
           - items:
@@ -4017,11 +4000,6 @@ components:
         data_connector_name:
           type: string
           title: Data Connector Name
-        llm_profile_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Llm Profile Name
         file_names:
           anyOf:
           - items:
@@ -4412,11 +4390,6 @@ components:
       title: SharepointDestinationConfig
     SuggestRegexRequest:
       properties:
-        llm_profile_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Llm Profile Name
         description:
           type: string
           title: Description
@@ -4575,6 +4548,16 @@ components:
           - type: 'null'
           title: Visual Rules
           default: []
+        group:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Group
+        min_confidence:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Min Confidence
       type: object
       required:
       - name
