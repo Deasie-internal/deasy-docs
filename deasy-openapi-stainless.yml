@@ -1039,9 +1039,11 @@ paths:
       tags:
       - Metadata
       summary: Generate
-      description: "Classify specified files with the provided tags.\n\n## Request\
-        \ Body\n\n| Field                 | Type                  | Description  \
-        \                                                                |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+      description: "Classify specified files with the provided tags.\nTo run sensitivity\
+        \ detection, use tags with a strategy of SENSITIVITY or a group which includes\
+        \ the magic word \"Sensitivity\"\n\n## Request Body\n\n| Field           \
+        \      | Type                  | Description                             \
+        \                                     |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
         | `data_connector_name` | `str`                 | Name of the data connector\
         \ (vector database profile) to use for classification. |\n| `file_names` \
         \         | `Optional[List[str]]` | Names of specific files to classify. \
@@ -1128,9 +1130,10 @@ paths:
       - Metadata
       summary: Generate Batch
       description: "Classify all files in a data connector in batches with the provided\
-        \ tags.\n\n## Request Body\n\n| Field                 | Type             \
-        \     | Description                                                      \
-        \            |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
+        \ tags. \nTo run sensitivity detection, use tags with a strategy of SENSITIVITY\
+        \ or a group which includes the magic word \"Sensitivity\"\n\n## Request Body\n\
+        \n| Field                 | Type                  | Description          \
+        \                                                        |\n|-----------------------|-----------------------|------------------------------------------------------------------------------|\n\
         | `data_connector_name` | `str`                 | Name of the data connector\
         \ (vector database profile) to use for classification. |\n| `total_data_sets`\
         \     | `Optional[int]`       | Total number of files to classify.       \
@@ -2916,7 +2919,7 @@ components:
           type: string
           format: date-time
           title: Updated At
-          default: '2025-10-31T10:56:45.121372'
+          default: '2025-10-31T16:15:55.923700'
         tuned:
           anyOf:
           - type: integer
