@@ -11,6 +11,10 @@
   "navigation": {
     "tabs": [
       {
+        "tab": "Documentation",
+        "pages": ["concepts"]
+      },
+      {
         "tab": "API Docs",
         "openapi": "./deasy-openapi-stainless.yml"
       },

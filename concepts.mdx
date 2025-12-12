@@ -1,0 +1,287 @@
+---
+title: "Product Concepts"
+description: "Understanding the fundamental building blocks of Unstructured by Collibra"
+---
+
+This guide covers the core concepts you'll work with in Unstructured by Collibra. Understanding these building blocks is essential for effectively using the platform to enrich your unstructured data with intelligent metadata.
+
+<CardGroup cols={3}>
+  <Card title="Data Connectors" icon="plug" href="#data-connectors">
+    Connect to your document repositories
+  </Card>
+  <Card title="Destinations" icon="arrow-right-from-bracket" href="#destinations">
+    Export enriched data to external systems
+  </Card>
+  <Card title="Projects" icon="folder-open" href="#projects">
+    Organize your work into focused workspaces
+  </Card>
+  <Card title="Taxonomies & Tags" icon="tags" href="#taxonomies--tags">
+    Define what metadata to extract
+  </Card>
+  <Card title="Metadata" icon="database" href="#metadata">
+    The structured output from your documents
+  </Card>
+  <Card title="Data Slices" icon="filter" href="#data-slices">
+    Filter documents for targeted processing
+  </Card>
+</CardGroup>
+
+---
+
+## Data Connectors
+
+Data Connectors establish secure connections between the platform and your document storage. Once connected, the platform can discover documents, read content for metadata extraction, and write enriched metadata back to the source.
+
+### Supported Data Connectors
+
+| Source Type | Description | Key Configuration | Ideal Use Case |
+| :-- | :-- | :-- | :-- |
+| **Amazon S3** | AWS cloud object storage | Bucket name, Access Key, Secret Key | Large-scale document archives, cloud-native workflows |
+| **SharePoint** | Microsoft 365 document management | Client ID, Client Secret, Tenant ID, Site Name | Enterprise document libraries, Office 365 environments |
+| **PostgreSQL** | Relational database with pgvector extension | Host URL, Database name, User credentials, Port | Structured + unstructured hybrid data, existing database workflows |
+| **Qdrant** | Purpose-built vector database for AI | API Key, Collection name, URL | Semantic search applications, RAG pipelines |
+
+### Key Features
+
+<CardGroup cols={2}>
+  <Card title="Multiple Profiles" icon="layer-group">
+    Create and manage multiple Data Connector connections
+  </Card>
+  <Card title="Connection Testing" icon="vial">
+    Validate credentials before saving
+  </Card>
+  <Card title="Active Profile Selection" icon="toggle-on">
+    Switch between Data Connectors with one click
+  </Card>
+  <Card title="Schema Configuration" icon="table-columns">
+    Customize field mappings (filename key, text key, tags key)
+  </Card>
+</CardGroup>
+
+---
+
+## Destinations
+
+Destinations are target systems where enriched metadata and document data can be exported. While Data Connectors bring documents into the platform, Destinations push enriched data out to vector databases, document management systems, and databases for downstream applications.
+
+### Supported Destinations
+
+| Destination Type | Description | Key Configuration | Ideal Use Case |
+| :-- | :-- | :-- | :-- |
+| **Qdrant** | Vector database for AI applications | Collection name, URL, API Key | Semantic search, RAG pipelines |
+| **PostgreSQL** | Relational database with vector support | Host, Database, Collection, Credentials | Structured analytics, hybrid search |
+| **Azure SQL** | Microsoft cloud database | Server, Database, Table, Credentials | Enterprise data warehouses |
+| **SharePoint** | Microsoft 365 document management | Client ID/Secret, Tenant ID, Site Name | Enriching original documents with metadata columns |
+
+### Export Options
+
+| Option | Description | Values |
+| :-- | :-- | :-- |
+| **Export Level** | What data granularity to export | `file` (document-level), `chunk` (segment-level), `both` |
+| **Export Tags** | Specific metadata tags to include | List of tag names, or empty for all |
+| **Export Nodes** | Include vector embeddings | `true` / `false` |
+| **Export Metadata** | Include extracted metadata | `true` / `false` |
+| **Metadata Format** | How metadata is stored | `column_store` (separate columns), `json_store` (single JSON column) |
+
+<Note>
+**Export Processing:**
+- **Small Exports** (&lt; 100 files): Processed synchronously with immediate results
+- **Large Exports** (≥ 100 files): Processed in the background with progress tracking via `tracker_id`
+</Note>
+
+---
+
+## Projects
+
+Projects are organizational containers that group related work together — including Data Connectors, taxonomies, and sensitivity detection settings. Think of a Project as a workspace for a specific initiative.
+
+### Example Use Cases
+
+- **Contract Analysis 2024** — for processing legal contracts
+- **HR Document Compliance** — for employee document PII detection
+- **Financial Reports Q4** — for extracting financial metrics
+
+### Project Components
+
+| Component | Description | Required |
+| :-- | :-- | :-- |
+| **Name** | Unique identifier for the project | ✓ Yes |
+| **Description** | Optional notes about the project purpose | No |
+| **Data Connectors** | One or more connected data repositories | ✓ At least one |
+| **Data Slice** | Optional filtered subset of data | No (defaults to "All Data") |
+| **Taxonomies** | One or more tag hierarchies to apply | No |
+| **Sensitive Data Detection** | Enable PII/PHI/PCI scanning | No |
+
+### Sensitivity Detection Options
+
+When creating a project, you can enable automatic sensitive data detection:
+
+| Type | Full Name | Examples |
+| :-- | :-- | :-- |
+| **PII** | Personal Identifiable Information | Names, emails, addresses, phone numbers, SSN |
+| **PHI** | Protected Health Information | Medical records, diagnoses, prescriptions, insurance IDs |
+| **PCI** | Payment Card Industry Data | Credit card numbers, bank accounts, payment details |
+
+---
+
+## Taxonomies & Tags
+
+**Tags** are the metadata attributes you want to extract or classify from your documents. **Taxonomies** organize tags into hierarchical structures that define parent-child relationships.
+
+### What is a Tag?
+
+A Tag defines a specific piece of information you want to capture from documents:
+
+| Property | Description | Example |
+| :-- | :-- | :-- |
+| **Name** | The tag identifier | `Contract Type` |
+| **Description** | Instructions for the AI on what to extract | "Identify the type of legal agreement (NDA, MSA, SOW, etc.)" |
+| **Output Type** | How values are returned | Word, Number, Date |
+| **Max Values** | How many values get returned | 1 to however many relevant values an AI can find |
+| **Available Values** | Predefined options (for classification) | `["NDA", "MSA", "SOW", "Employment Agreement"]` |
+| **Strategy** | Extraction method | LLM (AI), Regex (Pattern), Rule-based |
+
+### Tag Types
+
+| Tag Type | How It Works | When to Use | Example |
+| :-- | :-- | :-- | :-- |
+| **Classification Tags** | AI chooses from predefined list of values | When you have a known set of categories | Document Type: Contract, Invoice, Report |
+| **Extraction Tags** | AI extracts open-ended values from text | When the value is unpredictable | Contract Value: $1,500,000 |
+| **Pattern Tags** | Regex pattern matching or NLP detection | For compliance, keyword-search, etc. | SSN: XXX-XX-XXXX, Email: user@domain.com |
+
+### Taxonomy Structure
+
+A Taxonomy enables hierarchical organization and conditional extraction. Child tags only get generated when parent conditions are met:
+
+```
+📄 Document Type (Classification: Contract | Invoice | Report)
+├── 📁 Contract
+│   ├── 💰 Contract Value (Extraction)
+│   ├── 👥 Parties Involved (Extraction)
+│   ├── 📅 Effective Date (Extraction)
+│   └── 📅 Termination Date (Extraction)
+├── 📁 Invoice
+│   ├── 💰 Invoice Amount (Extraction)
+│   ├── 📅 Due Date (Extraction)
+│   └── 🏢 Vendor Name (Extraction)
+└── 📁 Report
+    ├── 📊 Report Category (Classification: Financial | Operational | Compliance)
+    └── 📅 Report Period (Extraction)
+```
+
+<Tip>
+In this taxonomy, the AI first classifies the document type, then only extracts the relevant child tags. A Contract won't have "Invoice Amount" extracted — saving time and cost.
+</Tip>
+
+---
+
+## Metadata
+
+Metadata represents the actual extracted values that result from applying Tags to your documents. While Tags define *what* to extract, Metadata is the *extracted data* itself.
+
+### Metadata Properties
+
+| Property | Description | Example |
+| :-- | :-- | :-- |
+| **Values** | The extracted or classified value(s) | `["NDA", "Non-Disclosure Agreement"]` |
+| **Evidence** | Text snippet supporting the extraction | "This Non-Disclosure Agreement is entered into..." |
+| **Confidence** | AI confidence score (0-1) | `0.95` |
+
+### Metadata Levels
+
+| Level | Description | Use Case |
+| :-- | :-- | :-- |
+| **File-Level** | Aggregated metadata for the entire document | Document classification, search filters |
+| **Chunk-Level** | Granular metadata per text segment | Precise evidence location, RAG retrieval |
+
+### Metadata Standardization
+
+The platform includes AI-powered standardization to clean and normalize extracted values:
+
+| Feature | Description |
+| :-- | :-- |
+| **Deduplication** | Merge similar values (e.g., "Inc." and "Incorporated") |
+| **Normalization** | Standardize formats (dates, currencies, names) |
+| **Bulk Standardization** | Apply standardization across multiple tags |
+
+---
+
+## Data Slices
+
+Data Slices are filtered subsets of your data based on metadata. They allow you to focus on specific segments of your document repository without affecting the entire dataset.
+
+### Benefits
+
+| Benefit | Description |
+| :-- | :-- |
+| **Targeted Processing** | Run extraction on only relevant documents (e.g., just 2024 contracts) |
+| **Focused Analysis** | View and analyze specific document categories |
+| **Efficient Workflows** | Avoid reprocessing already-enriched documents |
+| **Team Collaboration** | Share team-specific data slices with team members |
+| **Controllability** | Run downstream applications on controlled data |
+
+### Data Slice Properties
+
+| Property | Description |
+| :-- | :-- |
+| **Name** | User-defined identifier |
+| **Description** | Optional notes about what's included |
+| **Data Connector** | Which Data Connector it's derived from |
+| **Document Count** | Number of files matching the conditions |
+| **Conditions** | Filter rules that define the slice based on metadata |
+
+### Example Data Slices
+
+| Slice Name | Filter Conditions | Document Count |
+| :-- | :-- | :-- |
+| "2024 Contracts" | Document Type = Contract AND Year = 2024 | 1,247 |
+| "High-Value Invoices" | Invoice Amount > $10,000 | 89 |
+| "Documents with PII" | SSN_Detected = Yes OR Email_Detected = Yes | 3,521 |
+| "Unprocessed Files" | Document Type = null | 5,892 |
+
+---
+
+## Concept Relationships
+
+Here's how all the concepts work together in a typical workflow:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    PROJECT: Contract Analysis 2024              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   DATA CONNECTOR          DATA SLICE           TAXONOMY & TAGS  │
+│   ┌──────────────┐       ┌──────────────┐     ┌──────────────┐  │
+│   │   S3 Legal   │  ───▶ │2024 Contracts│ ───▶│Contract Type │  │
+│   │   Bucket     │       │ (1,247 docs) │     │Contract Value│  │
+│   └──────────────┘       └──────────────┘     │   Parties    │  │
+│                                               └──────────────┘  │
+│                                    │                            │
+│                                    ▼                            │
+│                            ┌──────────────┐                     │
+│                            │   METADATA   │                     │
+│                            │  (Extracted  │                     │
+│                            │   Results)   │                     │
+│                            └──────────────┘                     │
+│                                    │                            │
+│                                    ▼                            │
+│                            ┌──────────────┐                     │
+│                            │ DESTINATION  │                     │
+│                            │  SharePoint  │                     │
+│                            │Legal Library │                     │
+│                            └──────────────┘                     │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Quick Reference
+
+| Concept | What It Does | Think of It Like... |
+| :-- | :-- | :-- |
+| **Data Connector** | Connects to where your documents live | Plugging in an external drive |
+| **Project** | Work with specific data sources and taxonomies | A project folder |
+| **Tag** | Defines what info to extract | A question on a form |
+| **Taxonomy** | Organizes tags into a structure | An outline or checklist |
+| **Metadata** | The actual extracted information | The filled-out answers |
+| **Data Slice** | Filters to specific documents | A saved search |
+| **Destination** | Sends enriched data to other systems | Exporting to share |
+
