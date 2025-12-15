@@ -96,6 +96,94 @@ Use Data Slices to create focused workflows. For example, process only untagged 
 
 ---
 
+## Python SDK
+
+<Tabs>
+  <Tab title="Create Data Slice">
+```python
+from unstructured import UnstructuredClient
+
+client = UnstructuredClient(
+    username="your-username",
+    password="your-password",
+)
+
+# Create a data slice with filter conditions
+slice = client.dataslice.create(
+    dataslice_name="2024-contracts",
+    connector_name="my-s3-bucket",
+    conditions=[
+        {"field": "document_type", "operator": "eq", "value": "Contract"},
+        {"field": "year", "operator": "eq", "value": 2024},
+    ],
+)
+print(f"Created slice with {slice.document_count} documents")
+```
+  </Tab>
+  <Tab title="Filter Examples">
+```python
+# Filter by metadata values
+high_value = client.dataslice.create(
+    dataslice_name="high-value-contracts",
+    connector_name="my-s3-bucket",
+    conditions=[
+        {"field": "contract_value", "operator": "gte", "value": 100000},
+    ],
+)
+
+# Filter unprocessed documents
+unprocessed = client.dataslice.create(
+    dataslice_name="needs-processing",
+    connector_name="my-s3-bucket",
+    conditions=[
+        {"field": "document_type", "operator": "is_null", "value": True},
+    ],
+)
+
+# Filter documents with PII
+sensitive = client.dataslice.create(
+    dataslice_name="contains-pii",
+    connector_name="my-s3-bucket",
+    conditions=[
+        {"field": "has_ssn", "operator": "eq", "value": True},
+    ],
+)
+```
+  </Tab>
+  <Tab title="Export Slice">
+```python
+# Export a data slice to a destination
+result = client.dataslice.export_metadata(
+    dataslice_name="2024-contracts",
+    export_format="csv",
+)
+print(f"Exported to: {result.file_path}")
+
+# Export to a vector database
+client.destination.export(
+    destination_name="my-qdrant",
+    dataslice_name="2024-contracts",
+    export_level="chunk",
+    export_nodes=True,
+)
+```
+  </Tab>
+  <Tab title="List & Delete">
+```python
+# List all data slices
+slices = client.dataslice.list()
+for s in slices.dataslices:
+    print(f"{s.dataslice_name}: {s.document_count} docs")
+
+# Delete a data slice
+client.dataslice.delete(dataslice_name="old-slice")
+print("Data slice deleted")
+```
+  </Tab>
+</Tabs>
+
+---
+
 ## API Reference
 
 <CardGroup cols={2}>

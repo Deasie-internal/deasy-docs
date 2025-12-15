@@ -88,6 +88,61 @@ flowchart LR
 
 ---
 
+## Python SDK
+
+<Tabs>
+  <Tab title="Create Connector">
+```python
+from unstructured import UnstructuredClient
+
+client = UnstructuredClient(
+    username="your-username",
+    password="your-password",
+)
+
+# Create an S3 connector
+connector = client.data_source.create(
+    connector_name="my-s3-bucket",
+    connector_body={
+        "vector_db_type": "s3",
+        "bucket_name": "my-documents",
+        "aws_access_key_id": "YOUR_ACCESS_KEY",
+        "aws_secret_access_key": "YOUR_SECRET_KEY",
+        "region": "us-east-1",
+    },
+)
+print(f"Created connector: {connector.profile_id}")
+```
+  </Tab>
+  <Tab title="List Connectors">
+```python
+# List all connectors
+connectors = client.data_source.list()
+for c in connectors.connectors:
+    print(f"{c.connector_name}: {c.vector_db_type}")
+```
+  </Tab>
+  <Tab title="Ingest Data">
+```python
+# Ingest documents from a connector
+result = client.ocr.ingest(
+    connector_name="my-s3-bucket",
+    prefix="documents/",  # Optional: specific folder
+)
+print(f"Ingested {result.document_count} documents")
+```
+  </Tab>
+  <Tab title="Delete Connector">
+```python
+# Delete a connector
+client.data_source.delete(connector_name="my-s3-bucket")
+print("Connector deleted")
+```
+  </Tab>
+</Tabs>
+
+---
+
 ## API Reference
 
 <CardGroup cols={2}>

@@ -8,8 +8,8 @@ We have already begun unifying the experience by linking Concepts to API Referen
 
 ### 🎯 Objective: "Zero to Hello World in 5 minutes"
 
-- [ ] **Interactive Quickstart**: Replace the text-heavy quickstart with a copy-pasteable Python script that runs out of the box (using a public sandbox key if possible).
-- [ ] **SDK-First Examples**: Every concept page (Data Connectors, Metadata, etc.) currently links to raw API endpoints. We should prioritize showing the *Python SDK usage* first, as most developers will use the library, not raw cURL requests.
+- [x] **Interactive Quickstart**: Replace the text-heavy quickstart with a copy-pasteable Python script that runs out of the box (using a public sandbox key if possible).
+- [x] **SDK-First Examples**: Every concept page (Data Connectors, Metadata, etc.) currently links to raw API endpoints. We should prioritize showing the *Python SDK usage* first, as most developers will use the library, not raw cURL requests.
 
 ## 2. "Cookbooks" & Recipes (High Impact)
 
@@ -18,9 +18,10 @@ Best-in-class docs don't just explain *what* things are; they show *how* to solv
 ### 🍳 Proposed Recipe Section
 Create a new top-level "Cookbooks" or "Guides" section with end-to-end code samples for common patterns:
 
-1.  **"S3 to Qdrant Pipeline"**: A complete script showing how to ingest PDFs from an S3 bucket, extract metadata, and load vectors into Qdrant.
-2.  **"PII Redaction Workflow"**: A guide focusing specifically on how to configure and test sensitive data detection.
-3.  **"Custom Taxonomy Setup"**: A walkthrough of defining a complex hierarchical taxonomy for legal contracts.
+1.  [x] **"S3 to SharePoint Pipeline"**: A complete script showing how to ingest PDFs from an S3 bucket, extract metadata, and export to SharePoint.
+2.  [x] **"S3 to Qdrant Pipeline"**: A complete script for building a RAG pipeline with vector search.
+3.  [x] **"PII Detection"**: A guide focusing specifically on how to configure and test sensitive data detection.
+4.  [x] **"Build a Legal Expert Taxonomy"**: Create a taxonomy that extracts contract data like an experienced legal analyst.
 
 **Why this moves the needle**: Developers often ignore concepts and look for code that closely matches their use case. Recipes capture this intent.
 

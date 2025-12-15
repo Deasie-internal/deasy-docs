@@ -1,0 +1,269 @@
+---
+title: 'Build a Legal Expert Taxonomy'
+description: 'Use AI to generate a taxonomy that extracts contract data like an experienced legal analyst'
+---
+
+This cookbook shows you how to use the platform's AI to automatically generate a taxonomy that captures domain expertise. Instead of manually defining tags, you describe what you need and the AI builds a taxonomy like an experienced legal analyst would.
+
+## The Magic: AI-Generated Taxonomies
+
+Instead of manually defining dozens of tags, just describe your use case:
+
+```python
+from unstructured import UnstructuredClient
+
+client = UnstructuredClient(
+    username="your-username",
+    password="your-password",
+)
+
+# Let the AI build your taxonomy like a legal expert would
+suggestions = client.suggest.schema(
+    description="""
+    I need to analyze legal contracts like an experienced legal analyst would.
+    Extract key terms, financial obligations, risk indicators, important dates,
+    and anything that would be relevant for contract management and compliance.
+    Focus on NDAs, MSAs, SLAs, and employment agreements.
+    """,
+)
+
+# See what the AI suggests
+print("🤖 AI-Suggested Taxonomy:")
+for tag in suggestions.tags:
+    print(f"  • {tag.name} ({tag.output_type})")
+    print(f"    {tag.description}")
+```
+
+**Example output:**
+```
+🤖 AI-Suggested Taxonomy:
+  • contract_type (word)
+    Primary contract classification: NDA, MSA, SLA, SOW, Employment, Lease, License
+  • parties (list[string])
+    All parties to the contract with their legal names
+  • effective_date (date)
+    Date when the contract becomes legally binding
+  • expiration_date (date)
+    Date when the contract terminates or expires
+  • total_value (float)
+    Total monetary value of the contract in USD
+  • has_auto_renewal (boolean)
+    Whether the contract automatically renews
+  • liability_cap (string)
+    Maximum liability amount or description of liability limitations
+  • termination_notice_period (string)
+    Required notice period for termination
+  • governing_law (string)
+    Jurisdiction whose laws govern the contract
+  • confidentiality_period (string)
+    Duration of confidentiality obligations
+  ...
+```
+
+## Create the Taxonomy from Suggestions
+
+Once you're happy with the suggestions, create the taxonomy:
+
+```python
+# Create taxonomy directly from AI suggestions
+taxonomy = client.taxonomy.upsert(
+    taxonomy_name="legal-expert",
+    taxonomy_description="AI-generated taxonomy for legal contract analysis",
+    tags=suggestions.tags,  # Use the AI suggestions directly
+)
+
+print(f"✓ Created taxonomy with {len(suggestions.tags)} tags")
+```
+
+## Refine with Sample Documents
+
+For even better results, provide sample documents:
+
+```python
+# AI analyzes your actual documents to suggest relevant tags
+suggestions = client.suggest.schema(
+    description="Extract key data from vendor contracts for procurement review",
+    sample_documents=[
+        "s3://contracts/sample-msa.pdf",
+        "s3://contracts/sample-nda.pdf",
+        "s3://contracts/sample-sow.pdf",
+    ],
+)
+
+# The AI will suggest tags based on what it actually finds in your documents
+```
+
+## Process Your Contracts
+
+```python
+# Process all contracts
+results = client.classify.generate_batch(
+    connector_name="contract-repository",
+    taxonomy_name="legal-expert",
+)
+
+# Review extracted data
+for doc in results.metadata:
+    print(f"\n📄 {doc.file_name}")
+    print(f"   Type: {doc.tags.get('contract_type')}")
+    print(f"   Value: ${doc.tags.get('total_value', 0):,.2f}")
+    print(f"   Expires: {doc.tags.get('expiration_date')}")
+    
+    # Flag risks
+    if doc.tags.get('has_auto_renewal'):
+        print(f"   ⚠️  Auto-renews!")
+```
+
+## Other Domain Examples
+
+The same approach works for any domain — just describe what an expert would look for:
+
+<Tabs>
+  <Tab title="Financial Analyst">
+```python
+suggestions = client.suggest.schema(
+    description="""
+    Analyze quarterly financial reports like a Wall Street analyst.
+    Extract revenue, earnings, growth metrics, risk factors,
+    and forward guidance. Focus on 10-Q and 10-K filings.
+    """,
+)
+
+# AI might suggest: revenue, net_income, eps, revenue_growth_yoy,
+# operating_margin, key_risks, forward_guidance, etc.
+```
+  </Tab>
+  <Tab title="HR Recruiter">
+```python
+suggestions = client.suggest.schema(
+    description="""
+    Process resumes like an experienced technical recruiter.
+    Extract skills, experience level, education, certifications,
+    and anything relevant for matching candidates to job requirements.
+    """,
+)
+
+# AI might suggest: candidate_name, current_title, years_experience,
+# technical_skills, soft_skills, education_level, certifications, etc.
+```
+  </Tab>
+  <Tab title="Insurance Underwriter">
+```python
+suggestions = client.suggest.schema(
+    description="""
+    Analyze insurance claims like a senior underwriter.
+    Extract claim details, incident information, injury status,
+    and any red flags that might indicate fraud or disputes.
+    """,
+)
+
+# AI might suggest: claim_type, incident_date, claim_amount,
+# injury_involved, fraud_indicators, liability_assessment, etc.
+```
+  </Tab>
+</Tabs>
+
+## Customize the Suggestions
+
+You can modify the AI suggestions before creating the taxonomy:
+
+```python
+# Get suggestions
+suggestions = client.suggest.schema(
+    description="Legal contract analysis",
+)
+
+# Add a custom tag
+suggestions.tags.append({
+    "name": "reviewed_by_legal",
+    "description": "Whether this contract has been reviewed by legal team",
+    "output_type": "boolean",
+})
+
+# Remove a tag you don't need
+suggestions.tags = [t for t in suggestions.tags if t["name"] != "some_tag"]
+
+# Modify a tag description for better accuracy
+for tag in suggestions.tags:
+    if tag["name"] == "total_value":
+        tag["description"] = "Total contract value in USD. If a range, use maximum."
+
+# Create the customized taxonomy
+taxonomy = client.taxonomy.upsert(
+    taxonomy_name="legal-expert-customized",
+    tags=suggestions.tags,
+)
+```
+
+## Tips for Better Suggestions
+
+<AccordionGroup>
+  <Accordion title="Be Specific in Your Description" icon="bullseye">
+    The more context you provide, the better the suggestions:
+    
+    ```python
+    # ❌ Too vague
+    suggestions = client.suggest.schema(
+        description="Analyze documents",
+    )
+    
+    # ✅ Specific and detailed
+    suggestions = client.suggest.schema(
+        description="""
+        Analyze software license agreements for compliance review.
+        Need to track: license types (perpetual, subscription, per-seat),
+        usage restrictions, audit rights, termination clauses,
+        and any open-source license obligations.
+        """,
+    )
+    ```
+  </Accordion>
+  
+  <Accordion title="Provide Sample Documents" icon="file-lines">
+    Real samples help the AI understand your actual document structure:
+    
+    ```python
+    suggestions = client.suggest.schema(
+        description="Extract data from our vendor invoices",
+        sample_documents=[
+            "s3://invoices/sample1.pdf",
+            "s3://invoices/sample2.pdf",
+        ],
+    )
+    ```
+  </Accordion>
+  
+  <Accordion title="Iterate and Refine" icon="rotate">
+    Start with AI suggestions, test on real documents, then refine:
+    
+    ```python
+    # 1. Get initial suggestions
+    v1 = client.suggest.schema(description="...")
+    
+    # 2. Create and test
+    taxonomy = client.taxonomy.upsert(taxonomy_name="test-v1", tags=v1.tags)
+    results = client.classify.generate(file_path="sample.pdf", taxonomy_name="test-v1")
+    
+    # 3. Review what worked and what didn't
+    # 4. Adjust descriptions or add/remove tags
+    # 5. Create v2
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="S3 to SharePoint" icon="microsoft" href="/cookbooks/s3-to-sharepoint">
+    Export your extracted data to SharePoint.
+  </Card>
+  <Card title="S3 to Qdrant" icon="database" href="/cookbooks/s3-to-qdrant">
+    Build a RAG pipeline with your taxonomy.
+  </Card>
+  <Card title="PII Detection" icon="shield" href="/cookbooks/pii-detection">
+    Add sensitive data detection.
+  </Card>
+  <Card title="Taxonomies Concept" icon="tags" href="/concepts/taxonomies-tags">
+    Learn the fundamentals of taxonomies.
+  </Card>
+</CardGroup>

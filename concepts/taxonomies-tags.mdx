@@ -91,6 +91,101 @@ In this taxonomy, the AI first classifies the document type, then only extracts 
 
 ---
 
+## Python SDK
+
+<Tabs>
+  <Tab title="Create Taxonomy">
+```python
+from unstructured import UnstructuredClient
+
+client = UnstructuredClient(
+    username="your-username",
+    password="your-password",
+)
+
+# Create a taxonomy with tags
+taxonomy = client.taxonomy.upsert(
+    taxonomy_name="contract-analysis",
+    taxonomy_description="Extract key data from legal contracts",
+    tags=[
+        {
+            "name": "contract_type",
+            "description": "Type of contract (NDA, MSA, SLA, etc.)",
+            "output_type": "word",
+        },
+        {
+            "name": "parties",
+            "description": "Names of all parties involved",
+            "output_type": "list[string]",
+        },
+        {
+            "name": "effective_date",
+            "description": "When the contract becomes effective",
+            "output_type": "date",
+        },
+        {
+            "name": "total_value",
+            "description": "Total monetary value in USD",
+            "output_type": "float",
+        },
+    ],
+)
+print(f"Created taxonomy: {taxonomy.taxonomy_id}")
+```
+  </Tab>
+  <Tab title="Create Tag">
+```python
+# Create or update a single tag
+tag = client.tags.upsert(
+    tag_name="document_type",
+    tag_description="Classify document type",
+    output_type="word",
+    available_values=["Contract", "Invoice", "Report", "Letter"],
+)
+print(f"Created tag: {tag.tag_id}")
+```
+  </Tab>
+  <Tab title="AI Suggestions">
+```python
+# Get AI-suggested taxonomy for your domain
+suggestions = client.suggest.schema(
+    description="Medical patient records with diagnoses and prescriptions",
+)
+
+print("Suggested tags:")
+for tag in suggestions.tags:
+    print(f"  - {tag.name}: {tag.description}")
+
+# Get AI-suggested regex patterns
+pattern = client.suggest.patterns(
+    description="US Social Security Number (XXX-XX-XXXX)",
+)
+print(f"Suggested pattern: {pattern.regex}")
+```
+  </Tab>
+  <Tab title="List & Delete">
+```python
+# List all taxonomies
+taxonomies = client.taxonomy.list()
+for t in taxonomies.taxonomies:
+    print(f"{t.taxonomy_name}: {t.tag_count} tags")
+
+# List all tags
+tags = client.tags.list()
+for tag in tags.tags:
+    print(f"{tag.tag_name} ({tag.output_type})")
+
+# Delete a taxonomy
+client.taxonomy.delete(taxonomy_name="old-taxonomy")
+
+# Delete a tag
+client.tags.delete(tag_name="unused-tag")
+```
+  </Tab>
+</Tabs>
+
+---
+
 ## API Reference
 
 <CardGroup cols={2}>

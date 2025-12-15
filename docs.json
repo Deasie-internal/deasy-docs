@@ -15,7 +15,7 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["concepts/overview"]
+            "pages": ["quickstart", "concepts/overview"]
           },
           {
             "group": "Core Concepts",
@@ -26,6 +26,15 @@
               "concepts/taxonomies-tags",
               "concepts/metadata",
               "concepts/destinations"
+            ]
+          },
+          {
+            "group": "Cookbooks",
+            "pages": [
+              "cookbooks/s3-to-sharepoint",
+              "cookbooks/s3-to-qdrant",
+              "cookbooks/pii-detection",
+              "cookbooks/custom-taxonomy"
             ]
           }
         ]
@@ -59,5 +68,8 @@
       "label": "Try Unstructured",
       "href": "https://www.collibra.com/blog/making-unstructured-data-ai-ready-unlocking-value-for-genai-and-agents"
     }
+  },
+  "feedback": {
+    "thumbsRating": true
   }
 }
