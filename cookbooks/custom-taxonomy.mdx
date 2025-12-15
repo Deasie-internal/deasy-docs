@@ -1,0 +1,355 @@
+---
+title: 'Custom Taxonomy Setup'
+description: 'Design and implement complex hierarchical taxonomies for specialized domains'
+---
+
+This cookbook walks you through creating sophisticated taxonomies for domain-specific document classification. You'll learn to design hierarchical structures, use advanced tag types, and leverage AI suggestions.
+
+## When to Use Custom Taxonomies
+
+Custom taxonomies are ideal when you need:
+- **Domain-specific extraction** — Legal contracts, medical records, financial reports
+- **Hierarchical classification** — Categories with subcategories
+- **Structured output** — Dates, numbers, lists, enums
+- **Consistency** — Same extraction logic across large document sets
+
+## Quick Start: Legal Contract Taxonomy
+
+```python
+from unstructured import UnstructuredClient
+
+client = UnstructuredClient(
+    username="your-username",
+    password="your-password",
+)
+
+# Create a comprehensive contract taxonomy
+taxonomy = client.taxonomy.upsert(
+    taxonomy_name="legal-contracts",
+    taxonomy_description="Extract structured data from legal contracts",
+    tags=[
+        # Classification
+        {
+            "name": "contract_type",
+            "description": "Primary type: NDA, MSA, SLA, Employment, Lease, License",
+            "output_type": "word",
+        },
+        {
+            "name": "jurisdiction",
+            "description": "Governing law jurisdiction (e.g., 'Delaware', 'California')",
+            "output_type": "word",
+        },
+        
+        # Parties
+        {
+            "name": "parties",
+            "description": "All parties to the contract with their roles",
+            "output_type": "list[string]",
+        },
+        
+        # Dates
+        {
+            "name": "effective_date",
+            "description": "When the contract becomes effective",
+            "output_type": "date",
+        },
+        {
+            "name": "expiration_date",
+            "description": "When the contract terminates",
+            "output_type": "date",
+        },
+        {
+            "name": "renewal_terms",
+            "description": "Auto-renewal terms if any",
+            "output_type": "string",
+        },
+        
+        # Financial
+        {
+            "name": "total_value",
+            "description": "Total contract value in USD",
+            "output_type": "float",
+        },
+        {
+            "name": "payment_terms",
+            "description": "Payment schedule and terms",
+            "output_type": "string",
+        },
+        
+        # Key Clauses
+        {
+            "name": "has_non_compete",
+            "description": "Whether contract includes non-compete clause",
+            "output_type": "boolean",
+        },
+        {
+            "name": "has_arbitration",
+            "description": "Whether disputes go to arbitration",
+            "output_type": "boolean",
+        },
+        {
+            "name": "termination_conditions",
+            "description": "Conditions under which contract can be terminated",
+            "output_type": "list[string]",
+        },
+    ],
+)
+
+print(f"✓ Created taxonomy: {taxonomy.taxonomy_id}")
+```
+
+## Tag Output Types Reference
+
+| Type | Description | Example Output |
+| :-- | :-- | :-- |
+| `string` | Free-form text | `"Payment due within 30 days of invoice"` |
+| `word` | Single word/short phrase | `"NDA"` |
+| `boolean` | True/false | `true` |
+| `integer` | Whole number | `90` |
+| `float` | Decimal number | `150000.00` |
+| `date` | ISO date | `"2024-03-15"` |
+| `list[string]` | Array of strings | `["Acme Corp", "Beta LLC"]` |
+| `list[date]` | Array of dates | `["2024-01-01", "2024-12-31"]` |
+
+## AI-Assisted Taxonomy Design
+
+Let the AI suggest tags based on your document types:
+
+```python
+# Get AI suggestions for a document domain
+suggestions = client.suggest.schema(
+    description="Medical records including patient visits, diagnoses, and prescriptions",
+    sample_documents=["s3://my-bucket/sample1.pdf", "s3://my-bucket/sample2.pdf"],
+)
+
+print("Suggested taxonomy structure:")
+for tag in suggestions.tags:
+    print(f"  - {tag.name} ({tag.output_type}): {tag.description}")
+
+# Use suggestions to create taxonomy
+taxonomy = client.taxonomy.upsert(
+    taxonomy_name="medical-records",
+    taxonomy_description="Extract data from patient medical records",
+    tags=suggestions.tags,
+)
+```
+
+## Hierarchical Taxonomies
+
+For complex domains, organize tags into logical groups:
+
+```python
+# Financial Report Taxonomy - Organized by Section
+taxonomy = client.taxonomy.upsert(
+    taxonomy_name="financial-reports",
+    taxonomy_description="Extract data from quarterly financial reports",
+    tags=[
+        # === Header Information ===
+        {
+            "name": "company_name",
+            "description": "Name of the reporting company",
+            "output_type": "word",
+            "tag_group": "header",
+        },
+        {
+            "name": "report_period",
+            "description": "Fiscal quarter (Q1, Q2, Q3, Q4)",
+            "output_type": "word",
+            "tag_group": "header",
+        },
+        {
+            "name": "fiscal_year",
+            "description": "Fiscal year",
+            "output_type": "integer",
+            "tag_group": "header",
+        },
+        
+        # === Income Statement ===
+        {
+            "name": "total_revenue",
+            "description": "Total revenue in millions USD",
+            "output_type": "float",
+            "tag_group": "income_statement",
+        },
+        {
+            "name": "gross_profit",
+            "description": "Gross profit in millions USD",
+            "output_type": "float",
+            "tag_group": "income_statement",
+        },
+        {
+            "name": "net_income",
+            "description": "Net income in millions USD",
+            "output_type": "float",
+            "tag_group": "income_statement",
+        },
+        
+        # === Balance Sheet ===
+        {
+            "name": "total_assets",
+            "description": "Total assets in millions USD",
+            "output_type": "float",
+            "tag_group": "balance_sheet",
+        },
+        {
+            "name": "total_liabilities",
+            "description": "Total liabilities in millions USD",
+            "output_type": "float",
+            "tag_group": "balance_sheet",
+        },
+        
+        # === Analysis ===
+        {
+            "name": "key_risks",
+            "description": "Key risk factors mentioned",
+            "output_type": "list[string]",
+            "tag_group": "analysis",
+        },
+        {
+            "name": "forward_guidance",
+            "description": "Forward-looking statements and guidance",
+            "output_type": "string",
+            "tag_group": "analysis",
+        },
+    ],
+)
+```
+
+## Managing Multiple Taxonomies
+
+Use different taxonomies for different document types:
+
+```python
+# List all your taxonomies
+taxonomies = client.taxonomy.list()
+for t in taxonomies.taxonomies:
+    print(f"{t.taxonomy_name}: {t.tag_count} tags")
+
+# Process with specific taxonomy based on document type
+def process_document(file_path: str):
+    # First, classify the document type
+    doc_type = client.classify.generate(
+        file_path=file_path,
+        taxonomy_name="document-classifier",
+        tags=["document_type"],
+    )
+    
+    # Then use appropriate taxonomy
+    taxonomy_map = {
+        "contract": "legal-contracts",
+        "invoice": "financial-documents",
+        "resume": "hr-documents",
+        "medical": "medical-records",
+    }
+    
+    taxonomy = taxonomy_map.get(doc_type.tags["document_type"], "general")
+    
+    return client.classify.generate(
+        file_path=file_path,
+        taxonomy_name=taxonomy,
+    )
+```
+
+## Taxonomy Versioning
+
+Keep track of taxonomy changes for reproducibility:
+
+```python
+# Add version tag to your taxonomy
+taxonomy = client.taxonomy.upsert(
+    taxonomy_name="contracts-v2",  # Include version in name
+    taxonomy_description="Contract extraction v2.0 - Added arbitration clause detection",
+    tags=[
+        # ... tags ...
+    ],
+)
+
+# Or use metadata for versioning
+taxonomy = client.taxonomy.upsert(
+    taxonomy_name="contracts",
+    taxonomy_description="Contract extraction (v2.0, updated 2024-03)",
+    tags=[
+        # ... tags ...
+    ],
+)
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start Simple, Iterate" icon="seedling">
+    Begin with 5-10 core tags, test on sample documents, then expand:
+    
+    ```python
+    # V1: Core fields
+    v1_tags = ["contract_type", "parties", "effective_date", "total_value"]
+    
+    # V2: Add after testing
+    v2_tags = v1_tags + ["jurisdiction", "termination_conditions"]
+    
+    # V3: Refine based on results
+    v3_tags = v2_tags + ["has_arbitration", "renewal_terms"]
+    ```
+  </Accordion>
+  
+  <Accordion title="Write Clear Descriptions" icon="pen">
+    Tag descriptions guide the AI. Be specific:
+    
+    ```python
+    # ❌ Vague
+    {"name": "amount", "description": "The amount"}
+    
+    # ✅ Specific
+    {"name": "total_contract_value", "description": "Total monetary value of the contract in USD, including all fees and charges"}
+    ```
+  </Accordion>
+  
+  <Accordion title="Choose the Right Output Type" icon="list-check">
+    Match output type to your downstream needs:
+    
+    ```python
+    # Need to filter/sort? Use structured types
+    {"name": "contract_value", "output_type": "float"}  # Can filter: > 100000
+    
+    # Need exact text? Use string
+    {"name": "payment_terms", "output_type": "string"}  # Preserves original wording
+    
+    # Multiple values? Use lists
+    {"name": "parties", "output_type": "list[string]"}  # ["Acme", "Beta"]
+    ```
+  </Accordion>
+  
+  <Accordion title="Test Before Deploying" icon="flask">
+    Validate on sample documents before processing at scale:
+    
+    ```python
+    # Test on a few documents first
+    test_results = client.classify.generate(
+        file_path="s3://bucket/sample-contract.pdf",
+        taxonomy_name="legal-contracts",
+    )
+    
+    # Review output quality
+    print(json.dumps(test_results.tags, indent=2))
+    
+    # Adjust taxonomy if needed, then run batch
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="S3 to Qdrant" icon="database" href="/cookbooks/s3-to-qdrant">
+    Build a complete pipeline with your taxonomy.
+  </Card>
+  <Card title="PII Detection" icon="shield" href="/cookbooks/pii-redaction">
+    Add sensitive data detection.
+  </Card>
+  <Card title="Taxonomies Concept" icon="tags" href="/concepts/taxonomies-tags">
+    Learn the fundamentals of taxonomies.
+  </Card>
+  <Card title="API Reference" icon="brackets-curly" href="/api-reference">
+    Explore taxonomy API endpoints.
+  </Card>
+</CardGroup>

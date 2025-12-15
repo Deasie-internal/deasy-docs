@@ -87,6 +87,70 @@ flowchart LR
 
 ---
 
+## Python SDK
+
+<Tabs>
+  <Tab title="Create Destination">
+```python
+from unstructured import UnstructuredClient
+
+client = UnstructuredClient(
+    username="your-username",
+    password="your-password",
+)
+
+# Create a Qdrant destination
+destination = client.destination.create(
+    destination_name="my-vector-db",
+    destination_body={
+        "vector_db_type": "qdrant",
+        "url": "https://your-cluster.qdrant.io",
+        "api_key": "YOUR_QDRANT_API_KEY",
+        "collection_name": "documents",
+    },
+)
+print(f"Created destination: {destination.destination_id}")
+```
+  </Tab>
+  <Tab title="Export Data">
+```python
+# Export enriched data to destination
+result = client.destination.export(
+    destination_name="my-vector-db",
+    connector_name="my-s3-bucket",
+    export_level="chunk",       # "file", "chunk", or "both"
+    export_nodes=True,          # Include vector embeddings
+    export_metadata=True,       # Include extracted metadata
+    metadata_format="json_store",
+)
+
+# For large exports, track progress
+if result.tracker_id:
+    status = client.progress_tracker.get_status(
+        tracker_id=result.tracker_id
+    )
+    print(f"Export status: {status.status}")
+```
+  </Tab>
+  <Tab title="List Destinations">
+```python
+# List all destinations
+destinations = client.destination.list()
+for d in destinations.destinations:
+    print(f"{d.destination_name}: {d.vector_db_type}")
+```
+  </Tab>
+  <Tab title="Delete Destination">
+```python
+# Delete a destination
+client.destination.delete(destination_name="my-vector-db")
+print("Destination deleted")
+```
+  </Tab>
+</Tabs>
+
+---
+
 ## API Reference
 
 <CardGroup cols={2}>

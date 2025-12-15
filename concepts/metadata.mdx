@@ -89,6 +89,88 @@ For a contract document with a "Contract Type" classification tag:
 
 ---
 
+## Python SDK
+
+<Tabs>
+  <Tab title="Generate Metadata">
+```python
+from unstructured import UnstructuredClient
+
+client = UnstructuredClient(
+    username="your-username",
+    password="your-password",
+)
+
+# Generate metadata for a single document
+result = client.classify.generate(
+    file_path="s3://my-bucket/contract.pdf",
+    taxonomy_name="contract-analysis",
+)
+
+print(f"Document: {result.file_name}")
+for tag, value in result.tags.items():
+    print(f"  {tag}: {value}")
+```
+  </Tab>
+  <Tab title="Batch Processing">
+```python
+# Generate metadata for all documents in a connector
+results = client.classify.generate_batch(
+    connector_name="my-s3-bucket",
+    taxonomy_name="contract-analysis",
+)
+
+print(f"Processed {len(results.metadata)} documents")
+for doc in results.metadata:
+    print(f"\n{doc.file_name}:")
+    print(f"  Type: {doc.tags.get('contract_type')}")
+    print(f"  Value: ${doc.tags.get('total_value', 0):,.2f}")
+```
+  </Tab>
+  <Tab title="List Metadata">
+```python
+# List metadata for documents
+metadata = client.metadata.list(
+    connector_name="my-s3-bucket",
+    tag_names=["contract_type", "effective_date"],
+)
+
+for doc in metadata.documents:
+    print(f"{doc.file_name}: {doc.tags}")
+
+# Paginated listing for large datasets
+page = client.metadata.list_paginated(
+    connector_name="my-s3-bucket",
+    page_size=100,
+    page_number=1,
+)
+print(f"Page 1 of {page.total_pages}")
+```
+  </Tab>
+  <Tab title="Upsert & Delete">
+```python
+# Manually upsert metadata
+client.metadata.upsert(
+    file_name="contract.pdf",
+    connector_name="my-s3-bucket",
+    tags={
+        "contract_type": "NDA",
+        "reviewed": True,
+        "reviewer": "John Doe",
+    },
+)
+
+# Delete metadata for specific files
+client.metadata.delete(
+    connector_name="my-s3-bucket",
+    file_names=["old-contract.pdf"],
+)
+```
+  </Tab>
+</Tabs>
+
+---
+
 ## API Reference
 
 <CardGroup cols={2}>
