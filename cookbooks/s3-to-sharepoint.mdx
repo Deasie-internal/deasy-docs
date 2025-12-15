@@ -1,9 +1,9 @@
 ---
-title: 'S3 to Qdrant Pipeline'
-description: 'Build a complete RAG pipeline: ingest PDFs from S3, extract metadata, and load into Qdrant for semantic search'
+title: 'S3 to SharePoint Pipeline'
+description: 'Enrich documents from S3 with metadata and export to SharePoint for enterprise document management'
 ---
 
-This cookbook walks you through building a production-ready RAG (Retrieval-Augmented Generation) pipeline. You'll ingest documents from Amazon S3, extract structured metadata, and load everything into Qdrant for semantic search.
+This cookbook walks you through building a document enrichment pipeline. You'll ingest documents from Amazon S3, extract structured metadata, and push the enriched data to SharePoint as document columns.
 
 ## What You'll Build
 
@@ -11,14 +11,14 @@ This cookbook walks you through building a production-ready RAG (Retrieval-Augme
 flowchart LR
     S3[Amazon S3<br/>PDF Documents] --> PROC[Unstructured<br/>Processing]
     PROC --> META[Metadata<br/>Extraction]
-    META --> QD[Qdrant<br/>Vector DB]
-    QD --> APP[Your RAG App]
+    META --> SP[SharePoint<br/>Document Library]
+    SP --> USERS[Enterprise Users]
 ```
 
 ## Prerequisites
 
 - An S3 bucket with PDF documents
-- A Qdrant instance (cloud or self-hosted)
+- A SharePoint site with appropriate permissions
 - Python 3.9+
 
 ```bash
@@ -53,18 +53,19 @@ s3_connector = client.data_source.create(
 print(f"✓ Connected to S3: {s3_connector.profile_id}")
 
 # ============================================
-# Step 2: Connect to Qdrant (Destination)
+# Step 2: Connect to SharePoint (Destination)
 # ============================================
-qdrant_dest = client.destination.create(
-    destination_name="rag-vectors",
+sharepoint_dest = client.destination.create(
+    destination_name="contract-library",
     destination_body={
-        "vector_db_type": "qdrant",
-        "url": "https://your-cluster.qdrant.io",
-        "api_key": "YOUR_QDRANT_API_KEY",
-        "collection_name": "document_chunks",
+        "vector_db_type": "sharepoint",
+        "client_id": "YOUR_CLIENT_ID",
+        "client_secret": "YOUR_CLIENT_SECRET",
+        "tenant_id": "YOUR_TENANT_ID",
+        "site_name": "LegalDocuments",
     },
 )
-print(f"✓ Connected to Qdrant: {qdrant_dest.destination_id}")
+print(f"✓ Connected to SharePoint: {sharepoint_dest.destination_id}")
 
 # ============================================
 # Step 3: Define Your Taxonomy
@@ -118,17 +119,23 @@ results = client.classify.generate_batch(
 print(f"✓ Processed {len(results.metadata)} documents")
 
 # ============================================
-# Step 5: Export to Qdrant
+# Step 5: Export to SharePoint
 # ============================================
 export_result = client.destination.export(
-    destination_name="rag-vectors",
+    destination_name="contract-library",
     connector_name="my-document-bucket",
-    export_level="chunk",      # Export at chunk level for RAG
-    export_nodes=True,         # Include vector embeddings
-    export_metadata=True,      # Include extracted metadata
-    metadata_format="json_store",
+    export_level="file",           # Export at file level for SharePoint
+    export_metadata=True,          # Include extracted metadata
+    metadata_format="column_store", # Create separate SharePoint columns
+    export_tags=[                   # Specify which tags become columns
+        "contract_type",
+        "parties",
+        "effective_date",
+        "expiration_date",
+        "total_value",
+    ],
 )
-print(f"✓ Exported to Qdrant")
+print(f"✓ Exported to SharePoint")
 
 # If large export, track progress
 if export_result.tracker_id:
@@ -136,49 +143,32 @@ if export_result.tracker_id:
     print(f"  Export status: {status.status} ({status.progress}%)")
 ```
 
-## Query Your RAG Pipeline
+## What Happens in SharePoint
 
-Once your data is in Qdrant, you can query it with any Qdrant client:
+Once exported, your SharePoint document library will have new columns populated with the extracted metadata:
 
-```python
-from qdrant_client import QdrantClient
+| Document | Contract Type | Parties | Effective Date | Total Value |
+| :-- | :-- | :-- | :-- | :-- |
+| Acme-NDA-2024.pdf | NDA | Acme Corp, Beta LLC | 2024-01-15 | - |
+| ServiceAgreement.pdf | MSA | TechCo, StartupXYZ | 2024-03-01 | $150,000 |
+| Employment-JDoe.pdf | Employment | Jane Doe, Acme Corp | 2024-02-01 | $95,000 |
 
-# Connect to Qdrant
-qdrant = QdrantClient(
-    url="https://your-cluster.qdrant.io",
-    api_key="YOUR_QDRANT_API_KEY",
-)
-
-# Semantic search with metadata filtering
-results = qdrant.search(
-    collection_name="document_chunks",
-    query_vector=your_embedding,  # Your query embedding
-    query_filter={
-        "must": [
-            {"key": "contract_type", "match": {"value": "NDA"}},
-            {"key": "effective_date", "range": {"gte": "2024-01-01"}},
-        ]
-    },
-    limit=5,
-)
-
-for hit in results:
-    print(f"Score: {hit.score}")
-    print(f"Text: {hit.payload['text'][:200]}...")
-    print(f"Parties: {hit.payload['parties']}")
-    print("---")
-```
+Users can now:
+- **Filter and sort** documents by contract type, date, or value
+- **Create views** like "Expiring This Quarter" or "High-Value Contracts"
+- **Search** using SharePoint's native search with metadata facets
+- **Set up alerts** for documents matching specific criteria
 
 ## Understanding Export Options
 
 | Option | Description | When to Use |
 | :-- | :-- | :-- |
-| `export_level="file"` | One record per document | Document-level retrieval |
-| `export_level="chunk"` | One record per chunk | RAG / semantic search |
+| `export_level="file"` | One record per document | SharePoint, document management |
+| `export_level="chunk"` | One record per chunk | Vector databases, RAG |
 | `export_level="both"` | Both file and chunk records | Hybrid use cases |
-| `export_nodes=True` | Include vector embeddings | Required for semantic search |
-| `metadata_format="json_store"` | Metadata as JSON column | Flexible filtering |
-| `metadata_format="column_store"` | Metadata as separate columns | SQL-style queries |
+| `metadata_format="column_store"` | Metadata as separate columns | SharePoint, SQL databases |
+| `metadata_format="json_store"` | Metadata as JSON column | Flexible NoSQL storage |
+| `export_tags=[...]` | Specific tags to export | Control which columns are created |
 
 ## Production Tips
 
@@ -241,14 +231,14 @@ for hit in results:
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="S3 to SharePoint" icon="microsoft" href="/cookbooks/s3-to-sharepoint">
-    Export metadata to SharePoint columns.
-  </Card>
   <Card title="PII Detection" icon="shield" href="/cookbooks/pii-detection">
     Add sensitive data detection to your pipeline.
   </Card>
   <Card title="Legal Expert Taxonomy" icon="tags" href="/cookbooks/custom-taxonomy">
     Build taxonomies like a domain expert.
+  </Card>
+  <Card title="Data Slices" icon="filter" href="/concepts/data-slices">
+    Learn to filter documents for targeted processing.
   </Card>
   <Card title="Destinations" icon="arrow-right" href="/concepts/destinations">
     Explore all supported export targets.

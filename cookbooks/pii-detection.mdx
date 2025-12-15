@@ -1,9 +1,9 @@
 ---
-title: 'PII Redaction Workflow'
-description: 'Detect and handle sensitive data like SSNs, emails, and phone numbers'
+title: 'PII Detection'
+description: 'Automatically detect sensitive data like SSNs, emails, and phone numbers in your documents'
 ---
 
-This cookbook shows you how to configure sensitive data detection (PII) in your document processing pipeline. You'll learn to identify, classify, and handle personally identifiable information for compliance requirements.
+This cookbook shows you how to configure sensitive data detection (PII) in your document processing pipeline. You'll learn to automatically identify and flag personally identifiable information for compliance and data governance.
 
 ## What You'll Build
 
@@ -318,16 +318,16 @@ print("✓ Documents routed based on PII content")
 ## Next Steps
 
 <CardGroup cols={2}>
+  <Card title="S3 to SharePoint" icon="microsoft" href="/cookbooks/s3-to-sharepoint">
+    Export enriched metadata to SharePoint.
+  </Card>
   <Card title="S3 to Qdrant" icon="database" href="/cookbooks/s3-to-qdrant">
     Build a complete RAG pipeline.
   </Card>
-  <Card title="Custom Taxonomies" icon="tags" href="/cookbooks/custom-taxonomy">
-    Design complex classification schemas.
+  <Card title="Legal Expert Taxonomy" icon="tags" href="/cookbooks/custom-taxonomy">
+    Build taxonomies like a domain expert.
   </Card>
   <Card title="Data Slices" icon="filter" href="/concepts/data-slices">
     Learn advanced filtering techniques.
-  </Card>
-  <Card title="API Reference" icon="brackets-curly" href="/api-reference">
-    Explore all PII-related endpoints.
   </Card>
 </CardGroup>

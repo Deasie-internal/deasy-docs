@@ -31,8 +31,9 @@
           {
             "group": "Cookbooks",
             "pages": [
+              "cookbooks/s3-to-sharepoint",
               "cookbooks/s3-to-qdrant",
-              "cookbooks/pii-redaction",
+              "cookbooks/pii-detection",
               "cookbooks/custom-taxonomy"
             ]
           }
