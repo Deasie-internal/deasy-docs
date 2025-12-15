@@ -1,0 +1,113 @@
+---
+title: "Metadata"
+description: "The structured output from your document processing"
+---
+
+Metadata represents the actual extracted values that result from applying Tags to your documents. While Tags define *what* to extract, Metadata is the *extracted data* itself.
+
+## Metadata Properties
+
+| Property | Description | Example |
+| :-- | :-- | :-- |
+| **Values** | The extracted or classified value(s) | `["NDA", "Non-Disclosure Agreement"]` |
+| **Evidence** | Text snippet supporting the extraction | "This Non-Disclosure Agreement is entered into..." |
+| **Confidence** | AI confidence score (0-1) | `0.95` |
+
+<Tip>
+The **Evidence** field shows exactly where the AI found the information, making it easy to verify extractions and understand the source.
+</Tip>
+
+## Metadata Levels
+
+| Level | Description | Use Case |
+| :-- | :-- | :-- |
+| **File-Level** | Aggregated metadata for the entire document | Document classification, search filters |
+| **Chunk-Level** | Granular metadata per text segment | Precise evidence location, RAG retrieval |
+
+```mermaid
+flowchart TD
+    subgraph doc [Document]
+        FL[File-Level Metadata]
+        subgraph chunks [Chunks]
+            C1[Chunk 1 Metadata]
+            C2[Chunk 2 Metadata]
+            C3[Chunk 3 Metadata]
+        end
+    end
+    
+    FL --> C1
+    FL --> C2
+    FL --> C3
+```
+
+## Metadata Standardization
+
+The platform includes AI-powered standardization to clean and normalize extracted values:
+
+| Feature | Description |
+| :-- | :-- |
+| **Deduplication** | Merge similar values (e.g., "Inc." and "Incorporated") |
+| **Normalization** | Standardize formats (dates, currencies, names) |
+| **Bulk Standardization** | Apply standardization across multiple tags |
+
+<Note>
+Standardization helps ensure consistency across your metadata, making it easier to search, filter, and analyze your documents.
+</Note>
+
+## How Metadata Generation Works
+
+<Steps>
+  <Step title="Document Processing">
+    Documents are chunked and prepared for analysis.
+  </Step>
+  <Step title="Tag Application">
+    The AI applies your Tags to extract or classify information from each chunk.
+  </Step>
+  <Step title="Evidence Capture">
+    The system captures the text snippet that supports each extraction.
+  </Step>
+  <Step title="Aggregation">
+    Chunk-level metadata is aggregated to create file-level metadata.
+  </Step>
+  <Step title="Standardization">
+    Optional normalization and deduplication cleans the results.
+  </Step>
+</Steps>
+
+## Example Metadata Output
+
+For a contract document with a "Contract Type" classification tag:
+
+```json
+{
+  "tag": "Contract Type",
+  "values": ["NDA"],
+  "evidence": "This Non-Disclosure Agreement ('Agreement') is entered into as of January 1, 2024...",
+  "confidence": 0.97
+}
+```
+
+---
+
+## API Reference
+
+<CardGroup cols={2}>
+  <Card title="Generate Metadata" icon="wand-magic-sparkles" href="/api-reference/metadata/generate">
+    Generate metadata for documents
+  </Card>
+  <Card title="Generate Batch" icon="layer-group" href="/api-reference/metadata/generate-batch">
+    Generate metadata for multiple documents
+  </Card>
+  <Card title="Upsert Metadata" icon="pen" href="/api-reference/metadata/upsert">
+    Create or update metadata
+  </Card>
+  <Card title="List Metadata" icon="list" href="/api-reference/metadata/list">
+    List metadata for documents
+  </Card>
+  <Card title="List Paginated" icon="file-lines" href="/api-reference/metadata/list-paginated">
+    Paginated metadata listing
+  </Card>
+  <Card title="Delete Metadata" icon="trash" href="/api-reference/metadata/delete">
+    Remove metadata
+  </Card>
+</CardGroup>
