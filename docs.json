@@ -12,10 +12,26 @@
     "tabs": [
       {
         "tab": "Documentation",
-        "pages": ["concepts"]
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["concepts/overview"]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/projects",
+              "concepts/data-connectors",
+              "concepts/data-slices",
+              "concepts/taxonomies-tags",
+              "concepts/metadata",
+              "concepts/destinations"
+            ]
+          }
+        ]
       },
       {
-        "tab": "API Docs",
+        "tab": "API Reference",
         "openapi": "./deasy-openapi-stainless.yml"
       },
       {
