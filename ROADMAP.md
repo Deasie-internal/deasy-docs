@@ -21,7 +21,7 @@ Create a new top-level "Cookbooks" or "Guides" section with end-to-end code samp
 1.  [x] **"S3 to SharePoint Pipeline"**: A complete script showing how to ingest PDFs from an S3 bucket, extract metadata, and export to SharePoint.
 2.  [x] **"S3 to Qdrant Pipeline"**: A complete script for building a RAG pipeline with vector search.
 3.  [x] **"PII Detection"**: A guide focusing specifically on how to configure and test sensitive data detection.
-4.  [x] **"Build a Legal Expert Taxonomy"**: Create a taxonomy that extracts contract data like an experienced legal analyst.
+4.  [x] **"Custom Taxonomy Setup"**: A walkthrough of using AI to generate complex taxonomies.
 
 **Why this moves the needle**: Developers often ignore concepts and look for code that closely matches their use case. Recipes capture this intent.
 
