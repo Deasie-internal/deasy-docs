@@ -45,6 +45,14 @@ Unstructured by Collibra can process a wide variety of document formats:
   </Card>
 </CardGroup>
 
+## Language Support
+
+| Capability | Supported Languages |
+| :-- | :-- |
+| **Document Processing** | Multilingual (all UTF-8 supported languages) |
+| **LLM Classification** | Multilingual (dependent on model) |
+| **PII Detection** | English only |
+
 ## Complete Example
 
 Copy and run this script to extract metadata from your documents:
@@ -132,30 +140,11 @@ for result in results.metadata:
   <Card title="S3 to SharePoint" icon="microsoft" href="/cookbooks/s3-to-sharepoint">
     Export enriched metadata to SharePoint.
   </Card>
-  <Card title="S3 to Qdrant" icon="database" href="/cookbooks/s3-to-qdrant">
-    Build a RAG pipeline with vector search.
+  <Card title="API Reference" icon="brackets-curly" href="/api-reference">
+    Explore all available endpoints and SDK methods.
   </Card>
   <Card title="PII Detection" icon="shield" href="/cookbooks/pii-detection">
     Set up sensitive data detection for compliance.
   </Card>
 </CardGroup>
 
----
-
-## Development Setup
-
-Want to contribute to the docs? Here's how to run them locally:
-
-<AccordionGroup>
-  <Accordion icon="rectangle-terminal" title="Local Preview">
-    1. Install the Mintlify CLI:
-    ```bash
-    pnpm add -g mintlify
-    ```
-    
-    2. Run the development server:
-    ```bash
-    mintlify dev
-    ```
-  </Accordion>
-</AccordionGroup>
