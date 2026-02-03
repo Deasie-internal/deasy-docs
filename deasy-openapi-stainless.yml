@@ -48,12 +48,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -67,23 +61,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nconnector_response\
-          \ = client.data_source.create(\n    connector_body={\n        \"collection_name\"\
-          : \"collection_name\",\n        \"database_name\": \"database_name\",\n\
-          \        \"db_user\": \"db_user\",\n        \"name\": \"name\",\n      \
-          \  \"password\": \"password\",\n        \"port\": \"port\",\n        \"\
-          url\": \"url\",\n    },\n    connector_name=\"connector_name\",\n)\nprint(connector_response.profile_id)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          connector_response = client.data_source.create(\n    connector_body={\n\
+          \        \"collection_name\": \"collection_name\",\n        \"database_name\"\
+          : \"database_name\",\n        \"db_user\": \"db_user\",\n        \"name\"\
+          : \"name\",\n        \"password\": \"password\",\n        \"port\": \"port\"\
+          ,\n        \"url\": \"url\",\n    },\n    connector_name=\"connector_name\"\
+          ,\n)\nprint(connector_response.profile_id)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst connectorResponse = await client.dataSource.create({\n\
-          \  connector_body: {\n    collection_name: 'collection_name',\n    database_name:\
-          \ 'database_name',\n    db_user: 'db_user',\n    name: 'name',\n    password:\
-          \ 'password',\n    port: 'port',\n    url: 'url',\n  },\n  connector_name:\
-          \ 'connector_name',\n});\n\nconsole.log(connectorResponse.profile_id);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst connectorResponse\
+          \ = await client.dataSource.create({\n  connector_body: {\n    collection_name:\
+          \ 'collection_name',\n    database_name: 'database_name',\n    db_user:\
+          \ 'db_user',\n    name: 'name',\n    password: 'password',\n    port: 'port',\n\
+          \    url: 'url',\n  },\n  connector_name: 'connector_name',\n});\n\nconsole.log(connectorResponse.profile_id);"
   /data_connector/update:
     post:
       tags:
@@ -127,12 +131,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -146,23 +144,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nconnector_response\
-          \ = client.data_source.update(\n    connector_body={\n        \"collection_name\"\
-          : \"collection_name\",\n        \"database_name\": \"database_name\",\n\
-          \        \"db_user\": \"db_user\",\n        \"name\": \"name\",\n      \
-          \  \"password\": \"password\",\n        \"port\": \"port\",\n        \"\
-          url\": \"url\",\n    },\n    connector_name=\"connector_name\",\n)\nprint(connector_response.profile_id)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          connector_response = client.data_source.update(\n    connector_body={\n\
+          \        \"collection_name\": \"collection_name\",\n        \"database_name\"\
+          : \"database_name\",\n        \"db_user\": \"db_user\",\n        \"name\"\
+          : \"name\",\n        \"password\": \"password\",\n        \"port\": \"port\"\
+          ,\n        \"url\": \"url\",\n    },\n    connector_name=\"connector_name\"\
+          ,\n)\nprint(connector_response.profile_id)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst connectorResponse = await client.dataSource.update({\n\
-          \  connector_body: {\n    collection_name: 'collection_name',\n    database_name:\
-          \ 'database_name',\n    db_user: 'db_user',\n    name: 'name',\n    password:\
-          \ 'password',\n    port: 'port',\n    url: 'url',\n  },\n  connector_name:\
-          \ 'connector_name',\n});\n\nconsole.log(connectorResponse.profile_id);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst connectorResponse\
+          \ = await client.dataSource.update({\n  connector_body: {\n    collection_name:\
+          \ 'collection_name',\n    database_name: 'database_name',\n    db_user:\
+          \ 'db_user',\n    name: 'name',\n    password: 'password',\n    port: 'port',\n\
+          \    url: 'url',\n  },\n  connector_name: 'connector_name',\n});\n\nconsole.log(connectorResponse.profile_id);"
   /data_connector/list:
     post:
       tags:
@@ -211,14 +219,17 @@ paths:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nlist_vdb_connector\
-          \ = client.data_source.list()\nprint(list_vdb_connector.connectors)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          list_vdb_connector = client.data_source.list()\nprint(list_vdb_connector.connectors)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst listVdbConnector = await client.dataSource.list();\n\
-          \nconsole.log(listVdbConnector.connectors);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst listVdbConnector\
+          \ = await client.dataSource.list();\n\nconsole.log(listVdbConnector.connectors);"
   /data_connector/delete:
     post:
       tags:
@@ -260,12 +271,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -279,17 +284,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nconnector_response\
-          \ = client.data_source.delete(\n    connector_name=\"connector_name\",\n\
-          )\nprint(connector_response.profile_id)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          connector_response = client.data_source.delete(\n    connector_name=\"connector_name\"\
+          ,\n)\nprint(connector_response.profile_id)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst connectorResponse = await client.dataSource.delete({\
-          \ connector_name: 'connector_name' });\n\nconsole.log(connectorResponse.profile_id);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst connectorResponse\
+          \ = await client.dataSource.delete({ connector_name: 'connector_name' });\n\
+          \nconsole.log(connectorResponse.profile_id);"
   /ocr/ingest:
     post:
       tags:
@@ -339,12 +354,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -358,17 +367,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.data_source.ingest(\n    data_connector_name=\"data_connector_name\"\
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.data_source.ingest(\n    data_connector_name=\"data_connector_name\"\
           ,\n)\nprint(response)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.dataSource.ingest({ data_connector_name:\
-          \ 'data_connector_name' });\n\nconsole.log(response);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.dataSource.ingest({ data_connector_name: 'data_connector_name'\
+          \ });\n\nconsole.log(response);"
   /data/metadata/list:
     post:
       tags:
@@ -424,12 +443,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -443,17 +456,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.data_source.list_ingested_data(\n    data_connector_name=\"data_connector_name\"\
-          ,\n)\nprint(response.metadata)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.data_source.list_ingested_data(\n    data_connector_name=\"\
+          data_connector_name\",\n)\nprint(response.metadata)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.dataSource.listIngestedData({\
-          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.metadata);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.dataSource.listIngestedData({\n  data_connector_name: 'data_connector_name',\n\
+          });\n\nconsole.log(response.metadata);"
   /tags/upsert:
     post:
       tags:
@@ -462,14 +485,14 @@ paths:
       description: "Insert or update a tag definition.\n\n## Request Body\n\n| Field\
         \      | Type            | Description                                   \
         \   |\n|------------|-----------------|--------------------------------------------------|\n\
-        | `tag_data` | `DeasyInputTag` | Tag data structure containing tag definition.\
-        \    |\n\n## Response\n\n- **200**: Tag upserted successfully  \n    - Returns:\
-        \ `{ \"tag_name\": str, \"tag\": DeasyTag, \"available_values_added\": List[str]\
-        \ }`\n- **400**: Bad Request (e.g., invalid tag data)\n- **500**: Internal\
-        \ Server Error\n\n## Example\n\n```json\n{\n  \"tag_data\": {\n    \"name\"\
-        : \"category\",\n    \"description\": \"Document category classification\"\
-        ,\n    \"type\": \"select\",\n    \"available_values\": [\"invoice\", \"receipt\"\
-        , \"contract\"]\n  }\n}\n```"
+        | `tag_data` | `Tag` | Tag data structure containing tag definition.    |\n\
+        \n## Response\n\n- **200**: Tag upserted successfully  \n    - Returns: `{\
+        \ \"tag_name\": str, \"tag\": Tag, \"available_values_added\": List[str] }`\n\
+        - **400**: Bad Request (e.g., invalid tag data)\n- **500**: Internal Server\
+        \ Error\n\n## Example\n\n```json\n{\n  \"tag_data\": {\n    \"name\": \"category\"\
+        ,\n    \"description\": \"Document category classification\",\n    \"type\"\
+        : \"select\",\n    \"available_values\": [\"invoice\", \"receipt\", \"contract\"\
+        ]\n  }\n}\n```"
       operationId: upsert_tag_route_tags_upsert_post
       requestBody:
         content:
@@ -496,12 +519,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -515,24 +532,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.tags.upsert(\n    tag_data={\n        \"name\": \"name\",\n \
-          \       \"output_type\": \"output_type\",\n    },\n)\nprint(response.available_values_added)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.tags.upsert(\n    tag_data={\n        \"name\": \"name\"\
+          \n    },\n)\nprint(response.available_values_added)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.tags.upsert({ tag_data:\
-          \ { name: 'name', output_type: 'output_type' } });\n\nconsole.log(response.available_values_added);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.tags.upsert({ tag_data: { name: 'name' } });\n\nconsole.log(response.available_values_added);"
   /tags/list:
     get:
       tags:
       - Tags
       summary: List
       description: "List all tags for the authenticated user.\n\n## Response\n\n-\
-        \ **200**: Tags retrieved successfully  \n    - Returns: `{ \"tags\": List[DeasyTag]\
+        \ **200**: Tags retrieved successfully  \n    - Returns: `{ \"tags\": List[Tag]\
         \ }`\n- **500**: Internal Server Error\n\n## Example Response\n\n```json\n\
         {\n  \"tags\": [\n    {\n      \"name\": \"category\",\n      \"description\"\
         : \"Document category\",\n      \"type\": \"select\",\n      \"available_values\"\
@@ -574,13 +600,17 @@ paths:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntags =\
-          \ client.tags.list()\nprint(tags.tags)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          tags = client.tags.list()\nprint(tags.tags)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst tags = await client.tags.list();\n\nconsole.log(tags.tags);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst tags = await client.tags.list();\n\
+          \nconsole.log(tags.tags);"
   /tags/delete:
     delete:
       tags:
@@ -620,12 +650,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -639,16 +663,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntag_response\
-          \ = client.tags.delete(\n    tag_name=\"tag_name\",\n)\nprint(tag_response.tag_name)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          tag_response = client.tags.delete(\n    tag_name=\"tag_name\",\n)\nprint(tag_response.tag_name)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst tagResponse = await client.tags.delete({ tag_name:\
-          \ 'tag_name' });\n\nconsole.log(tagResponse.tag_name);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst tagResponse =\
+          \ await client.tags.delete({ tag_name: 'tag_name' });\n\nconsole.log(tagResponse.tag_name);"
   /suggest_regex:
     post:
       tags:
@@ -662,14 +695,12 @@ paths:
         \ to match (e.g., \"phone numbers in format (XXX) XXX-XXXX\"). |\n| `examples`\
         \         | `List[str]`    | Optional. List of example strings that should\
         \ match the pattern.                         |\n\n## Response\n\n- **200**:\
-        \ Regex pattern generated successfully  \n    - Returns: `{ \"regex\": str,\
-        \ \"explanation\": str }`\n- **400**: Bad Request (e.g., invalid request data)\n\
-        - **500**: Internal Server Error\n\n## Example\n\n```json\n{\n  \"description\"\
-        : \"phone numbers in format (XXX) XXX-XXXX\",\n  \"examples\": [\n    \"(123)\
-        \ 456-7890\",\n    \"(555) 123-4567\"\n  ]\n}\n```\n\n## Example Response\n\
-        \n```json\n{\n  \"regex\": \"\\(\\d{3}\\) \\d{3}-\\d{4}\",\n  \"explanation\"\
-        : \"Matches phone numbers in the format (XXX) XXX-XXXX where X is a digit\"\
-        \n}\n```"
+        \ Regex pattern generated successfully  \n    - Returns: `{ \"regex\": str\
+        \ }`\n- **400**: Bad Request (e.g., invalid request data)\n- **500**: Internal\
+        \ Server Error\n\n## Example\n\n```json\n{\n  \"description\": \"phone numbers\
+        \ in format (XXX) XXX-XXXX\",\n  \"examples\": [\n    \"(123) 456-7890\",\n\
+        \    \"(555) 123-4567\"\n  ]\n}\n```\n\n## Example Response\n\n```json\n{\n\
+        \  \"regex\": \"\\(\\d{3}\\) \\d{3}-\\d{4}\",\n}\n```"
       operationId: suggest_patterns_route_suggest_regex_post
       requestBody:
         content:
@@ -696,12 +727,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -715,17 +740,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.tags.pattern.suggest_patterns(\n    description=\"description\"\
-          ,\n)\nprint(response.regex)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.tags.pattern.suggest_patterns(\n    pattern_description=\"\
+          pattern_description\",\n    tag_data={\n        \"name\": \"name\"\n   \
+          \ },\n)\nprint(response.confidence_score)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.tags.pattern.suggestPatterns({\
-          \ description: 'description' });\n\nconsole.log(response.regex);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.tags.pattern.suggestPatterns({\n  pattern_description: 'pattern_description',\n\
+          \  tag_data: { name: 'name' },\n});\n\nconsole.log(response.confidence_score);"
   /taxonomy/upsert:
     post:
       tags:
@@ -772,12 +808,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -791,16 +821,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntaxonomy_operation_response\
-          \ = client.taxonomy.upsert(\n    taxonomy_name=\"taxonomy_name\",\n)\nprint(taxonomy_operation_response.taxonomy_name)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          taxonomy_operation_response = client.taxonomy.upsert(\n    taxonomy_name=\"\
+          taxonomy_name\",\n)\nprint(taxonomy_operation_response.taxonomy_name)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst taxonomyOperationResponse = await client.taxonomy.upsert({\
-          \ taxonomy_name: 'taxonomy_name' });\n\nconsole.log(taxonomyOperationResponse.taxonomy_name);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst taxonomyOperationResponse\
+          \ = await client.taxonomy.upsert({ taxonomy_name: 'taxonomy_name' });\n\n\
+          console.log(taxonomyOperationResponse.taxonomy_name);"
   /taxonomy/list:
     post:
       tags:
@@ -811,7 +852,7 @@ paths:
         \                                                          |\n|----------------|-----------------------|----------------------------------------------------------------------|\n\
         | `taxonomy_ids` | `Optional[List[str]]` | List of specific taxonomy IDs to\
         \ retrieve. If omitted, returns all taxonomies. |\n\n## Response\n\n- **200**:\
-        \ Taxonomies retrieved successfully  \n    - Returns: `{ \"taxonomies\": List[DeasySchema]\
+        \ Taxonomies retrieved successfully  \n    - Returns: `{ \"taxonomies\": List[DeasyTaxonomy]\
         \ }`\n- **500**: Internal Server Error\n\n## Example\n\n```json\n{\n  \"taxonomy_ids\"\
         : [\"document-categories\", \"sentiment-types\"]\n}\n```"
       operationId: list_taxonomies_route_taxonomy_list_post
@@ -840,12 +881,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -859,16 +894,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntaxonomies\
-          \ = client.taxonomy.list()\nprint(taxonomies.taxonomies)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          taxonomies = client.taxonomy.list()\nprint(taxonomies.taxonomies)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst taxonomies = await client.taxonomy.list();\n\n\
-          console.log(taxonomies.taxonomies);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst taxonomies = await\
+          \ client.taxonomy.list();\n\nconsole.log(taxonomies.taxonomies);"
   /taxonomy/delete:
     delete:
       tags:
@@ -908,12 +952,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -927,16 +965,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ntaxonomy_operation_response\
-          \ = client.taxonomy.delete(\n    taxonomy_name=\"taxonomy_name\",\n)\nprint(taxonomy_operation_response.taxonomy_name)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          taxonomy_operation_response = client.taxonomy.delete(\n    taxonomy_name=\"\
+          taxonomy_name\",\n)\nprint(taxonomy_operation_response.taxonomy_name)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst taxonomyOperationResponse = await client.taxonomy.delete({\
-          \ taxonomy_name: 'taxonomy_name' });\n\nconsole.log(taxonomyOperationResponse.taxonomy_name);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst taxonomyOperationResponse\
+          \ = await client.taxonomy.delete({ taxonomy_name: 'taxonomy_name' });\n\n\
+          console.log(taxonomyOperationResponse.taxonomy_name);"
   /suggest_schema:
     post:
       tags:
@@ -953,7 +1002,7 @@ paths:
         \        | ID of a dataslice to pull files from for the suggestion.      \
         \               |\n| `progress_tracking_id`  | `Optional[str]`        | Custom\
         \ tracking ID for monitoring the suggestion progress.                   |\n\
-        | `schema_name`           | `Optional[str]`        | Name for the suggested\
+        | `taxonomy_name`           | `Optional[str]`        | Name for the suggested\
         \ schema/taxonomy.                                      |\n| `current_tree`\
         \          | `Optional[Dict]`       | Existing hierarchy tree to build upon.\
         \                                       |\n| `condition`             | `Optional[Condition]`\
@@ -1004,12 +1053,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1023,17 +1066,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.taxonomy.suggest(\n    data_connector_name=\"data_connector_name\"\
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.taxonomy.suggest(\n    data_connector_name=\"data_connector_name\"\
           ,\n)\nprint(response.suggestion)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.taxonomy.suggest({ data_connector_name:\
-          \ 'data_connector_name' });\n\nconsole.log(response.suggestion);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.taxonomy.suggest({ data_connector_name: 'data_connector_name' });\n\
+          \nconsole.log(response.suggestion);"
   /classify:
     post:
       tags:
@@ -1057,17 +1110,17 @@ paths:
         \              |\n| `soft_run`            | `bool`                | If `true`,\
         \ classification will not save to Deasy and will return results. Default:\
         \ `false` |\n| `hierarchy_name`      | `Optional[str]`       | Name of the\
-        \ hierarchy/graph to use (if `hierarchy_data` not provided).       |\n| `hierarchy_data`\
-        \      | `Optional[Dict]`      | Hierarchy/graph data to use for classification.\
-        \ Default: `{}`                |\n| `dataslice_id`        | `Optional[str]`\
-        \       | ID of the dataslice to use for file filtering.                 \
-        \              |\n\n## Response\n\n- **200**: Classification completed or\
-        \ job started successfully  \n    - Returns: `{ \"message\": str, \"job_id\"\
-        : str, \"results\": Optional[Dict] }`\n- **500**: Internal Server Error\n\n\
-        ## Example\n\n```json\n{\n  \"data_connector_name\": \"my-connector\",\n \
-        \ \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n  \"tag_names\"\
-        : [\"category\", \"sentiment\"],\n  \"overwrite\": false,\n  \"soft_run\"\
-        : false\n}\n```"
+        \ hierarchy/taxonomy to use (if `hierarchy_data` not provided).       |\n\
+        | `hierarchy_data`      | `Optional[Dict]`      | Hierarchy/taxonomy data\
+        \ to use for classification. Default: `{}`                |\n| `dataslice_id`\
+        \        | `Optional[str]`       | ID of the dataslice to use for file filtering.\
+        \                               |\n\n## Response\n\n- **200**: Classification\
+        \ completed or job started successfully  \n    - Returns: `{ \"message\":\
+        \ str, \"job_id\": str, \"results\": Optional[Dict] }`\n- **500**: Internal\
+        \ Server Error\n\n## Example\n\n```json\n{\n  \"data_connector_name\": \"\
+        my-connector\",\n  \"file_names\": [\"document1.pdf\", \"document2.pdf\"],\n\
+        \  \"tag_names\": [\"category\", \"sentiment\"],\n  \"overwrite\": false,\n\
+        \  \"soft_run\": false\n}\n```"
       operationId: generate_route_classify_post
       requestBody:
         content:
@@ -1094,12 +1147,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1113,17 +1160,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.metadata.generate.generate(\n    data_connector_name=\"data_connector_name\"\
-          ,\n)\nprint(response.message)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.metadata.generate.generate(\n    data_connector_name=\"\
+          data_connector_name\",\n)\nprint(response.message)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.metadata.generate.generate({\
-          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.message);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.metadata.generate.generate({\n  data_connector_name: 'data_connector_name',\n\
+          });\n\nconsole.log(response.message);"
   /classify_bulk:
     post:
       tags:
@@ -1145,9 +1202,9 @@ paths:
         \ Default: `false`                         |\n| `job_id`              | `Optional[str]`\
         \       | Custom job ID for tracking the classification task.            \
         \              |\n| `hierarchy_name`      | `Optional[str]`       | Name of\
-        \ the hierarchy/graph to use (if `hierarchy_data` not provided).       |\n\
-        | `hierarchy_data`      | `Optional[Dict]`      | Hierarchy/graph data to\
-        \ use for classification. Default: `{}`                |\n| `dataslice_id`\
+        \ the hierarchy/taxonomy to use (if `hierarchy_data` not provided).      \
+        \ |\n| `hierarchy_data`      | `Optional[Dict]`      | Hierarchy/taxonomy\
+        \ data to use for classification. Default: `{}`                |\n| `dataslice_id`\
         \        | `Optional[str]`       | ID of the dataslice to use for file filtering.\
         \                               |\n| `conditions`          | `Optional[Condition]`\
         \ | Conditions to use for file filtering.                                \
@@ -1182,12 +1239,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1201,17 +1252,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.metadata.generate.generate_batch(\n    data_connector_name=\"\
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.metadata.generate.generate_batch(\n    data_connector_name=\"\
           data_connector_name\",\n)\nprint(response.message)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.metadata.generate.generateBatch({\
-          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.message);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.metadata.generate.generateBatch({\n  data_connector_name: 'data_connector_name',\n\
+          });\n\nconsole.log(response.message);"
   /metadata/upsert:
     post:
       tags:
@@ -1258,12 +1319,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1277,17 +1332,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.metadata.upsert(\n    metadata={\n        \"foo\": {\n      \
-          \      \"foo\": {}\n        }\n    },\n)\nprint(response.success)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.metadata.upsert(\n    metadata={\n        \"foo\": {\n\
+          \            \"foo\": {}\n        }\n    },\n)\nprint(response.success)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.metadata.upsert({ metadata:\
-          \ { foo: { foo: {} } } });\n\nconsole.log(response.success);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.metadata.upsert({ metadata: { foo: { foo: {} } } });\n\nconsole.log(response.success);"
   /metadata/list:
     post:
       tags:
@@ -1341,12 +1405,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1360,17 +1418,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nmetadata\
-          \ = client.metadata.list(\n    data_connector_name=\"data_connector_name\"\
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          metadata = client.metadata.list(\n    data_connector_name=\"data_connector_name\"\
           ,\n)\nprint(metadata.metadata)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst metadata = await client.metadata.list({ data_connector_name:\
-          \ 'data_connector_name' });\n\nconsole.log(metadata.metadata);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst metadata = await\
+          \ client.metadata.list({ data_connector_name: 'data_connector_name' });\n\
+          \nconsole.log(metadata.metadata);"
   /metadata/list_paginated:
     post:
       tags:
@@ -1421,12 +1489,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1440,17 +1502,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.metadata.list_paginated(\n    data_connector_name=\"data_connector_name\"\
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.metadata.list_paginated(\n    data_connector_name=\"data_connector_name\"\
           ,\n)\nprint(response.metadata)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.metadata.listPaginated({\
-          \ data_connector_name: 'data_connector_name' });\n\nconsole.log(response.metadata);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.metadata.listPaginated({\n  data_connector_name: 'data_connector_name',\n\
+          });\n\nconsole.log(response.metadata);"
   /metadata/delete:
     post:
       tags:
@@ -1476,7 +1548,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/app__models__models_metadata__DeleteMetadataRequest'
+              $ref: '#/components/schemas/DeleteMetadataRequest'
         required: true
       responses:
         '200':
@@ -1484,7 +1556,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/app__models__models_metadata__DeleteMetadataResponse'
+                $ref: '#/components/schemas/DeleteMetadataResponse'
         '403':
           description: Missing token
           content:
@@ -1497,12 +1569,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1516,17 +1582,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nmetadata\
-          \ = client.metadata.delete(\n    data_connector_name=\"data_connector_name\"\
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          metadata = client.metadata.delete(\n    data_connector_name=\"data_connector_name\"\
           ,\n)\nprint(metadata.chunk_deleted_count)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst metadata = await client.metadata.delete({ data_connector_name:\
-          \ 'data_connector_name' });\n\nconsole.log(metadata.chunk_deleted_count);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst metadata = await\
+          \ client.metadata.delete({ data_connector_name: 'data_connector_name' });\n\
+          \nconsole.log(metadata.chunk_deleted_count);"
   /progress_tracker/task_status:
     post:
       tags:
@@ -1565,12 +1641,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1584,16 +1654,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.task_status.get_status(\n    job_id=\"job_id\",\n)\nprint(response.percent_complete)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.task_status.get_status(\n    job_id=\"job_id\",\n)\nprint(response.percent_complete)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.taskStatus.getStatus({\
-          \ job_id: 'job_id' });\n\nconsole.log(response.percent_complete);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.taskStatus.getStatus({ job_id: 'job_id' });\n\nconsole.log(response.percent_complete);"
   /dataslice/create:
     post:
       tags:
@@ -1611,19 +1690,20 @@ paths:
         \      |\n| `status`          | `str`          | The status of the data slice\
         \ (e.g., active).                               |\n| `data_points`     | `Optional[int]`\
         \ | Number of data points in the data slice.                             \
-        \      |\n| `latest_graph`    | `Optional[Dict]` | Most recent graph reference/metadata.\
-        \                                      |\n| `graph_id`        | `Optional[str]`\
-        \ | ID of the related graph, if applicable.                              \
-        \      |\n| `data_connector_name` | `str`      | Name of the data connector\
-        \ (vector database profile).                      |\n| `parent_dataslice_id`\
-        \ | `Optional[str]` | (Optional) Parent data slice ID, for lineage.      \
-        \                  |\n\n## Response\n\n- **201**: Data slice created successfully\
-        \  \n    - Returns: `{ \"dataslice_id\": \"<uuid>\" }`\n- **500**: Internal\
-        \ Server Error.\n\n## Example\n\n```json\n{\n  \"dataslice_name\": \"Customer\
-        \ Purchases Q2\",\n  \"condition\": [\n    { \"field\": \"created_date\",\
-        \ \"op\": \"gte\", \"value\": \"2024-04-01\" }\n  ],\n  \"description\": \"\
-        Purchase data from Q2 2024\",\n  \"status\": \"active\",\n  \"data_points\"\
-        : 4000,\n  \"data_connector_name\": \"prod-warehouse\"\n}\n```"
+        \      |\n| `latest_taxonomy`    | `Optional[Dict]` | Most recent taxonomy\
+        \ reference/metadata.                                      |\n| `taxonomy_id`\
+        \        | `Optional[str]` | ID of the related taxonomy, if applicable.  \
+        \                                  |\n| `data_connector_name` | `str`    \
+        \  | Name of the data connector (vector database profile).               \
+        \       |\n| `parent_dataslice_id` | `Optional[str]` | (Optional) Parent data\
+        \ slice ID, for lineage.                        |\n\n## Response\n\n- **201**:\
+        \ Data slice created successfully  \n    - Returns: `{ \"dataslice_id\": \"\
+        <uuid>\" }`\n- **500**: Internal Server Error.\n\n## Example\n\n```json\n\
+        {\n  \"dataslice_name\": \"Customer Purchases Q2\",\n  \"condition\": [\n\
+        \    { \"field\": \"created_date\", \"op\": \"gte\", \"value\": \"2024-04-01\"\
+        \ }\n  ],\n  \"description\": \"Purchase data from Q2 2024\",\n  \"status\"\
+        : \"active\",\n  \"data_points\": 4000,\n  \"data_connector_name\": \"prod-warehouse\"\
+        \n}\n```"
       operationId: create_dataslice_route_dataslice_create_post
       requestBody:
         content:
@@ -1650,12 +1730,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1669,18 +1743,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndata_slice\
-          \ = client.data_slice.create(\n    data_connector_name=\"data_connector_name\"\
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          data_slice = client.data_slice.create(\n    data_connector_name=\"data_connector_name\"\
           ,\n    dataslice_name=\"dataslice_name\",\n)\nprint(data_slice.dataslice_id)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst dataSlice = await client.dataSlice.create({\n\
-          \  data_connector_name: 'data_connector_name',\n  dataslice_name: 'dataslice_name',\n\
-          });\n\nconsole.log(dataSlice.dataslice_id);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst dataSlice = await\
+          \ client.dataSlice.create({\n  data_connector_name: 'data_connector_name',\n\
+          \  dataslice_name: 'dataslice_name',\n});\n\nconsole.log(dataSlice.dataslice_id);"
   /dataslice/list:
     get:
       tags:
@@ -1690,10 +1773,10 @@ paths:
         \ user.\n\n### Response\n\nReturns a JSON object containing a list of dataslices:\n\
         \n```json\n{\n  \"dataslices\": [\n    {\n      \"dataslice_id\": \"string\"\
         ,\n      \"dataslice_name\": \"string\",\n      \"description\": \"string\"\
-        ,\n      \"status\": \"active\",\n      \"data_points\": 123,\n      \"latest_graph\"\
-        : { /* graph details */ },\n      \"graph_id\": \"string\",\n      \"data_connector_name\"\
-        : \"string\",\n      \"parent_dataslice_id\": \"string or null\"\n    },\n\
-        \    ...\n  ]\n}\n```"
+        ,\n      \"status\": \"active\",\n      \"data_points\": 123,\n      \"latest_taxonomy\"\
+        : { /* taxonomy details */ },\n      \"taxonomy_id\": \"string\",\n      \"\
+        data_connector_name\": \"string\",\n      \"parent_dataslice_id\": \"string\
+        \ or null\"\n    },\n    ...\n  ]\n}\n```"
       operationId: list_dataslices_route_dataslice_list_get
       responses:
         '200':
@@ -1729,14 +1812,17 @@ paths:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndata_slices\
-          \ = client.data_slice.list()\nprint(data_slices.dataslices)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          data_slices = client.data_slice.list()\nprint(data_slices.dataslices)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst dataSlices = await client.dataSlice.list();\n\
-          \nconsole.log(dataSlices.dataslices);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst dataSlices = await\
+          \ client.dataSlice.list();\n\nconsole.log(dataSlices.dataslices);"
   /dataslice/delete:
     delete:
       tags:
@@ -1777,12 +1863,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1796,16 +1876,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndata_slice\
-          \ = client.data_slice.delete(\n    dataslice_id=\"dataslice_id\",\n)\nprint(data_slice.data)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          data_slice = client.data_slice.delete(\n    dataslice_id=\"dataslice_id\"\
+          ,\n)\nprint(data_slice.data)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst dataSlice = await client.dataSlice.delete({ dataslice_id:\
-          \ 'dataslice_id' });\n\nconsole.log(dataSlice.data);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst dataSlice = await\
+          \ client.dataSlice.delete({ dataslice_id: 'dataslice_id' });\n\nconsole.log(dataSlice.data);"
   /dataslice/export/metadata:
     post:
       tags:
@@ -1856,12 +1946,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1875,17 +1959,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.data_slice.export(\n    data_connector_name=\"data_connector_name\"\
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.data_slice.export(\n    data_connector_name=\"data_connector_name\"\
           ,\n)\nprint(response)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.dataSlice.export({ data_connector_name:\
-          \ 'data_connector_name' });\n\nconsole.log(response);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.dataSlice.export({ data_connector_name: 'data_connector_name' });\n\
+          \nconsole.log(response);"
   /destination/create:
     post:
       tags:
@@ -1928,12 +2022,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -1947,25 +2035,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nconnector_response\
-          \ = client.destination.create(\n    connector_body={\n        \"client_id\"\
-          : \"client_id\",\n        \"client_secret\": \"client_secret\",\n      \
-          \  \"documents_library_folder_name\": \"documents_library_folder_name\"\
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          connector_response = client.destination.create(\n    connector_body={\n\
+          \        \"client_id\": \"client_id\",\n        \"client_secret\": \"client_secret\"\
+          ,\n        \"documents_library_folder_name\": \"documents_library_folder_name\"\
           ,\n        \"name\": \"name\",\n        \"sharepoint_site_name\": \"sharepoint_site_name\"\
           ,\n        \"tenant_id\": \"tenant_id\",\n    },\n    connector_name=\"\
           connector_name\",\n)\nprint(connector_response.profile_id)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst connectorResponse = await client.destination.create({\n\
-          \  connector_body: {\n    client_id: 'client_id',\n    client_secret: 'client_secret',\n\
-          \    documents_library_folder_name: 'documents_library_folder_name',\n \
-          \   name: 'name',\n    sharepoint_site_name: 'sharepoint_site_name',\n \
-          \   tenant_id: 'tenant_id',\n  },\n  connector_name: 'connector_name',\n\
-          });\n\nconsole.log(connectorResponse.profile_id);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst connectorResponse\
+          \ = await client.destination.create({\n  connector_body: {\n    client_id:\
+          \ 'client_id',\n    client_secret: 'client_secret',\n    documents_library_folder_name:\
+          \ 'documents_library_folder_name',\n    name: 'name',\n    sharepoint_site_name:\
+          \ 'sharepoint_site_name',\n    tenant_id: 'tenant_id',\n  },\n  connector_name:\
+          \ 'connector_name',\n});\n\nconsole.log(connectorResponse.profile_id);"
   /destination/list:
     post:
       tags:
@@ -2014,14 +2111,17 @@ paths:
                 $ref: '#/components/schemas/HTTPError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\ndestinations\
-          \ = client.destination.list()\nprint(destinations.connectors)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          destinations = client.destination.list()\nprint(destinations.connectors)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst destinations = await client.destination.list();\n\
-          \nconsole.log(destinations.connectors);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst destinations =\
+          \ await client.destination.list();\n\nconsole.log(destinations.connectors);"
   /destination/delete:
     post:
       tags:
@@ -2059,12 +2159,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -2078,6 +2172,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-codeSamples:
+      - lang: Python
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          connector_response = client.destination.delete(\n    connector_name=\"connector_name\"\
+          ,\n)\nprint(connector_response.profile_id)"
+      - lang: JavaScript
+        source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst connectorResponse\
+          \ = await client.destination.delete({ connector_name: 'connector_name' });\n\
+          \nconsole.log(connectorResponse.profile_id);"
   /dataslice/export/metadata/destination:
     post:
       tags:
@@ -2155,12 +2270,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '429':
           description: Too many requests
           content:
@@ -2174,16 +2283,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       x-codeSamples:
       - lang: Python
-        source: "from unstructured import UnstructuredClient\n\nclient = UnstructuredClient(\n\
-          \    username=\"My Username\",\n    password=\"My Password\",\n)\nresponse\
-          \ = client.destination.export()\nprint(response.tracker_id)"
+        source: "import os\nfrom unstructured import UnstructuredClient\n\nclient\
+          \ = UnstructuredClient(\n    username=os.environ.get(\"UNSTRUCTURED_USERNAME\"\
+          ),  # This is the default and can be omitted\n    password=os.environ.get(\"\
+          UNSTRUCTURED_PASSWORD\"),  # This is the default and can be omitted\n)\n\
+          response = client.destination.export()\nprint(response.tracker_id)"
       - lang: JavaScript
         source: "import UnstructuredClient from 'unstructured-sdk';\n\nconst client\
-          \ = new UnstructuredClient({\n  username: 'My Username',\n  password: 'My\
-          \ Password',\n});\n\nconst response = await client.destination.export();\n\
-          \nconsole.log(response.tracker_id);"
+          \ = new UnstructuredClient({\n  username: process.env['UNSTRUCTURED_USERNAME'],\
+          \ // This is the default and can be omitted\n  password: process.env['UNSTRUCTURED_PASSWORD'],\
+          \ // This is the default and can be omitted\n});\n\nconst response = await\
+          \ client.destination.export();\n\nconsole.log(response.tracker_id);"
 components:
   schemas:
     AzureSQLDestinationConfig:
@@ -2260,6 +2378,7 @@ components:
             - type: integer
           type: array
           title: Values
+          default: []
         operator:
           anyOf:
           - type: string
@@ -2269,7 +2388,6 @@ components:
       type: object
       required:
       - name
-      - values
       title: BaseTag
     ClassifyBulkRequest:
       properties:
@@ -2483,17 +2601,17 @@ components:
           - type: integer
           - type: 'null'
           title: Data Points
-        latest_graph:
+        latest_taxonomy:
           anyOf:
           - additionalProperties: true
             type: object
           - type: 'null'
-          title: Latest Graph
-        graph_id:
+          title: Latest Taxonomy
+        taxonomy_id:
           anyOf:
           - type: string
           - type: 'null'
-          title: Graph Id
+          title: Taxonomy Id
         data_connector_name:
           type: string
           title: Data Connector Name
@@ -2549,24 +2667,26 @@ components:
       - connector_name
       - connector_body
       title: CreateVDBConnectorRequest
-    DeasyDataslice:
+    DataSliceModel:
       properties:
-        dataslice_id:
+        id:
           type: string
-          title: Dataslice Id
-        dataslice_name:
+          format: uuid
+          title: Id
+        name:
           anyOf:
           - type: string
           - type: 'null'
-          title: Dataslice Name
+          title: Name
         description:
           anyOf:
           - type: string
           - type: 'null'
           title: Description
-        status:
+        datasource:
           type: string
-          title: Status
+          format: uuid
+          title: Datasource
         data_points:
           anyOf:
           - type: integer
@@ -2578,278 +2698,46 @@ components:
             format: date-time
           - type: 'null'
           title: Last Updated
-        latest_graph:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Latest Graph
-        graph_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Graph Id
         condition:
-          anyOf:
-          - items:
-              additionalProperties: true
-              type: object
-            type: array
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Condition
-        condition_new:
           anyOf:
           - $ref: '#/components/schemas/Condition-Output'
           - type: 'null'
-        export_collection_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Export Collection Name
-        vector_db_config:
+        stats:
           anyOf:
           - additionalProperties: true
             type: object
           - type: 'null'
-          title: Vector Db Config
+          title: Stats
+        vdb_profile_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Vdb Profile Id
+        dataconnector_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Dataconnector Name
       type: object
       required:
-      - dataslice_id
-      - status
-      title: DeasyDataslice
-    DeasyInputTag-Input:
+      - id
+      - datasource
+      title: DataSliceModel
+    DeasyTaxonomy:
       properties:
-        tag_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tag Id
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-        name:
+        taxonomy_id:
           type: string
-          title: Name
-        output_type:
+          title: Taxonomy Id
+        taxonomy_name:
           type: string
-          title: Output Type
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-          default: ''
-        available_values:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Available Values
-          default: []
-        examples:
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - additionalProperties: true
-                type: object
-            type: array
-          - type: 'null'
-          title: Examples
-          default: []
-        maxValues:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Maxvalues
-        date_format:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Date Format
-        tuned:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Tuned
-          default: 0
-        enhance_file_metadata:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enhance File Metadata
-          default: true
-        group:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Group
-        min_confidence:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Min Confidence
-        strategy:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Strategy
-          default: LLM
-        patterns:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/RegexPattern'
-            type: array
-          - type: 'null'
-          title: Patterns
-          default: []
-        visual_rules:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/RuleBasedRule-Input'
-            type: array
-          - type: 'null'
-          title: Visual Rules
-          default: []
-        scope:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Scope
-          default: ALL_PAGES
-      type: object
-      required:
-      - name
-      - output_type
-      title: DeasyInputTag
-    DeasyInputTag-Output:
-      properties:
-        tag_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tag Id
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-        name:
+          title: Taxonomy Name
+        taxonomy_description:
           type: string
-          title: Name
-        output_type:
-          type: string
-          title: Output Type
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-          default: ''
-        available_values:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Available Values
-          default: []
-        examples:
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - additionalProperties: true
-                type: object
-            type: array
-          - type: 'null'
-          title: Examples
-          default: []
-        maxValues:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Maxvalues
-        date_format:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Date Format
-        tuned:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Tuned
-          default: 0
-        enhance_file_metadata:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enhance File Metadata
-          default: true
-        group:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Group
-        min_confidence:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Min Confidence
-        strategy:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Strategy
-          default: LLM
-        patterns:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/RegexPattern'
-            type: array
-          - type: 'null'
-          title: Patterns
-          default: []
-        visual_rules:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/RuleBasedRule-Output'
-            type: array
-          - type: 'null'
-          title: Visual Rules
-          default: []
-        scope:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Scope
-          default: ALL_PAGES
-      type: object
-      required:
-      - name
-      - output_type
-      title: DeasyInputTag
-    DeasySchema:
-      properties:
-        schema_id:
-          type: string
-          title: Schema Id
-        schema_name:
-          type: string
-          title: Schema Name
-        schema_description:
-          type: string
-          title: Schema Description
-        schema_data:
+          title: Taxonomy Description
+        taxonomy_data:
           additionalProperties: true
           type: object
-          title: Schema Data
+          title: Taxonomy Data
         user_id:
           type: string
           title: User Id
@@ -2873,122 +2761,12 @@ components:
           title: Refreshed At
       type: object
       required:
-      - schema_id
-      - schema_name
-      - schema_description
-      - schema_data
+      - taxonomy_id
+      - taxonomy_name
+      - taxonomy_description
+      - taxonomy_data
       - user_id
-      title: DeasySchema
-    DeasyTag:
-      properties:
-        tag_id:
-          type: string
-          title: Tag Id
-        username:
-          type: string
-          title: Username
-        name:
-          type: string
-          title: Name
-        description:
-          type: string
-          title: Description
-        output_type:
-          $ref: '#/components/schemas/TagOutputType'
-          default: string
-        available_values:
-          items:
-            type: string
-          type: array
-          title: Available Values
-          default: []
-        examples:
-          items:
-            anyOf:
-            - type: string
-            - additionalProperties: true
-              type: object
-          type: array
-          title: Examples
-          default: []
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          type: string
-          format: date-time
-          title: Updated At
-          default: '2025-10-31T16:15:55.923700'
-        tuned:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Tuned
-          default: 0
-        maxValues:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Maxvalues
-        date_format:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Date Format
-          default: MM-dd-YYYY
-        enhance_file_metadata:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enhance File Metadata
-          default: true
-        group:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Group
-        min_confidence:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Min Confidence
-        strategy:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Strategy
-          default: LLM
-        patterns:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/RegexPattern'
-            type: array
-          - type: 'null'
-          title: Patterns
-          default: []
-        visual_rules:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/RuleBasedRule-Output'
-            type: array
-          - type: 'null'
-          title: Visual Rules
-          default: []
-        scope:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Scope
-          default: ALL_PAGES
-      type: object
-      required:
-      - tag_id
-      - username
-      - name
-      - description
-      - created_at
-      title: DeasyTag
+      title: DeasyTaxonomy
     DeleteConnectorRequest:
       properties:
         connector_name:
@@ -3021,6 +2799,46 @@ components:
       required:
       - connector_name
       title: DeleteDestinationConnectorRequest
+    DeleteMetadataRequest:
+      properties:
+        data_connector_name:
+          type: string
+          title: Data Connector Name
+        file_names:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: File Names
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        conditions:
+          anyOf:
+          - $ref: '#/components/schemas/Condition-Input'
+          - type: 'null'
+      type: object
+      required:
+      - data_connector_name
+      title: DeleteMetadataRequest
+    DeleteMetadataResponse:
+      properties:
+        chunk_deleted_count:
+          type: integer
+          title: Chunk Deleted Count
+        file_deleted_count:
+          type: integer
+          title: File Deleted Count
+      type: object
+      required:
+      - chunk_deleted_count
+      - file_deleted_count
+      title: DeleteMetadataResponse
     ExportDatasliceDestinationRequest:
       properties:
         dataslice_id:
@@ -3194,7 +3012,7 @@ components:
       properties:
         dataslices:
           items:
-            $ref: '#/components/schemas/DeasyDataslice'
+            $ref: '#/components/schemas/DataSliceModel'
           type: array
           title: Dataslices
       type: object
@@ -3425,7 +3243,7 @@ components:
       properties:
         tags:
           items:
-            $ref: '#/components/schemas/DeasyTag'
+            $ref: '#/components/schemas/Tag-Output'
           type: array
           title: Tags
       type: object
@@ -3447,7 +3265,7 @@ components:
       properties:
         taxonomies:
           items:
-            $ref: '#/components/schemas/DeasySchema'
+            $ref: '#/components/schemas/DeasyTaxonomy'
           type: array
           title: Taxonomies
       type: object
@@ -3522,11 +3340,11 @@ components:
           - type: string
           - type: 'null'
           title: Progress Tracking Id
-        schema_name:
+        taxonomy_name:
           anyOf:
           - type: string
           - type: 'null'
-          title: Schema Name
+          title: Taxonomy Name
         current_tree:
           anyOf:
           - additionalProperties: true
@@ -3668,7 +3486,7 @@ components:
         suggested_tags:
           anyOf:
           - additionalProperties:
-              $ref: '#/components/schemas/DeasyInputTag-Output'
+              $ref: '#/components/schemas/Tag-Output'
             type: object
           - type: 'null'
           title: Suggested Tags
@@ -3933,6 +3751,19 @@ components:
           - type: 'null'
           title: Active
           default: true
+        context_items:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Context Items
+        required_context_matches:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Required Context Matches
+          default: 0
       type: object
       required:
       - pattern
@@ -3942,9 +3773,9 @@ components:
       properties:
         tag_value:
           anyOf:
-          - type: integer
-          - type: number
           - type: string
+          - type: number
+          - type: integer
           - type: 'null'
           title: Tag Value
         condition:
@@ -3968,9 +3799,9 @@ components:
       properties:
         tag_value:
           anyOf:
-          - type: integer
-          - type: number
           - type: string
+          - type: number
+          - type: integer
           - type: 'null'
           title: Tag Value
         condition:
@@ -4082,9 +3913,11 @@ components:
       title: SharepointDestinationConfig
     SuggestRegexRequest:
       properties:
-        description:
+        tag_data:
+          $ref: '#/components/schemas/Tag-Input'
+        pattern_description:
           type: string
-          title: Description
+          title: Pattern Description
         examples:
           anyOf:
           - items:
@@ -4093,9 +3926,43 @@ components:
           - type: 'null'
           title: Examples
           default: []
+        negative_examples:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Negative Examples
+          default: []
+        edge_case_context:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Edge Case Context
+        positive_test_cases:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/TestCase'
+            type: array
+          - type: 'null'
+          title: Positive Test Cases
+          default: []
+        negative_test_cases:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/TestCase'
+            type: array
+          - type: 'null'
+          title: Negative Test Cases
+          default: []
+        validate_before_return:
+          type: boolean
+          title: Validate Before Return
+          default: true
       type: object
       required:
-      - description
+      - tag_data
+      - pattern_description
       title: SuggestRegexRequest
     SuggestRegexResponse:
       properties:
@@ -4107,6 +3974,31 @@ components:
           - type: string
           - type: 'null'
           title: Explanation
+        validation_results:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Validation Results
+        confidence_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Confidence Score
+        suggested_improvements:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Suggested Improvements
+        context_items:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Context Items
       type: object
       required:
       - regex
@@ -4127,8 +4019,11 @@ components:
           type: string
           title: Name
         description:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Description
+          default: ''
         output_type:
           anyOf:
           - $ref: '#/components/schemas/TagOutputType'
@@ -4168,6 +4063,12 @@ components:
             format: date-time
           - type: 'null'
           title: Updated At
+        tuned:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Tuned
+          default: 0
         maxValues:
           anyOf:
           - type: integer
@@ -4253,7 +4154,158 @@ components:
       type: object
       required:
       - name
-      - description
+      title: Tag
+    Tag-Output:
+      properties:
+        tag_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tag Id
+        username:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Username
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          default: ''
+        output_type:
+          anyOf:
+          - $ref: '#/components/schemas/TagOutputType'
+          - type: 'null'
+          default: string
+        available_values:
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: integer
+            type: array
+          - type: 'null'
+          title: Available Values
+          default: []
+        examples:
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - additionalProperties: true
+                type: object
+            type: array
+          - type: 'null'
+          title: Examples
+          default: []
+        created_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        tuned:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Tuned
+          default: 0
+        maxValues:
+          anyOf:
+          - type: integer
+          - type: string
+          - items: {}
+            type: array
+          - type: 'null'
+          title: Maxvalues
+        neg_examples:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Neg Examples
+          default: []
+        retry_feedback:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Retry Feedback
+        date_format:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Date Format
+        strategy:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Strategy
+          default: LLM
+        scope:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scope
+          default: ALL_PAGES
+        truncated_available_values:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Truncated Available Values
+          default: false
+        enhance_file_metadata:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enhance File Metadata
+          default: true
+        regex:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Regex
+        patterns:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/RegexPattern'
+            type: array
+          - type: 'null'
+          title: Patterns
+          default: []
+        visual_rules:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/RuleBasedRule-Output'
+            type: array
+          - type: 'null'
+          title: Visual Rules
+          default: []
+        group:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Group
+        min_confidence:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Min Confidence
+      type: object
+      required:
+      - name
       title: Tag
     TagMetadata:
       properties:
@@ -4319,6 +4371,33 @@ components:
       required:
       - taxonomy_name
       title: TaxonomyOperationResponse
+    TestCase:
+      properties:
+        text:
+          type: string
+          title: Text
+        should_match:
+          type: boolean
+          title: Should Match
+        category:
+          type: string
+          title: Category
+        actual_match:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Actual Match
+        validated:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Validated
+      type: object
+      required:
+      - text
+      - should_match
+      - category
+      title: TestCase
     UpdateVDBConnectorRequest:
       properties:
         connector_name:
@@ -4377,7 +4456,7 @@ components:
     UpsertTagRequest:
       properties:
         tag_data:
-          $ref: '#/components/schemas/DeasyInputTag-Input'
+          $ref: '#/components/schemas/Tag-Input'
       type: object
       required:
       - tag_data
@@ -4388,7 +4467,7 @@ components:
           type: string
           title: Tag Name
         tag:
-          $ref: '#/components/schemas/DeasyTag'
+          $ref: '#/components/schemas/Tag-Output'
         available_values_added:
           items:
             type: string
@@ -4446,50 +4525,7 @@ components:
       - msg
       - type
       title: ValidationError
-    app__models__models_metadata__DeleteMetadataRequest:
-      properties:
-        data_connector_name:
-          type: string
-          title: Data Connector Name
-        file_names:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: File Names
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        conditions:
-          anyOf:
-          - $ref: '#/components/schemas/Condition-Input'
-          - type: 'null'
-      type: object
-      required:
-      - data_connector_name
-      title: DeleteMetadataRequest
-    app__models__models_metadata__DeleteMetadataResponse:
-      properties:
-        chunk_deleted_count:
-          type: integer
-          title: Chunk Deleted Count
-        file_deleted_count:
-          type: integer
-          title: File Deleted Count
-      type: object
-      required:
-      - chunk_deleted_count
-      - file_deleted_count
-      title: DeleteMetadataResponse
   securitySchemes:
     HTTPBearer:
       type: http
       scheme: bearer
-    BasicAuth:
-      type: http
-      scheme: basic
