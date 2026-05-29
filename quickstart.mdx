@@ -60,11 +60,18 @@ Copy and run this script to extract metadata from your documents:
 ```python
 from unstructured import UnstructuredClient
 
-# 1. Initialize the client
+# 1. Initialize the client (basic auth)
 client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",
 )
+# Alternatively, authenticate with an API token issued from the web UI:
+#   client = UnstructuredClient(
+#       base_url="https://unstructured.your-company.com/rest/unstructured",
+#       api_token="your-api-token",
+#       user_id="your-username",  # sent as the X-User-ID header
+#   )
 
 # 2. Create a data connector (S3 example)
 connector = client.data_source.create(
@@ -116,6 +123,14 @@ for result in results.metadata:
     print(f"  Summary: {result.tags.get('summary')}")
     print(f"  Key Dates: {result.tags.get('key_dates')}")
 ```
+
+<Note>
+  **About client configuration**
+
+  - **`base_url`** is required and points to your Unstructured deployment (e.g. `https://unstructured.your-company.com/rest/unstructured`). There is no default.
+  - Any constructor argument can be set via an environment variable instead: `UNSTRUCTURED_CLIENT_BASE_URL`, `UNSTRUCTURED_USERNAME`, `UNSTRUCTURED_PASSWORD`, `UNSTRUCTURED_API_TOKEN`, `UNSTRUCTURED_USER_ID`.
+  - **API tokens** are long-lived and issued from your Unstructured deployment's web UI. The SDK does not create, refresh, or revoke them.
+</Note>
 
 ## What Just Happened?
 
