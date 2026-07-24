@@ -97,6 +97,12 @@
         "openapi": "./deasy-openapi-stainless.yml",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
             "group": "Data Connectors",
             "pages": [
               {
