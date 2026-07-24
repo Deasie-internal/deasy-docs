@@ -1,0 +1,106 @@
+---
+title: "Reference Architectures"
+description: "Proven system patterns for building with Deasy Labs"
+---
+
+These blueprints show how the platform's building blocks compose into production systems. Each pattern links to a cookbook with a complete, runnable script.
+
+## Enterprise RAG Pattern
+
+Feed a retrieval-augmented generation application with curated, metadata-rich chunks instead of raw document dumps. Metadata filters cut retrieval noise so the LLM only sees chunks from the right documents.
+
+```mermaid
+flowchart LR
+    subgraph sources [Enterprise Sources]
+        SP[SharePoint]
+        S3[Amazon S3]
+        OD[OneDrive]
+    end
+
+    subgraph platform [Deasy Labs]
+        DC[Data Connectors]
+        ING[Ingestion & Chunking]
+        TAG[AI Metadata Extraction]
+        DS[Data Slice:<br/>use-case scope]
+    end
+
+    subgraph serving [Serving Layer]
+        VDB[(Vector DB<br/>Qdrant)]
+        LLM[LLM App / Agent]
+    end
+
+    SP --> DC
+    S3 --> DC
+    OD --> DC
+    DC --> ING --> TAG --> DS
+    DS -->|export_vdb, chunk level| VDB
+    VDB -->|semantic search + metadata filters| LLM
+```
+
+**Key decisions in this pattern:**
+
+| Decision | Recommendation |
+| :-- | :-- |
+| Export level | `chunk`, one vector record per text segment |
+| Scoping | Create one Data Slice per use case; export the slice, not the whole connector |
+| Metadata | Extract classification tags (document type, department, date) to power retrieval filters |
+| Freshness | Re-run classification on a "needs-processing" slice, then re-export |
+
+<Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
+  Complete script: connector → tags → classification → slice → vector export.
+</Card>
+
+## Compliance Archive Pattern
+
+Automatically detect sensitive content and route documents to the right archive. Clean documents flow to general storage, flagged documents go to a restricted review bucket with a full metadata audit trail.
+
+```mermaid
+flowchart LR
+    subgraph intake [Intake]
+        FS[File Server / S3<br/>incoming documents]
+    end
+
+    subgraph platform [Deasy Labs]
+        DC[Data Connector]
+        PII[Sensitivity Detection<br/>PII / PHI / PCI]
+        SL1[Slice: clean]
+        SL2[Slice: sensitive]
+    end
+
+    subgraph archives [Archives]
+        CLEAN[(Clean Archive)]
+        REVIEW[(Restricted Review<br/>+ audit metadata)]
+    end
+
+    FS --> DC --> PII
+    PII --> SL1 --> CLEAN
+    PII --> SL2 --> REVIEW
+```
+
+**Key decisions in this pattern:**
+
+| Decision | Recommendation |
+| :-- | :-- |
+| Detection | Combine built-in sensitivity tags with regex Pattern tags for exact matches |
+| Routing | Two Data Slices driven by `has_pii` / risk-score metadata conditions |
+| Audit | Export with `metadata_format="column_store"` so auditors can query flags directly |
+| Scope | Enable PII/PHI/PCI scanning per [Project](/concepts/projects) |
+
+<Card title="Protect Sensitive Data" icon="shield" href="/cookbooks/pii-detection">
+  Complete script: sensitivity tags → classification → routing slices → dual export.
+</Card>
+
+## Document Enrichment Pattern
+
+Keep documents where they live and enrich them at the source. Extracted metadata lands as native SharePoint columns, so users get filterable, sortable libraries without changing how they work.
+
+```mermaid
+flowchart LR
+    S3[Amazon S3<br/>raw documents] --> PLAT[Deasy Labs<br/>Classification]
+    PLAT -->|column_store export| SPL[SharePoint Library<br/>+ metadata columns]
+    SPL --> VIEWS[Views, filters,<br/>alerts, search facets]
+```
+
+<Card title="Organize a SharePoint Library" icon="microsoft" href="/cookbooks/sharepoint-to-sharepoint">
+  Complete script: connector → tags → classification → column-store export.
+</Card>

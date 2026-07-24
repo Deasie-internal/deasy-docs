@@ -1,0 +1,63 @@
+---
+title: "Vector Databases"
+description: "Feed RAG pipelines with curated, metadata-rich chunks"
+---
+
+Vector databases are both a source and a target for Deasy Labs. Connect an existing collection as a [Data Connector](/concepts/data-connectors) to enrich what's already indexed, or export a curated slice into a collection so your RAG pipeline retrieves from gated, metadata-rich chunks.
+
+## Export a Slice to a Vector Database
+
+The SDK exports at chunk level, with each chunk carrying its file's tags. Set the vector database up as a data connector, then push a slice into it.
+
+```python
+from unstructured import UnstructuredClient
+
+client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
+    username="your-username",
+    password="your-password",
+)
+
+# The Qdrant collection as a connector target
+client.data_source.create(
+    connector_name="rag-vectors",
+    connector_body={
+        "type": "QdrantVectorDBManager",
+        "name": "rag-vectors",
+        "url": "https://your-cluster.qdrant.io",
+        "api_key": "YOUR_QDRANT_API_KEY",
+        "collection_name": "document_chunks",
+    },
+)
+
+# Ship the curated slice, chunk level for RAG
+client.data_slice.export_vdb(
+    target_data_connector_name="rag-vectors",
+    ori_data_connector_name="my-sharepoint",
+    dataslice_id="your-ai-ready-slice-id",
+    export_level="chunk",
+)
+```
+
+## Why It Improves Retrieval
+
+| Without Deasy | With a curated slice |
+| :-- | :-- |
+| Index everything, retrieve by similarity alone | Index only documents that passed the gate |
+| Stale drafts and duplicates pollute results | Expired and redundant files excluded upstream |
+| No way to scope a question | Tags on every chunk power metadata filters |
+
+## Supported Vector Databases
+
+PostgreSQL with pgvector and Qdrant are supported as data connectors, which makes them export targets for `export_vdb`.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
+    The complete end-to-end recipe.
+  </Card>
+  <Card title="Scope Chatbot Answers with Metadata" icon="comments" href="/cookbooks/metadata-filtered-rag">
+    Use the exported tags as retrieval filters.
+  </Card>
+</CardGroup>

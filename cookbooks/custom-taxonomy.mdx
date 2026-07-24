@@ -1,5 +1,5 @@
 ---
-title: 'Custom Taxonomy Setup'
+title: 'Bootstrap a Taxonomy with AI'
 description: 'Use AI to automatically generate domain-specific taxonomies for your documents'
 ---
 
@@ -13,18 +13,21 @@ The `suggest` feature allows you to bootstrap complex taxonomies in seconds:
 from unstructured import UnstructuredClient
 
 client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",
 )
 
-# Describe what you want to extract
+# Describe what you want to extract. The AI grounds its suggestions
+# in the actual documents behind the data connector.
 suggestions = client.taxonomy.suggest(
+    data_connector_name="my-documents",
     user_context="""
     I need to analyze legal contracts. Extract key terms, financial obligations, 
     risk indicators, important dates, and anything relevant for compliance.
     Focus on NDAs, MSAs, and employment agreements.
     """,
-    data_connector_name="my-documents", # Optional: use documents to ground suggestions
+    taxonomy_name="legal-contracts",
 )
 
 # Review the suggestions
@@ -38,11 +41,11 @@ print(suggestions.suggestion)
 {
   "contract_type": {
     "description": "Primary contract classification: NDA, MSA, SLA, SOW, Employment, Lease",
-    "type": "word"
+    "type": "string"
   },
   "parties": {
     "description": "All parties to the contract with their legal names",
-    "type": "list[string]"
+    "type": "string"
   },
   "effective_date": {
     "description": "Date when the contract becomes legally binding",
@@ -50,33 +53,31 @@ print(suggestions.suggestion)
   },
   "total_value": {
     "description": "Total monetary value of the contract in USD",
-    "type": "float"
+    "type": "number"
   }
 }
 ```
 
-## Create the Taxonomy
+## Save the Taxonomy
 
-Once you have the suggestions, you can create the taxonomy directly:
+Pass `auto_save=True` to store the suggested taxonomy directly, or review it first and create the tags yourself:
 
 ```python
-# Convert suggestions to tags list
-tags = []
-for name, details in suggestions.suggestion.items():
-    tags.append({
-        "name": name,
-        "description": details["description"],
-        "output_type": details["type"]
-    })
-
-# Create taxonomy from suggestions
-taxonomy = client.taxonomy.upsert(
+# Option A: save the suggestion in one call
+client.taxonomy.suggest(
+    data_connector_name="my-documents",
+    user_context="Analyze legal contracts for compliance",
     taxonomy_name="legal-contracts",
-    taxonomy_description="AI-generated taxonomy for contract analysis",
-    tags=tags,
+    auto_save=True,
 )
 
-print(f"✓ Created taxonomy with {len(tags)} tags")
+# Option B: review, then create tags from the suggestion
+for name, details in suggestions.suggestion.items():
+    client.tags.upsert(tag_data={
+        "name": name,
+        "description": details["description"],
+        "output_type": details["type"],
+    })
 ```
 
 ## Refine with Sample Documents
@@ -86,8 +87,8 @@ For higher accuracy, point to specific files in your data connector. The AI will
 ```python
 # The AI analyzes your files to suggest the most relevant tags
 suggestions = client.taxonomy.suggest(
-    user_context="Extract key data from these vendor invoices",
     data_connector_name="my-s3-bucket",
+    user_context="Extract key data from these vendor invoices",
     file_names=[
         "invoices/sample-invoice-1.pdf",
         "invoices/sample-invoice-2.pdf"
@@ -97,36 +98,29 @@ suggestions = client.taxonomy.suggest(
 
 ## Customize the Results
 
-You can modify the AI suggestions before creating the taxonomy:
+You can modify the AI suggestions before creating the tags:
 
 ```python
 # Get suggestions
 response = client.taxonomy.suggest(
-    user_context="Legal contract analysis", 
-    data_connector_name="my-docs"
+    data_connector_name="my-docs",
+    user_context="Legal contract analysis",
 )
 
-# Convert to list for editing
-tags = []
+# Create tags from the suggestion
 for name, details in response.suggestion.items():
-    tags.append({
-        "name": name, 
+    client.tags.upsert(tag_data={
+        "name": name,
         "description": details["description"],
-        "output_type": details["type"]
+        "output_type": details["type"],
     })
 
 # Add a custom tag the AI might have missed
-tags.append({
+client.tags.upsert(tag_data={
     "name": "reviewed_by_legal",
     "description": "Whether this contract has been reviewed",
-    "output_type": "boolean",
+    "output_type": "binary",
 })
-
-# Create the customized taxonomy
-client.taxonomy.upsert(
-    taxonomy_name="legal-contracts-custom",
-    tags=tags,
-)
 ```
 
 ## Common Use Cases
@@ -170,13 +164,13 @@ client.taxonomy.suggest(
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="S3 to SharePoint" icon="microsoft" href="/cookbooks/s3-to-sharepoint">
-    Export your extracted data to SharePoint.
+  <Card title="Organize a SharePoint Library" icon="microsoft" href="/cookbooks/sharepoint-to-sharepoint">
+    Enrich libraries at the source with your taxonomy.
   </Card>
-  <Card title="S3 to Qdrant" icon="database" href="/cookbooks/s3-to-qdrant">
-    Build a RAG pipeline with your taxonomy.
+  <Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
+    Curate a serving collection with your taxonomy.
   </Card>
-  <Card title="PII Detection" icon="shield" href="/cookbooks/pii-detection">
+  <Card title="Protect Sensitive Data" icon="shield" href="/cookbooks/pii-detection">
     Add sensitive data detection.
   </Card>
   <Card title="Taxonomies Concept" icon="tags" href="/concepts/taxonomies-tags">

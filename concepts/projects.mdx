@@ -3,13 +3,13 @@ title: "Projects"
 description: "Organize your work into focused workspaces"
 ---
 
-Projects are organizational containers that group related work together — including Data Connectors, taxonomies, and sensitivity detection settings. Think of a Project as a workspace for a specific initiative.
+Projects are organizational containers that group related work together, including Data Connectors, taxonomies, and sensitivity detection settings. Think of a Project as a workspace for a specific initiative.
 
 ## Example Use Cases
 
-- **Contract Analysis 2024** — for processing legal contracts
-- **HR Document Compliance** — for employee document PII detection
-- **Financial Reports Q4** — for extracting financial metrics
+- **Contract Analysis 2024** for processing legal contracts
+- **HR Document Compliance** for employee document PII detection
+- **Financial Reports Q4** for extracting financial metrics
 
 ## Project Components
 
@@ -71,3 +71,73 @@ Enable sensitivity detection to automatically flag documents containing protecte
     Turn on PII, PHI, or PCI scanning if needed for compliance.
   </Step>
 </Steps>
+
+---
+
+## Python SDK
+
+<Tabs>
+  <Tab title="Create Project">
+```python
+from unstructured import UnstructuredClient
+
+client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
+    username="your-username",
+    password="your-password",
+)
+
+# Create a project grouping connectors, taxonomies, and detection settings
+project = client.projects.create(
+    name="Contract Analysis 2024",
+    description="Processing legal contracts for the 2024 review",
+    data_source=["my-s3-bucket"],
+    taxonomy=["contract-analysis"],
+    sensitive_data=True,  # Enable PII/PHI/PCI scanning
+)
+```
+  </Tab>
+  <Tab title="List & Get">
+```python
+# List all projects
+projects = client.projects.list()
+
+# Get a single project
+project = client.projects.get("your-project-id")
+
+# Review detected sensitive data for a project
+sensitive = client.projects.get_sensitive_data("your-project-id")
+```
+  </Tab>
+  <Tab title="Update & Delete">
+```python
+# Update a project
+client.projects.update(
+    "your-project-id",
+    description="Updated scope: includes Q1 2025 contracts",
+)
+
+# Delete a project
+client.projects.delete("your-project-id")
+```
+  </Tab>
+</Tabs>
+
+---
+
+## API Reference
+
+<CardGroup cols={2}>
+  <Card title="Create Project" icon="plus" href="/api-reference/projects/create-project">
+    Create a new project
+  </Card>
+  <Card title="List Projects" icon="list" href="/api-reference/projects/list-projects">
+    List all your projects
+  </Card>
+  <Card title="Get Project" icon="magnifying-glass" href="/api-reference/projects/get-project">
+    Retrieve a single project
+  </Card>
+  <Card title="Get Sensitive Data" icon="shield" href="/api-reference/projects/get-project-sensitive-data">
+    Review detected sensitive data
+  </Card>
+</CardGroup>

@@ -1,13 +1,34 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "willow",
-  "name": "Unstructured by Collibra",
+  "theme": "maple",
+  "name": "Deasy Labs",
   "colors": {
-    "primary": "#4FA892",
-    "light": "#f8f9fa",
-    "dark": "#343a40"
+    "primary": "#B7500C",
+    "light": "#D67E43",
+    "dark": "#8F3E08"
   },
-  "favicon": "./images/collibra_mini_logo.png",
+  "favicon": "./images/deasy-mark.png",
+  "fonts": {
+    "heading": {
+      "family": "Inter Variable",
+      "source": "https://static.collibra.com/fonts/inter-latin-wght-normal.woff2",
+      "format": "woff2"
+    },
+    "body": {
+      "family": "Inter Variable",
+      "source": "https://static.collibra.com/fonts/inter-latin-wght-normal.woff2",
+      "format": "woff2"
+    }
+  },
+  "background": {
+    "color": {
+      "light": "#F8F6F1",
+      "dark": "#1D2227"
+    }
+  },
+  "styling": {
+    "codeblocks": "dark"
+  },
   "navigation": {
     "tabs": [
       {
@@ -15,7 +36,11 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["quickstart", "concepts/overview"]
+            "pages": [
+              "introduction",
+              "quickstart",
+              "concepts/overview"
+            ]
           },
           {
             "group": "Core Concepts",
@@ -25,36 +50,292 @@
               "concepts/data-slices",
               "concepts/taxonomies-tags",
               "concepts/metadata",
-              "concepts/destinations"
+              "concepts/destinations",
+              "concepts/workflows"
             ]
           },
           {
             "group": "Cookbooks",
             "pages": [
-              "cookbooks/s3-to-sharepoint",
-              "cookbooks/s3-to-qdrant",
-              "cookbooks/pii-detection",
-              "cookbooks/custom-taxonomy"
+              {
+                "group": "Curate AI-Ready Data",
+                "pages": [
+                  "cookbooks/data-quality",
+                  "cookbooks/pii-detection",
+                  "cookbooks/freshness-curation"
+                ]
+              },
+              {
+                "group": "Power RAG and Agents",
+                "pages": [
+                  "cookbooks/qdrant-to-qdrant",
+                  "cookbooks/metadata-filtered-rag"
+                ]
+              },
+              {
+                "group": "Enrich and Organize",
+                "pages": [
+                  "cookbooks/sharepoint-to-sharepoint",
+                  "cookbooks/custom-taxonomy"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/collibra",
+              "integrations/databricks",
+              "integrations/vector-databases"
+            ]
+          },
+          {
+            "group": "Reference Architectures",
+            "pages": [
+              "concepts/architecture"
             ]
           }
         ]
       },
       {
         "tab": "API Reference",
-        "openapi": "./deasy-openapi-stainless.yml"
+        "openapi": "./deasy-openapi-stainless.yml",
+        "groups": [
+          {
+            "group": "Data Connectors",
+            "pages": [
+              {
+                "group": "Manage Connectors",
+                "pages": [
+                  "POST /data_connector/create",
+                  "POST /data_connector/create_batch",
+                  "POST /data_connector/update",
+                  "POST /data_connector/list",
+                  "POST /data_connector/delete",
+                  "POST /data_connector/delete_batch",
+                  "POST /connector/set_active_profile"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Ingestion",
+                "pages": [
+                  "POST /ocr/ingest",
+                  "POST /ocr/sync_stats",
+                  "POST /ocr/list_source_files"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Ingested Documents",
+                "pages": [
+                  "POST /data/metadata/list",
+                  "POST /data/list_paginated",
+                  "POST /data/document_text",
+                  "POST /get_ocr_page_text"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Provider Discovery",
+                "pages": [
+                  "POST /sharepoint/list_sites",
+                  "POST /onedrive/list_sites",
+                  "POST /s3/list_buckets"
+                ],
+                "expanded": false
+              }
+            ]
+          },
+          {
+            "group": "Tags",
+            "pages": [
+              {
+                "group": "Manage Tags",
+                "pages": [
+                  "POST /tags/create",
+                  "POST /tags/upsert",
+                  "POST /tags/upsert_bulk",
+                  "PUT /tags/update",
+                  "GET /tags/list",
+                  "DELETE /tags/delete"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Built-in Tags",
+                "pages": [
+                  "GET /tags/default",
+                  "GET /tags/sensitivity_default"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Tag Scores",
+                "pages": [
+                  "POST /tags/scores",
+                  "GET /tags/searchability_scores",
+                  "POST /tags/update_searchability_scores"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "AI Assistance",
+                "pages": [
+                  "POST /suggest_regex",
+                  "POST /suggest_description",
+                  "POST /suggest_strategy",
+                  "POST /generate_test_cases",
+                  "POST /evaluate_test_cases"
+                ],
+                "expanded": false
+              }
+            ]
+          },
+          {
+            "group": "Taxonomies",
+            "pages": [
+              "POST /taxonomy/upsert",
+              "POST /taxonomy/list",
+              "DELETE /taxonomy/delete",
+              "POST /suggest_schema",
+              "POST /taxonomy/generate_from_context"
+            ]
+          },
+          {
+            "group": "Metadata",
+            "pages": [
+              {
+                "group": "Generate",
+                "pages": [
+                  "POST /classify",
+                  "POST /classify_bulk"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Read",
+                "pages": [
+                  "POST /metadata/list",
+                  "POST /metadata/list_paginated",
+                  "POST /metadata/filtered",
+                  "POST /metadata/get_unique_tags",
+                  "POST /metadata/chunk/list",
+                  "POST /metadata/get_evidence"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Write and Delete",
+                "pages": [
+                  "POST /metadata/upsert",
+                  "POST /metadata/delete",
+                  "POST /metadata/delete/values"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Standardization",
+                "pages": [
+                  "POST /metadata/standardization_suggest",
+                  "POST /metadata/standardization_bulk",
+                  "POST /metadata/standardization_db",
+                  "POST /metadata/standardize/insert",
+                  "POST /metadata/standardize/list",
+                  "POST /metadata/standardize/delete"
+                ],
+                "expanded": false
+              }
+            ]
+          },
+          {
+            "group": "Data Slices",
+            "pages": [
+              {
+                "group": "Manage Slices",
+                "pages": [
+                  "POST /dataslice/create",
+                  "GET /dataslice/list",
+                  "DELETE /dataslice/delete"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Export",
+                "pages": [
+                  "POST /dataslice/export/metadata",
+                  "POST /dataslice/export/vdb"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Insights",
+                "pages": [
+                  "POST /dataslice/file_count",
+                  "POST /dataslice/metrics",
+                  "POST /dataslice/sync_score",
+                  "POST /dataslice/suggest"
+                ],
+                "expanded": false
+              }
+            ]
+          },
+          {
+            "group": "Destinations",
+            "pages": [
+              "POST /destination/create",
+              "POST /destination/list",
+              "POST /destination/delete",
+              "POST /dataslice/export/metadata/destination"
+            ]
+          },
+          {
+            "group": "Projects",
+            "pages": [
+              "POST /projects/create",
+              "POST /projects/list",
+              "GET /projects/{project_id}",
+              "PUT /projects/{project_id}",
+              "DELETE /projects/{project_id}",
+              "GET /projects/{project_id}/sensitive-data"
+            ]
+          },
+          {
+            "group": "Workflows",
+            "pages": [
+              "POST /workflows/upsert",
+              "POST /workflows/list",
+              "POST /workflows/execute",
+              "POST /workflows/delete"
+            ]
+          },
+          {
+            "group": "Task Tracking",
+            "pages": [
+              "POST /progress_tracker/task_status",
+              "GET /progress_tracker/get_progress_trackers",
+              "POST /progress_tracker/errors",
+              "PUT /progress_tracker/abort/{tracker_id}",
+              "POST /progress_tracker/delete"
+            ]
+          }
+        ]
       },
       {
         "tab": "Open Source Credits",
-        "pages": ["essentials/open-source-mentions"]
+        "pages": [
+          "essentials/open-source-mentions"
+        ]
       }
     ]
   },
   "appearance": {
-    "default": "dark"
+    "default": "light",
+    "strict": true
   },
   "logo": {
-    "light": "/images/collibra_lm_logo.png",
-    "dark": "/images/collibra_dm_logo.png"
+    "light": "/images/deasy-logo.png",
+    "dark": "/images/deasy-logo.png"
   },
   "navbar": {
     "links": [
@@ -65,11 +346,21 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Try Unstructured",
+      "label": "Try Deasy",
       "href": "https://www.collibra.com/blog/making-unstructured-data-ai-ready-unlocking-value-for-genai-and-agents"
     }
   },
   "feedback": {
     "thumbsRating": true
-  }
+  },
+  "redirects": [
+    {
+      "source": "/cookbooks/s3-to-sharepoint",
+      "destination": "/cookbooks/sharepoint-to-sharepoint"
+    },
+    {
+      "source": "/cookbooks/s3-to-qdrant",
+      "destination": "/cookbooks/qdrant-to-qdrant"
+    }
+  ]
 }

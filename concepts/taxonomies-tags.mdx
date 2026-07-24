@@ -13,7 +13,7 @@ A Tag defines a specific piece of information you want to capture from documents
 | :-- | :-- | :-- |
 | **Name** | The tag identifier | `Contract Type` |
 | **Description** | Instructions for the AI on what to extract | "Identify the type of legal agreement (NDA, MSA, SOW, etc.)" |
-| **Output Type** | How values are returned | Word, Number, Date |
+| **Output Type** | How values are returned | String, Binary, Number, Date |
 | **Max Values** | How many values get returned | 1 to however many relevant values an AI can find |
 | **Available Values** | Predefined options (for classification) | `["NDA", "MSA", "SOW", "Employment Agreement"]` |
 | **Strategy** | Extraction method | LLM (AI), Regex (Pattern), Rule-based |
@@ -69,7 +69,7 @@ flowchart TD
 ```
 
 <Note>
-In this taxonomy, the AI first classifies the document type, then only extracts the relevant child tags. A Contract won't have "Invoice Amount" extracted — saving time and cost.
+In this taxonomy, the AI first classifies the document type, then only extracts the relevant child tags. A Contract won't have "Invoice Amount" extracted, which saves time and cost.
 </Note>
 
 ## Creating Effective Tags
@@ -94,73 +94,81 @@ In this taxonomy, the AI first classifies the document type, then only extracts 
 ## Python SDK
 
 <Tabs>
-  <Tab title="Create Taxonomy">
+  <Tab title="Create Tags">
 ```python
 from unstructured import UnstructuredClient
 
 client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",
 )
 
-# Create a taxonomy with tags
+# Create or update tags, the metadata attributes you want to extract
+for tag in [
+    {
+        "name": "contract_type",
+        "description": "Type of contract (NDA, MSA, SLA, etc.)",
+        "output_type": "string",
+        "available_values": ["NDA", "MSA", "SLA", "Employment Agreement"],
+    },
+    {
+        "name": "parties",
+        "description": "Names of all parties involved",
+        "output_type": "string",
+        "max_values": 10,
+    },
+    {
+        "name": "effective_date",
+        "description": "When the contract becomes effective",
+        "output_type": "date",
+    },
+    {
+        "name": "total_value",
+        "description": "Total monetary value in USD",
+        "output_type": "number",
+    },
+]:
+    result = client.tags.upsert(tag_data=tag)
+```
+  </Tab>
+  <Tab title="Create Taxonomy">
+```python
+# Organize tags into a taxonomy, a node/edge graph where child tags
+# are only extracted when the parent condition is met
 taxonomy = client.taxonomy.upsert(
     taxonomy_name="contract-analysis",
     taxonomy_description="Extract key data from legal contracts",
-    tags=[
-        {
-            "name": "contract_type",
-            "description": "Type of contract (NDA, MSA, SLA, etc.)",
-            "output_type": "word",
-        },
-        {
-            "name": "parties",
-            "description": "Names of all parties involved",
-            "output_type": "list[string]",
-        },
-        {
-            "name": "effective_date",
-            "description": "When the contract becomes effective",
-            "output_type": "date",
-        },
-        {
-            "name": "total_value",
-            "description": "Total monetary value in USD",
-            "output_type": "float",
-        },
-    ],
+    taxonomy_data={
+        "nodes": [
+            {"node_id": "1", "name": "contract_type",
+             "active_values": ["NDA", "MSA", "SLA"]},
+            {"node_id": "2", "name": "total_value"},
+        ],
+        "edges": [
+            # Only extract total_value for MSA contracts
+            {"target_node_ids": ["2"],
+             "conditions": [{"node_id": "1", "tag_value_name": "MSA"}]},
+        ],
+    },
 )
-print(f"Created taxonomy: {taxonomy.taxonomy_id}")
-```
-  </Tab>
-  <Tab title="Create Tag">
-```python
-# Create or update a single tag
-tag = client.tags.upsert(
-    tag_name="document_type",
-    tag_description="Classify document type",
-    output_type="word",
-    available_values=["Contract", "Invoice", "Report", "Letter"],
-)
-print(f"Created tag: {tag.tag_id}")
 ```
   </Tab>
   <Tab title="AI Suggestions">
 ```python
-# Get AI-suggested taxonomy for your domain
-suggestions = client.suggest.schema(
-    description="Medical patient records with diagnoses and prescriptions",
+# Get an AI-suggested taxonomy based on your actual documents
+suggestion = client.taxonomy.suggest(
+    data_connector_name="my-s3-bucket",
+    user_context="Medical patient records with diagnoses and prescriptions",
 )
+print(suggestion.suggestion)
 
-print("Suggested tags:")
-for tag in suggestions.tags:
-    print(f"  - {tag.name}: {tag.description}")
-
-# Get AI-suggested regex patterns
-pattern = client.suggest.patterns(
-    description="US Social Security Number (XXX-XX-XXXX)",
+# Get an AI-suggested regex pattern for a Pattern tag
+pattern = client.tags.pattern.suggest_patterns(
+    pattern_description="US Social Security Number (XXX-XX-XXXX)",
+    tag_data={"name": "ssn", "description": "US Social Security Number"},
 )
-print(f"Suggested pattern: {pattern.regex}")
+print(f"Suggested pattern: {pattern.regex} (confidence: {pattern.confidence_score})")
 ```
   </Tab>
   <Tab title="List & Delete">
@@ -168,12 +176,12 @@ print(f"Suggested pattern: {pattern.regex}")
 # List all taxonomies
 taxonomies = client.taxonomy.list()
 for t in taxonomies.taxonomies:
-    print(f"{t.taxonomy_name}: {t.tag_count} tags")
+    print(t.taxonomy_name)
 
 # List all tags
 tags = client.tags.list()
 for tag in tags.tags:
-    print(f"{tag.tag_name} ({tag.output_type})")
+    print(f"{tag.name} ({tag.output_type})")
 
 # Delete a taxonomy
 client.taxonomy.delete(taxonomy_name="old-taxonomy")
