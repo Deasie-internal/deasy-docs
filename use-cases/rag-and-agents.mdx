@@ -1,15 +1,15 @@
 ---
 title: "RAG and Agent Knowledge"
-description: "Build the context layer your chatbots and agents actually need: curated, enriched, scoped, and maintained knowledge"
+description: "Give chatbots and agents AI-ready knowledge: curated, enriched, scoped, and maintained"
 ---
 
 Every RAG pipeline and agent has the same dependency: the knowledge it retrieves from. Point one at a raw document dump and it fails in predictable ways. Duplicates crowd out diverse results in the top-k. A 2019 policy draft contradicts the current one and the agent can't tell which to trust. Semantic similarity surfaces chunks that sound right but come from the wrong document entirely. And a customer-facing agent retrieves from the same pool as an internal legal tool, because nothing scopes what each application is allowed to know.
 
-Embeddings alone cannot fix any of this, because none of these are similarity problems. They are context problems: the pipeline does not know what each document *is*, whether it is current, whether it is a copy, or who should see it. That knowledge is metadata, and building it is what Deasy Labs does.
+Embeddings alone cannot fix any of this, because none of these are similarity problems. They are context problems: the pipeline does not know what each document *is*, whether it is current, whether it is a copy, or who should see it. That knowledge is metadata, and producing it is what Deasy Labs does: it makes the document set AI-ready for this use case.
 
-## What Agent-Ready Knowledge Looks Like
+## What AI-Ready Knowledge Looks Like
 
-| Layer | Raw document dump | Deasy context layer |
+| Layer | Raw document dump | With Deasy Labs |
 | :-- | :-- | :-- |
 | **Curation** | Everything is indexed, including drafts, copies, and expired content | Duplicates and superseded versions flagged and excluded; only documents that pass the gate are indexed |
 | **Enrichment** | A chunk is anonymous text | Every chunk carries its document's tags: type, author, date, department, governing law |
@@ -30,7 +30,7 @@ flowchart LR
         OD[OneDrive]
     end
 
-    subgraph platform [Deasy Labs Context Layer]
+    subgraph platform [Deasy Labs]
         DC[Connect & Ingest]
         TAG[Enrich<br/>tags on every chunk]
         GATE[Curate<br/>dedup · freshness · quality]
