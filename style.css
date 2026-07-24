@@ -633,3 +633,21 @@ hr {
   align-self: center;
   flex-shrink: 0;
 }
+
+/* Maintenance strip under the How It Works row */
+.hiw-maintain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: -16px 0 28px;
+  padding: 8px 14px;
+  font-size: 12px;
+  color: var(--dos-text-secondary);
+  background: var(--dos-surface-3);
+  border: 1px dashed var(--dos-border);
+  border-radius: 999px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
