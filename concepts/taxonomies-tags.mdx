@@ -24,7 +24,7 @@ A Tag defines a specific piece of information you want to capture from documents
 | :-- | :-- | :-- | :-- |
 | **Classification Tags** | AI chooses from predefined list of values | When you have a known set of categories | Document Type: Contract, Invoice, Report |
 | **Extraction Tags** | AI extracts open-ended values from text | When the value is unpredictable | Contract Value: $1,500,000 |
-| **Pattern Tags** | Regex pattern matching or NLP detection | For compliance, keyword-search, etc. | SSN: XXX-XX-XXXX, Email: user@domain.com |
+| **Pattern Tags** | Regex plus context keywords that must appear nearby | For compliance, keyword-search, etc. | SSN: XXX-XX-XXXX, Email: user@domain.com |
 
 <Tip>
 **Classification** is best when you have a known set of categories. **Extraction** is best for unpredictable values like names, dates, or amounts. **Pattern** is best for structured data like phone numbers or SSNs.
@@ -37,8 +37,10 @@ Every tag resolves its value through one of three strategies:
 | Strategy | How the value is decided | Cost | Example |
 | :-- | :-- | :-- | :-- |
 | **AI (LLM)** | The model reads the document and follows your description | LLM call per document | `summary`, `contract_type` |
-| **Pattern (Regex)** | Deterministic pattern matching over the text | No LLM | `ssn_matches`, employee IDs |
+| **Pattern (Regex + context)** | Deterministic matching, corroborated by context keywords | No LLM | `ssn_matches`, employee IDs |
 | **Rule-based** | Deterministic conditions over *other tags'* values | No LLM | `AI Agent Access = Restricted` if `PII = true` |
+
+Pattern tags are not bare regex. Each pattern carries **context keywords** (`context_items`) and a `required_context_matches` threshold: a nine-digit number only counts as an SSN when words like "social security" or "SSN" appear near it. That corroboration is what keeps precision high on real documents, and the platform can suggest both the pattern and its context keywords from your data. See [Precision Patterns for Sensitive Data](/cookbooks/precision-patterns).
 
 Rule-based tags evaluate after their input tags exist: if a rule matches, the value is resolved deterministically; if no rule matches, the tag falls back to its other configured strategy, pattern matching or LLM classification, depending on the tag definition. Because rules run at zero LLM cost, they are the right tool for policy verdicts derived from other signals (access gates, retention classes, readiness flags).
 

@@ -63,7 +63,8 @@
                 "pages": [
                   "cookbooks/data-quality",
                   "cookbooks/pii-detection",
-                  "cookbooks/freshness-curation"
+                  "cookbooks/freshness-curation",
+                  "cookbooks/precision-patterns"
                 ]
               },
               {

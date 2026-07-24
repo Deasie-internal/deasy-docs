@@ -139,7 +139,7 @@ Export this slice, and only it, to the systems your agents read from. Documents 
 
 ## Custom Patterns
 
-For organization-specific identifiers (employee IDs, claim numbers, internal codes), describe the pattern and let the platform engineer it. You focus on defining what matters; the platform handles the pattern complexity.
+For organization-specific identifiers (employee IDs, claim numbers, internal codes), describe the pattern and let the platform engineer it, including the context keywords that keep precision high. The full loop, with generated test cases that prove the pattern before it runs at scale, is in [Precision Patterns for Sensitive Data](/cookbooks/precision-patterns).
 
 ```python
 suggestion = client.tags.pattern.suggest_patterns(
