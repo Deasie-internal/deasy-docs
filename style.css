@@ -351,17 +351,18 @@ hr {
   display: flex;
   align-items: stretch;
   justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
 
 .how-it-works-arrow-h {
   transition: transform 0.2s;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .how-it-works-row {
     flex-direction: column;
+    flex-wrap: nowrap;
   }
   .how-it-works-row > div {
     flex: 1 1 auto !important;
@@ -575,8 +576,8 @@ hr {
   justify-content: space-between;
   gap: 8px;
   flex: 1 1 0%;
-  min-width: 128px;
-  padding: 14px 10px;
+  min-width: 0;
+  padding: 12px 8px;
   text-align: center;
   background: var(--dos-paper);
   border: 1px solid var(--dos-border);
@@ -589,10 +590,9 @@ hr {
 }
 
 .hiw-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--dos-text);
-  white-space: nowrap;
 }
 
 .hiw-detail {
@@ -612,23 +612,23 @@ hr {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   border-radius: 6px;
   background: var(--dos-surface-input);
   border: 1px solid var(--dos-border);
 }
 
 .hiw-chip img {
-  width: 15px;
-  height: 15px;
+  width: 13px;
+  height: 13px;
   object-fit: contain;
   margin: 0;
 }
 
 .hiw-arrow {
   color: var(--dos-text-tertiary);
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1;
   align-self: center;
   flex-shrink: 0;
