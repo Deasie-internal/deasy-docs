@@ -186,7 +186,7 @@ body {
 
 #content-area pre {
   border-radius: var(--dos-radius-md);
-  border: 1px solid var(--dos-border);
+  border: none;
 }
 
 /* Inline code chips on warm surface */
