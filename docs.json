@@ -87,8 +87,7 @@
             "group": "Integrations",
             "pages": [
               "integrations/overview",
-              "integrations/collibra",
-              "integrations/vector-databases"
+              "integrations/collibra"
             ]
           }
         ]
@@ -377,6 +376,10 @@
     {
       "source": "/concepts/architecture",
       "destination": "/use-cases"
+    },
+    {
+      "source": "/integrations/vector-databases",
+      "destination": "/integrations/overview"
     }
   ]
 }
