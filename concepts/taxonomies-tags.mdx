@@ -40,7 +40,7 @@ Every tag resolves its value through one of three strategies:
 | **Pattern (Regex)** | Deterministic pattern matching over the text | No LLM | `ssn_matches`, employee IDs |
 | **Rule-based** | Deterministic conditions over *other tags'* values | No LLM | `AI Agent Access = Restricted` if `PII = true` |
 
-Rule-based tags evaluate after their input tags exist: if a rule matches, the value is resolved deterministically; if no rule matches, the tag falls back to LLM classification. Because rules run at zero LLM cost, they are the right tool for policy verdicts derived from other signals (access gates, retention classes, readiness flags).
+Rule-based tags evaluate after their input tags exist: if a rule matches, the value is resolved deterministically; if no rule matches, the tag falls back to its other configured strategy, pattern matching or LLM classification, depending on the tag definition. Because rules run at zero LLM cost, they are the right tool for policy verdicts derived from other signals (access gates, retention classes, readiness flags).
 
 ## Taxonomy Structure
 
@@ -177,8 +177,9 @@ client.tags.upsert(tag_data={
 })
 
 # Rule-based tag: a deterministic verdict derived from other tags.
-# If a rule matches, the value resolves with no LLM call;
-# if none match, the tag falls back to LLM classification.
+# If a rule matches, the value resolves with no LLM call; if none
+# match, the tag falls back to its other configured strategy
+# (pattern matching or LLM classification, per the tag definition).
 client.tags.upsert(tag_data={
     "name": "AI Agent Access",
     "description": "Whether AI agents may access this document",

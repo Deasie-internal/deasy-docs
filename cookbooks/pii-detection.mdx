@@ -87,7 +87,7 @@ print(f"{len(flagged)} file(s) contain PII")
 
 ## Step 4. Encode the Policy as a Rule-Based Tag
 
-Turn the detection results into a deterministic access verdict. A rule-based tag evaluates conditions over other tags' values at zero LLM cost: if a rule matches, the value resolves deterministically, and if none match, the tag falls back to LLM classification.
+Turn the detection results into a deterministic access verdict. A rule-based tag evaluates conditions over other tags' values at zero LLM cost: if a rule matches, the value resolves deterministically, and if none match, the tag falls back to its other configured strategy, pattern matching or LLM classification, depending on the tag definition.
 
 ```python
 client.tags.upsert(tag_data={
