@@ -31,19 +31,6 @@ In practice: for "what are the termination terms in our supplier agreements", th
   </Card>
 </CardGroup>
 
-## Compliance and Sensitive Data
-
-The platform's built-in classifiers detect PII, PHI, and PCI at scale, write the findings into rule-based tags, and route flagged documents to a restricted review path with an auditable metadata trail. Customer-facing AI systems retrieve only from the clean slice; sensitivity is an opt-in gate chosen per use case.
-
-<CardGroup cols={2}>
-  <Card title="Protect Sensitive Data" icon="shield" href="/cookbooks/pii-detection">
-    Built-in classifiers, rule-based tags, and the gated slice.
-  </Card>
-  <Card title="Projects" icon="folder" href="/concepts/projects">
-    Enable sensitivity detection per workspace.
-  </Card>
-</CardGroup>
-
 ## Document Management
 
 Not every consumer of metadata is an AI system. Enrich libraries at the source: extracted metadata lands as native SharePoint columns, so people filter, sort, and search where they already work, and a nightly workflow keeps the columns current.
@@ -67,5 +54,18 @@ Document collections become visible to governance: curated sets are cataloged in
   </Card>
   <Card title="Taxonomies and Tags" icon="tags" href="/concepts/taxonomies-tags">
     Governance metadata on tags: record codes, retention, dispositions.
+  </Card>
+</CardGroup>
+
+## Compliance and Sensitive Data
+
+The platform's built-in classifiers detect PII, PHI, and PCI at scale, write the findings into rule-based tags, and route flagged documents to a restricted review path with an auditable metadata trail. Customer-facing AI systems retrieve only from the clean slice; sensitivity is an opt-in gate chosen per use case.
+
+<CardGroup cols={2}>
+  <Card title="Protect Sensitive Data" icon="shield" href="/cookbooks/pii-detection">
+    Built-in classifiers, rule-based tags, and the gated slice.
+  </Card>
+  <Card title="Projects" icon="folder" href="/concepts/projects">
+    Enable sensitivity detection per workspace.
   </Card>
 </CardGroup>
