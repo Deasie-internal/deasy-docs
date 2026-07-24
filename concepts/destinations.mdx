@@ -11,9 +11,6 @@ Destinations are target systems where enriched metadata and document data can be
   <Card title="PostgreSQL" icon="database">
     Relational database with vector support for hybrid search.
   </Card>
-  <Card title="Azure SQL" icon="microsoft">
-    Enterprise-grade SQL database in the Azure cloud.
-  </Card>
   <Card title="SharePoint" icon="microsoft">
     Enrich original documents with metadata columns in Microsoft 365.
   </Card>
@@ -36,7 +33,6 @@ Destinations are target systems where enriched metadata and document data can be
 | Destination Type | Description | Key Configuration | Ideal Use Case |
 | :-- | :-- | :-- | :-- |
 | **PostgreSQL** | Relational database with vector support | Host URL, Port, Database, Collection, Credentials | Structured analytics, hybrid search |
-| **Azure SQL** | Microsoft cloud database | Server, Database, Table, Credentials | Enterprise data warehouses |
 | **SharePoint** | Microsoft 365 document management | Client ID/Secret, Tenant ID, Site Name | Enriching original documents with metadata columns |
 | **OneDrive** | Microsoft OneDrive cloud storage | Client ID/Secret, Tenant ID, Site, Library folder | Team drives in Microsoft 365 |
 | **Amazon S3** | AWS cloud object storage | Bucket name, Access Key, Secret Key | Cloud-native archives and pipelines |
@@ -77,14 +73,12 @@ flowchart LR
     subgraph destinations [Your Destinations]
         QD[Qdrant]
         PG[PostgreSQL]
-        AZ[Azure SQL]
         SP[SharePoint]
     end
     
     META --> EXP
     EXP --> QD
     EXP --> PG
-    EXP --> AZ
     EXP --> SP
 ```
 
