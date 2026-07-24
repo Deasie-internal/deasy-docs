@@ -1,0 +1,68 @@
+---
+title: "Use Cases"
+description: "What teams build with Deasy Labs, and the cookbooks that get you there"
+---
+
+A slice is a use case: every application gets exactly the documents it should see, gated by quality, freshness, and sensitivity. These are the four patterns teams build, each with runnable cookbooks.
+
+## RAG and Agent Knowledge
+
+Every RAG pipeline and agent depends on the knowledge it retrieves from, and raw document dumps fail it in predictable ways: duplicates crowd the top-k, stale versions contradict current ones, similarity surfaces chunks from the wrong documents, and nothing scopes what each application may know. None of these are similarity problems. They are metadata problems, and solving them is what makes a document set AI-ready.
+
+| Layer | Raw document dump | With Deasy Labs |
+| :-- | :-- | :-- |
+| **Curation** | Drafts, copies, and expired content all indexed | Duplicates and superseded versions excluded by the quality gate |
+| **Enrichment** | A chunk is anonymous text | Every chunk carries its document's tags |
+| **Scoping** | One pool for every application | One slice per chatbot or agent, with its own rules |
+| **Retrieval** | Similarity only | Metadata narrows the pool first, similarity ranks within it |
+| **Over time** | The index rots | Freshness rules and scheduled workflows keep it current |
+
+Curation alone pays for itself: in internal benchmarks, indexing only the latest version of each document improved retrieval accuracy by 46% relative to indexing everything.
+
+<CardGroup cols={2}>
+  <Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
+    Serve a curated collection from an existing one, maintained nightly.
+  </Card>
+  <Card title="Scope Chatbot Answers with Metadata" icon="comments" href="/cookbooks/metadata-filtered-rag">
+    Tags as retrieval filters, end to end.
+  </Card>
+</CardGroup>
+
+## Compliance and Sensitive Data
+
+The platform's built-in classifiers detect PII, PHI, and PCI at scale, roll the findings up into rule tags, and route flagged documents to a restricted review path with an auditable metadata trail. Customer-facing AI systems retrieve only from the clean slice; sensitivity is an opt-in gate chosen per use case.
+
+<CardGroup cols={2}>
+  <Card title="Protect Sensitive Data" icon="shield" href="/cookbooks/pii-detection">
+    Built-in classifiers, rollup tags, and the gated slice.
+  </Card>
+  <Card title="Prepare an AI-Ready Dataset" icon="filter" href="/cookbooks/data-quality">
+    The readiness flow the gate plugs into.
+  </Card>
+</CardGroup>
+
+## Document Management
+
+Not every consumer of metadata is an AI system. Enrich libraries at the source: extracted metadata lands as native SharePoint columns, so people filter, sort, and search where they already work, and a nightly workflow keeps the columns current.
+
+<CardGroup cols={2}>
+  <Card title="Organize a SharePoint Library" icon="microsoft" href="/cookbooks/sharepoint-to-sharepoint">
+    Connect, classify, write columns back, schedule maintenance.
+  </Card>
+  <Card title="Bootstrap a Taxonomy with AI" icon="tags" href="/cookbooks/custom-taxonomy">
+    Let AI design the columns from your actual documents.
+  </Card>
+</CardGroup>
+
+## Governance for Unstructured Data
+
+Document collections become visible to governance: curated sets are cataloged in Collibra as Deasy Document Set assets with profiling attributes, lifecycle status, and a deep link back to the live files, while the tag vocabulary itself is governed in the Deasy Glossary.
+
+<CardGroup cols={2}>
+  <Card title="Collibra Integration" icon="building-columns" href="/integrations/collibra">
+    Document sets and tag definitions, cataloged with relations.
+  </Card>
+  <Card title="Keep Answers Current Over Time" icon="clock" href="/cookbooks/freshness-curation">
+    The freshness signals governance relies on.
+  </Card>
+</CardGroup>

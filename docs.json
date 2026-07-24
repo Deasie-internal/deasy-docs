@@ -39,16 +39,8 @@
             "pages": [
               "introduction",
               "quickstart",
-              "concepts/overview"
-            ]
-          },
-          {
-            "group": "Use Cases",
-            "pages": [
-              "use-cases/rag-and-agents",
-              "use-cases/compliance",
-              "use-cases/document-management",
-              "use-cases/governance"
+              "concepts/overview",
+              "use-cases"
             ]
           },
           {
@@ -367,8 +359,24 @@
       "destination": "/cookbooks/qdrant-to-qdrant"
     },
     {
+      "source": "/use-cases/rag-and-agents",
+      "destination": "/use-cases"
+    },
+    {
+      "source": "/use-cases/compliance",
+      "destination": "/use-cases"
+    },
+    {
+      "source": "/use-cases/document-management",
+      "destination": "/use-cases"
+    },
+    {
+      "source": "/use-cases/governance",
+      "destination": "/use-cases"
+    },
+    {
       "source": "/concepts/architecture",
-      "destination": "/use-cases/rag-and-agents"
+      "destination": "/use-cases"
     }
   ]
 }
