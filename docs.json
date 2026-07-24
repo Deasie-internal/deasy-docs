@@ -39,7 +39,6 @@
             "pages": [
               "introduction",
               "quickstart",
-              "concepts/overview",
               "use-cases"
             ]
           },
@@ -386,6 +385,10 @@
     {
       "source": "/integrations/vector-databases",
       "destination": "/integrations/overview"
+    },
+    {
+      "source": "/concepts/overview",
+      "destination": "/introduction"
     }
   ]
 }
