@@ -63,8 +63,7 @@
                 "pages": [
                   "cookbooks/data-quality",
                   "cookbooks/pii-detection",
-                  "cookbooks/freshness-curation",
-                  "cookbooks/precision-patterns"
+                  "cookbooks/freshness-curation"
                 ]
               },
               {
@@ -78,7 +77,8 @@
                 "group": "Enrich and Organize",
                 "pages": [
                   "cookbooks/sharepoint-to-sharepoint",
-                  "cookbooks/custom-taxonomy"
+                  "cookbooks/custom-taxonomy",
+                  "cookbooks/precision-patterns"
                 ]
               }
             ]
