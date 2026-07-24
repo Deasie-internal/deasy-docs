@@ -1,0 +1,69 @@
+---
+title: "Integrations Overview"
+description: "Every system Deasy Labs connects to: sources, destinations, file types, and ecosystem integrations in one place"
+---
+
+Deasy Labs sits between your document repositories and the systems that consume curated data. This page is the complete integration matrix: where documents come from, where enriched data goes, and which file types the platform processes.
+
+## Data Sources
+
+Sources are where documents live. Connect them with a [Data Connector](/concepts/data-connectors); ingestion automatically captures source metadata (`Last Modified`, `File Type`, `Created By`, `Folder Structure`) on every document.
+
+| Source | Type | Key Configuration |
+| :-- | :-- | :-- |
+| **Amazon S3** | Object storage | Bucket name, Access Key, Secret Key |
+| **Azure Blob Storage** | Object storage | Account, Container, Credentials |
+| **Google Cloud Storage** | Object storage | Bucket, Service Account |
+| **SharePoint** | Document management | Client ID/Secret, Tenant ID, Site Name |
+| **OneDrive** | Cloud drive | Client ID/Secret, Tenant ID, Site |
+| **PostgreSQL (pgvector)** | Database | Host URL, Database, Credentials, Port |
+| **Qdrant** | Vector database | URL, API Key, Collection |
+
+## Destinations
+
+Destinations receive enriched documents and metadata. Configure them in the app's Export Destinations tab or through the SDK's [destination resource](/concepts/destinations).
+
+| Destination | What lands there |
+| :-- | :-- |
+| **SharePoint** | Metadata as native library columns (enrich at the source) |
+| **OneDrive** | Enriched documents and metadata in drive libraries |
+| **PostgreSQL** | Metadata rows for analytics and hybrid search |
+| **Azure SQL** | Metadata tables in the Azure ecosystem |
+| **Amazon S3** | Curated documents and metadata objects |
+| **Google Cloud Storage** | Curated documents and metadata objects |
+| **Qdrant** | Chunk-level records with tags as payload, via slice export |
+
+## Ecosystem
+
+<CardGroup cols={2}>
+  <Card title="Collibra" icon="building-columns" href="/integrations/collibra">
+    Tag definitions in, governed Deasy Metadata assets out.
+  </Card>
+  <Card title="Vector Databases" icon="database" href="/integrations/vector-databases">
+    Feed RAG pipelines with curated, metadata-rich chunks.
+  </Card>
+</CardGroup>
+
+## Supported File Types
+
+| Category | Extensions |
+| :-- | :-- |
+| Documents | `.pdf`, `.docx`, `.rtf` |
+| Spreadsheets | `.xls`, `.xlsx`, `.xlsm`, `.xlsb`, `.odf`, `.ods`, `.odt` |
+| Presentations | `.ppt`, `.pptx` |
+| Email | `.msg` |
+| Web | `.html`, `.htm`, `.aspx`, `.xml` |
+| Data | `.json`, `.csv` |
+| Images (OCR) | `.png`, `.jpg`, `.jpeg` |
+| Plain text | `.txt`, `.log` |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Data Connectors" icon="plug" href="/concepts/data-connectors">
+    Create and manage source connections with the SDK.
+  </Card>
+  <Card title="Destinations" icon="arrow-right" href="/concepts/destinations">
+    Export options, levels, and metadata formats.
+  </Card>
+</CardGroup>

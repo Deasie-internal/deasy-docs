@@ -23,6 +23,12 @@ Destinations are target systems where enriched metadata and document data can be
   <Card title="Amazon S3" icon="aws">
     Write enriched output to S3 buckets.
   </Card>
+  <Card title="Google Cloud Storage" icon="google">
+    Write enriched output to GCS buckets.
+  </Card>
+  <Card title="Qdrant" icon="bullseye">
+    Serve curated chunks to RAG pipelines via slice export.
+  </Card>
 </CardGroup>
 
 ### Configuration Details
@@ -34,6 +40,10 @@ Destinations are target systems where enriched metadata and document data can be
 | **SharePoint** | Microsoft 365 document management | Client ID/Secret, Tenant ID, Site Name | Enriching original documents with metadata columns |
 | **OneDrive** | Microsoft OneDrive cloud storage | Client ID/Secret, Tenant ID, Site, Library folder | Team drives in Microsoft 365 |
 | **Amazon S3** | AWS cloud object storage | Bucket name, Access Key, Secret Key | Cloud-native archives and pipelines |
+| **Google Cloud Storage** | GCP cloud object storage | Bucket, Service Account | GCP-native archives and pipelines |
+| **Qdrant** | Vector database | URL, API Key, Collection | RAG serving collections |
+
+See the [Integrations Overview](/integrations/overview) for the complete matrix of sources, destinations, and supported file types.
 
 <Tip>
 To export a data slice into a **vector database** (e.g. Qdrant) for RAG pipelines, use `client.data_slice.export_vdb(...)`. See [Data Slices](/concepts/data-slices).

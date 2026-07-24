@@ -11,6 +11,12 @@ Data Connectors establish secure connections between the platform and your docum
   <Card title="Amazon S3" icon="aws">
     Connect to AWS S3 buckets for scalable cloud storage.
   </Card>
+  <Card title="Azure Blob Storage" icon="microsoft">
+    Connect to Azure Blob containers.
+  </Card>
+  <Card title="Google Cloud Storage" icon="google">
+    Connect to GCS buckets.
+  </Card>
   <Card title="SharePoint" icon="microsoft">
     Integrate with Microsoft 365 document libraries.
   </Card>
@@ -30,10 +36,14 @@ Data Connectors establish secure connections between the platform and your docum
 | Source Type | Description | Key Configuration | Ideal Use Case |
 | :-- | :-- | :-- | :-- |
 | **Amazon S3** | AWS cloud object storage | Bucket name, Access Key, Secret Key | Large-scale document archives, cloud-native workflows |
+| **Azure Blob Storage** | Azure cloud object storage | Account, Container, Credentials | Azure-native document archives |
+| **Google Cloud Storage** | GCP cloud object storage | Bucket, Service Account | GCP-native document archives |
 | **SharePoint** | Microsoft 365 document management | Client ID, Client Secret, Tenant ID, Site Name | Enterprise document libraries, Office 365 environments |
 | **OneDrive** | Microsoft OneDrive cloud storage | Client ID, Client Secret, Tenant ID, Site | Personal and team drives in Microsoft 365 |
 | **PostgreSQL** | Relational database with pgvector extension | Host URL, Database name, User credentials, Port | Structured + unstructured hybrid data, existing database workflows |
 | **Qdrant** | Purpose-built vector database for AI | API Key, Collection name, URL | Semantic search applications, RAG pipelines |
+
+See the [Integrations Overview](/integrations/overview) for the complete matrix of sources, destinations, and supported file types.
 
 ## Key Features
 

@@ -51,7 +51,8 @@
               "concepts/taxonomies-tags",
               "concepts/metadata",
               "concepts/destinations",
-              "concepts/workflows"
+              "concepts/workflows",
+              "concepts/ai-readiness"
             ]
           },
           {
@@ -84,8 +85,8 @@
           {
             "group": "Integrations",
             "pages": [
+              "integrations/overview",
               "integrations/collibra",
-              "integrations/databricks",
               "integrations/vector-databases"
             ]
           },
