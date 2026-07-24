@@ -7,18 +7,14 @@ A slice is a use case: every application gets exactly the documents it should se
 
 ## RAG and Agent Context
 
-An agent is only as accurate as the context it can reach. Enterprises keep pointing agents at raw document dumps, and the results are the failures everyone recognizes: the agent quotes a 2019 draft because nothing told it which of five copies is current, retrieval returns chunks that sound right but come from the wrong contract, and the customer-facing bot can see the same files as the legal team because nothing scopes access. Bigger models don't fix this. These are context problems, and they live in the data, not the prompt.
+An agent is only as accurate as the context it can reach, and raw document dumps fail it in predictable ways: duplicate copies, stale versions, lookalike chunks from the wrong documents, no access boundaries. These are metadata problems, not model problems.
 
-With Deasy Labs you fully control what your agent accesses at runtime. Because every document carries known metadata for what is sensitive and what is actually relevant to this use case, the agent retrieves from a pre-vetted [Data Slice](/concepts/data-slices) that encodes those decisions: sensitive content never enters it, irrelevant content is filtered out of it, and the boundary is a slice condition you define rather than a prompt instruction you hope the model follows. Follow one question through the system to see what that means in practice:
+Deasy Labs gives you two layers of control over what the agent accesses:
 
-> "What are the termination terms in our supplier agreements?"
+- **Curate once.** A [Data Slice](/concepts/data-slices) is the agent's vetted context: deduplicated, current, relevance-filtered, sensitivity-gated. In internal benchmarks, indexing only the latest version of each document improved retrieval accuracy by 46%.
+- **Route at runtime.** Within the slice, every chunk carries its tags. The agent routes by metadata, filtering to the right documents before similarity runs, and you can enforce metadata rules so anything tagged sensitive is never touched.
 
-1. **Scope.** The agent retrieves from its slice, already deduplicated, current, and sensitivity-gated. The 2019 drafts and the copy-of-a-copy never made it in; in internal benchmarks, indexing only the latest version of each document improved retrieval accuracy by 46% relative to indexing everything.
-2. **Route.** `Contract Type = Supplier Agreement` narrows tens of thousands of chunks to the few hundred that can possibly answer, before any similarity math runs. Every tag you extract becomes a routing signal.
-3. **Retrieve.** Similarity ranks within the right pool, and every chunk arrives carrying its document's tags: counterparty, effective date, governing law. The model gets the smallest set of high-signal tokens instead of a stuffed prompt.
-4. **Answer.** The response cites its sources, and every extracted value behind it has evidence and confidence attached, so "why did the agent say that" always has an answer.
-
-Each step runs on metadata the platform already extracted. And because [Workflows](/concepts/workflows) re-classify new documents and freshness rules expire aging ones on schedule, the agent's context maintains itself: accuracy holds as the source evolves instead of decaying from day one.
+In practice: for "what are the termination terms in our supplier agreements", the slice already excludes drafts, duplicates, and PII; `Contract Type = Supplier Agreement` narrows tens of thousands of chunks to a few hundred; similarity ranks within them; and the answer cites values that carry evidence and confidence. [Workflows](/concepts/workflows) keep the slice current as documents change.
 
 <CardGroup cols={2}>
   <Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
