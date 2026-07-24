@@ -7,17 +7,18 @@ A slice is a use case: every application gets exactly the documents it should se
 
 ## RAG and Agent Knowledge
 
-Every RAG pipeline and agent depends on the knowledge it retrieves from, and raw document dumps fail it in predictable ways: duplicates crowd the top-k, stale versions contradict current ones, similarity surfaces chunks from the wrong documents, and nothing scopes what each application may know. None of these are similarity problems. They are metadata problems, and solving them is what makes a document set AI-ready.
+An agent is only as accurate as the context it can reach. Enterprises keep pointing agents at raw document dumps, and the results are the failures everyone recognizes: the agent quotes a 2019 draft because nothing told it which of five copies is current, retrieval returns chunks that sound right but come from the wrong contract, and the customer-facing bot can see the same files as the legal team because nothing scopes access. Bigger models don't fix this. These are context problems, and they live in the data, not the prompt.
 
-| Layer | Raw document dump | With Deasy Labs |
-| :-- | :-- | :-- |
-| **Curation** | Drafts, copies, and expired content all indexed | Duplicates and superseded versions excluded by the quality gate |
-| **Enrichment** | A chunk is anonymous text | Every chunk carries its document's tags |
-| **Scoping** | One pool for every application | One slice per chatbot or agent, with its own rules |
-| **Retrieval** | Similarity only | Metadata narrows the pool first, similarity ranks within it |
-| **Over time** | The index rots | Freshness rules and scheduled workflows keep it current |
+Deasy Labs solves them with **Context Products**: pre-vetted sets of data across pages, files, and folders that an agent can access precisely because they have been curated for it. Follow one question through the system to see what that means in practice:
 
-Curation alone pays for itself: in internal benchmarks, indexing only the latest version of each document improved retrieval accuracy by 46% relative to indexing everything.
+> "What are the termination terms in our supplier agreements?"
+
+1. **Scope.** The agent retrieves from its Context Product, a slice that is already deduplicated, current, and sensitivity-gated. The 2019 drafts and the copy-of-a-copy never made it in; in internal benchmarks, indexing only the latest version of each document improved retrieval accuracy by 46% relative to indexing everything.
+2. **Route.** `Contract Type = Supplier Agreement` narrows tens of thousands of chunks to the few hundred that can possibly answer, before any similarity math runs. Every tag you extract becomes a routing signal.
+3. **Retrieve.** Similarity ranks within the right pool, and every chunk arrives carrying its document's tags: counterparty, effective date, governing law. The model gets the smallest set of high-signal tokens instead of a stuffed prompt.
+4. **Answer.** The response cites its sources, and every extracted value behind it has evidence and confidence attached, so "why did the agent say that" always has an answer.
+
+Each step runs on metadata the platform already extracted. And because [Workflows](/concepts/workflows) re-classify new documents and freshness rules expire aging ones on schedule, the Context Product maintains itself: accuracy holds as the source evolves instead of decaying from day one.
 
 <CardGroup cols={2}>
   <Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
