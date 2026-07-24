@@ -30,6 +30,18 @@ A Tag defines a specific piece of information you want to capture from documents
 **Classification** is best when you have a known set of categories. **Extraction** is best for unpredictable values like names, dates, or amounts. **Pattern** is best for structured data like phone numbers or SSNs.
 </Tip>
 
+## Three Ways to Define a Tag
+
+Every tag resolves its value through one of three strategies:
+
+| Strategy | How the value is decided | Cost | Example |
+| :-- | :-- | :-- | :-- |
+| **AI (LLM)** | The model reads the document and follows your description | LLM call per document | `summary`, `contract_type` |
+| **Pattern (Regex)** | Deterministic pattern matching over the text | No LLM | `ssn_matches`, employee IDs |
+| **Rule-based** | Deterministic conditions over *other tags'* values | No LLM | `AI Agent Access = Restricted` if `PII = true` |
+
+Rule-based tags evaluate after their input tags exist: if a rule matches, the value is resolved deterministically; if no rule matches, the tag falls back to LLM classification. Because rules run at zero LLM cost, they are the right tool for policy verdicts derived from other signals (access gates, retention classes, readiness flags).
+
 ## Taxonomy Structure
 
 A Taxonomy enables hierarchical organization and conditional extraction. Child tags only get generated when parent conditions are met:
@@ -152,6 +164,41 @@ taxonomy = client.taxonomy.upsert(
         ],
     },
 )
+```
+  </Tab>
+  <Tab title="Pattern & Rule Tags">
+```python
+# Pattern tag: deterministic regex matching, no LLM cost
+client.tags.upsert(tag_data={
+    "name": "ssn_matches",
+    "description": "US Social Security Numbers found in the document",
+    "output_type": "string",
+    "patterns": [{"pattern": r"\b\d{3}-\d{2}-\d{4}\b"}],
+})
+
+# Rule-based tag: a deterministic verdict derived from other tags.
+# If a rule matches, the value resolves with no LLM call;
+# if none match, the tag falls back to LLM classification.
+client.tags.upsert(tag_data={
+    "name": "AI Agent Access",
+    "description": "Whether AI agents may access this document",
+    "output_type": "string",
+    "available_values": ["Restricted", "Allowed"],
+    "visual_rules": [
+        {
+            "condition": {
+                "condition": "OR",
+                "children": [
+                    {"tag": {"name": "PII (Personally Identifiable Information)",
+                             "operator": "in", "values": ["true"]}},
+                    {"tag": {"name": "PHI (Protected Health Information)",
+                             "operator": "in", "values": ["true"]}},
+                ],
+            },
+            "tag_value": "Restricted",
+        },
+    ],
+})
 ```
   </Tab>
   <Tab title="AI Suggestions">

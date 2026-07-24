@@ -8,7 +8,7 @@ A customer-facing agent must not see PII. Deasy Labs ships a proprietary sensiti
 Sensitivity is an opt-in component of readiness, chosen per use case. In the app you enable it when creating a [Project](/concepts/projects); here you run it headlessly.
 
 <Note>
-You do not write detection logic. The classifiers are built in, and when sensitivity detection runs, the platform automatically adds three rule-based rollup tags: `PII (Personally Identifiable Information)`, `PCI (Payment Card Industry Data)`, and `PHI (Protected Health Information)`. PII detection currently supports English documents only.
+You do not write detection logic. The classifiers are built in, and when sensitivity detection runs, the platform automatically adds three rule-based tags: `PII (Personally Identifiable Information)`, `PCI (Payment Card Industry Data)`, and `PHI (Protected Health Information)`. PII detection currently supports English documents only.
 </Note>
 
 ## The Flow
@@ -16,7 +16,7 @@ You do not write detection logic. The classifiers are built in, and when sensiti
 ```mermaid
 flowchart LR
     CAT[Built-in classifiers<br/>40+ sensitivity tags] --> RUN[Classification job<br/>sensitivity strategy]
-    RUN --> ROLL[Rollup rule tags<br/>PII · PCI · PHI]
+    RUN --> ROLL[Rule-based tags<br/>PII · PCI · PHI]
     ROLL --> GATE[Gated slice<br/>no sensitive content]
     GATE --> AI[Agents · RAG · exports]
 ```
@@ -42,7 +42,7 @@ The catalog covers identity, financial, health, and contact data: Social Securit
 
 ## Step 2. Run Sensitivity Detection
 
-Include the sensitivity tags in a classification job. The platform runs its sensitivity strategy at the highest merge priority and writes the detected values, plus the `PII`, `PCI`, and `PHI` rollup tags, as file-level metadata.
+Include the sensitivity tags in a classification job. The platform runs its sensitivity strategy at the highest merge priority and writes the detected values, plus the `PII`, `PCI`, and `PHI` rule-based tags, as file-level metadata.
 
 ```python
 import time
@@ -85,7 +85,36 @@ for file_name, tags in (results.metadata or {}).items():
 print(f"{len(flagged)} file(s) contain PII")
 ```
 
-## Step 4. Gate the Slice
+## Step 4. Encode the Policy as a Rule-Based Tag
+
+Turn the detection results into a deterministic access verdict. A rule-based tag evaluates conditions over other tags' values at zero LLM cost: if a rule matches, the value resolves deterministically, and if none match, the tag falls back to LLM classification.
+
+```python
+client.tags.upsert(tag_data={
+    "name": "AI Agent Access",
+    "description": "Whether AI agents may access this document",
+    "output_type": "string",
+    "available_values": ["Restricted", "Allowed"],
+    "visual_rules": [
+        {
+            "condition": {
+                "condition": "OR",
+                "children": [
+                    {"tag": {"name": "PII (Personally Identifiable Information)",
+                             "operator": "in", "values": ["true"]}},
+                    {"tag": {"name": "PHI (Protected Health Information)",
+                             "operator": "in", "values": ["true"]}},
+                ],
+            },
+            "tag_value": "Restricted",
+        },
+    ],
+})
+```
+
+The policy now lives on the documents themselves: re-running classification re-evaluates the rule, and every downstream system reads one tag instead of re-deriving the logic.
+
+## Step 5. Gate the Slice
 
 Build the use case's slice so restricted content is excluded. This is the sensitivity component of the AI-ready gate: which dimensions matter, including whether sensitivity is part of the gate, is decided per use case.
 
