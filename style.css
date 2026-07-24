@@ -566,3 +566,70 @@ hr {
   border-radius: 999px;
   vertical-align: middle;
 }
+
+/* How It Works cards (introduction) - one uniform row */
+.hiw-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 1 1 0%;
+  min-width: 128px;
+  padding: 14px 10px;
+  text-align: center;
+  background: var(--dos-paper);
+  border: 1px solid var(--dos-border);
+  border-radius: var(--dos-radius-lg);
+}
+
+.hiw-icon {
+  display: inline-flex;
+  color: var(--dos-primary);
+}
+
+.hiw-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dos-text);
+  white-space: nowrap;
+}
+
+.hiw-detail {
+  font-size: 11px;
+  color: var(--dos-text-tertiary);
+  line-height: 1.4;
+}
+
+.hiw-chips {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hiw-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--dos-surface-input);
+  border: 1px solid var(--dos-border);
+}
+
+.hiw-chip img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  margin: 0;
+}
+
+.hiw-arrow {
+  color: var(--dos-text-tertiary);
+  font-size: 18px;
+  line-height: 1;
+  align-self: center;
+  flex-shrink: 0;
+}

@@ -17,11 +17,17 @@ Deasy Labs gives you two layers of control over what the agent accesses:
 In practice: for "what are the termination terms in our supplier agreements", the slice already excludes drafts, duplicates, and PII; `Contract Type = Supplier Agreement` narrows tens of thousands of chunks to a few hundred; similarity ranks within them; and the answer cites values that carry evidence and confidence. [Workflows](/concepts/workflows) keep the slice current as documents change.
 
 <CardGroup cols={2}>
+  <Card title="Prepare an AI-Ready Dataset" icon="filter" href="/cookbooks/data-quality">
+    The curation flow that produces the agent's slice.
+  </Card>
   <Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
     Serve a curated collection from an existing one, maintained nightly.
   </Card>
   <Card title="Scope Chatbot Answers with Metadata" icon="comments" href="/cookbooks/metadata-filtered-rag">
     Tags as retrieval filters, end to end.
+  </Card>
+  <Card title="Keep Answers Current Over Time" icon="clock" href="/cookbooks/freshness-curation">
+    Freshness rules keep the slice current.
   </Card>
 </CardGroup>
 
@@ -33,8 +39,8 @@ The platform's built-in classifiers detect PII, PHI, and PCI at scale, roll the 
   <Card title="Protect Sensitive Data" icon="shield" href="/cookbooks/pii-detection">
     Built-in classifiers, rollup tags, and the gated slice.
   </Card>
-  <Card title="Prepare an AI-Ready Dataset" icon="filter" href="/cookbooks/data-quality">
-    The readiness flow the gate plugs into.
+  <Card title="Projects" icon="folder" href="/concepts/projects">
+    Enable sensitivity detection per workspace.
   </Card>
 </CardGroup>
 
@@ -59,7 +65,7 @@ Document collections become visible to governance: curated sets are cataloged in
   <Card title="Collibra Integration" icon="building-columns" href="/integrations/collibra">
     Document sets and tag definitions, cataloged with relations.
   </Card>
-  <Card title="Keep Answers Current Over Time" icon="clock" href="/cookbooks/freshness-curation">
-    The freshness signals governance relies on.
+  <Card title="Taxonomies and Tags" icon="tags" href="/concepts/taxonomies-tags">
+    Governance metadata on tags: record codes, retention, dispositions.
   </Card>
 </CardGroup>
