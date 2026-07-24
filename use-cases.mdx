@@ -5,20 +5,20 @@ description: "What teams build with Deasy Labs, and the cookbooks that get you t
 
 A slice is a use case: every application gets exactly the documents it should see, gated by quality, freshness, and sensitivity. These are the four patterns teams build, each with runnable cookbooks.
 
-## RAG and Agent Knowledge
+## RAG and Agent Context
 
 An agent is only as accurate as the context it can reach. Enterprises keep pointing agents at raw document dumps, and the results are the failures everyone recognizes: the agent quotes a 2019 draft because nothing told it which of five copies is current, retrieval returns chunks that sound right but come from the wrong contract, and the customer-facing bot can see the same files as the legal team because nothing scopes access. Bigger models don't fix this. These are context problems, and they live in the data, not the prompt.
 
-Deasy Labs solves them with **Context Products**: pre-vetted sets of data across pages, files, and folders that an agent can access precisely because they have been curated for it. Follow one question through the system to see what that means in practice:
+Deasy Labs solves them in the data: the agent retrieves from a pre-vetted [Data Slice](/concepts/data-slices), curated, gated, and maintained for that one application. Follow one question through the system to see what that means in practice:
 
 > "What are the termination terms in our supplier agreements?"
 
-1. **Scope.** The agent retrieves from its Context Product, a slice that is already deduplicated, current, and sensitivity-gated. The 2019 drafts and the copy-of-a-copy never made it in; in internal benchmarks, indexing only the latest version of each document improved retrieval accuracy by 46% relative to indexing everything.
+1. **Scope.** The agent retrieves from its slice, already deduplicated, current, and sensitivity-gated. The 2019 drafts and the copy-of-a-copy never made it in; in internal benchmarks, indexing only the latest version of each document improved retrieval accuracy by 46% relative to indexing everything.
 2. **Route.** `Contract Type = Supplier Agreement` narrows tens of thousands of chunks to the few hundred that can possibly answer, before any similarity math runs. Every tag you extract becomes a routing signal.
 3. **Retrieve.** Similarity ranks within the right pool, and every chunk arrives carrying its document's tags: counterparty, effective date, governing law. The model gets the smallest set of high-signal tokens instead of a stuffed prompt.
 4. **Answer.** The response cites its sources, and every extracted value behind it has evidence and confidence attached, so "why did the agent say that" always has an answer.
 
-Each step runs on metadata the platform already extracted. And because [Workflows](/concepts/workflows) re-classify new documents and freshness rules expire aging ones on schedule, the Context Product maintains itself: accuracy holds as the source evolves instead of decaying from day one.
+Each step runs on metadata the platform already extracted. And because [Workflows](/concepts/workflows) re-classify new documents and freshness rules expire aging ones on schedule, the agent's context maintains itself: accuracy holds as the source evolves instead of decaying from day one.
 
 <CardGroup cols={2}>
   <Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
