@@ -1,46 +1,70 @@
 ---
 title: "Collibra"
-description: "Publish Deasy metadata into the Collibra platform as governed assets"
+description: "Catalog Deasy document sets and tag definitions in the Collibra platform"
 ---
 
-Deasy Labs integrates with the Collibra platform so the metadata you extract from unstructured documents becomes part of your governed data landscape. Tag definitions flow from Collibra into Deasy, classification runs in Deasy, and the enriched results publish back to Collibra as assets with relations.
+Deasy Labs integrates with the Collibra platform so unstructured data becomes part of your governed data landscape. Two asset types carry the integration: **Deasy Document Sets**, which catalog curated sets of documents defined by tag filters, and **Tag definitions**, which catalog the metadata vocabulary itself in the Deasy Glossary.
+
+## Deasy Document Sets
+
+A document set is a group of documents defined by a tag-filter condition, cataloged as a `Deasy Document Set` asset in Collibra's Data Sources domain. The asset carries profiling attributes computed from the underlying files and a deep link back to Deasy.
+
+<Frame caption="A Deasy Document Set asset in Collibra, defined by the tag filter Author = Alex Lyons">
+  <img src="/images/collibra-document-set.png" alt="Deasy Document Set asset in Collibra showing file formats, document types, folders, file count, tag filters, and a View files in Deasy link" />
+</Frame>
+
+| Attribute | What it holds |
+| :-- | :-- |
+| **Tag Filters** | The defining condition, for example `"Author" = "Alex Lyons"` |
+| **Document Types** | The extracted document types present in the set |
+| **File Formats** | File formats present in the set |
+| **Common Folders / File Locations** | Where the files live in the source system |
+| **Earliest Creation Date** | Oldest document in the set |
+| **Number of Files** | Set size |
+| **URL** | "View files in Deasy", a deep link to the live set |
+
+Document sets follow Collibra's asset lifecycle (for example `Candidate`), so governance teams review and approve them like any other asset.
+
+## Tag Definitions in the Deasy Glossary
+
+Every tag becomes a `Tag definition` asset in the Deasy Glossary domain, so the vocabulary used to classify unstructured data is itself governed. The asset carries the tag's full extraction instruction, its constraints, and its group (`OOB` for the platform's built-in tags).
+
+<Frame caption="The built-in Primary Topic tag cataloged as a Tag definition asset in the Deasy Glossary">
+  <img src="/images/collibra-tag-definition.png" alt="Tag definition asset in Collibra showing the Primary Topic tag's description, max values, and group" />
+</Frame>
+
+| Attribute | What it holds |
+| :-- | :-- |
+| **Description** | The full extraction instruction the classifier uses |
+| **Max Values** | How many values the tag may return |
+| **Group** | The tag's group, `OOB` for built-in platform tags |
+
+Tag definitions can also flow the other way: standards defined in Collibra import into Deasy as tags, carrying their Collibra identity (`collibra_asset_id`, `collibra_domain_id`) and governance metadata (record codes, retention periods, dispositions) with them. See [Taxonomies and Tags](/concepts/taxonomies-tags).
 
 ## How the Integration Works
 
 <Steps>
-  <Step title="Import Tag Definitions">
-    Governance teams define tags and standards in Collibra. Deasy imports them as tag definitions, so classification uses the vocabulary your organization already governs. Tags carry their Collibra identity (`collibra_asset_id`, `collibra_domain_id`) through the platform.
+  <Step title="Catalog the vocabulary">
+    Tag definitions land in the Deasy Glossary domain, whether they originate in Deasy or import from Collibra standards.
   </Step>
-  <Step title="Classify in Deasy">
-    Run classification against your document sources. Every extraction carries values, evidence, and confidence.
+  <Step title="Classify and curate in Deasy">
+    Run classification and build the tag-filtered sets your use cases need. Every extraction carries values, evidence, and confidence.
   </Step>
-  <Step title="Export to Collibra">
-    Publish the results to Collibra, creating Deasy Metadata assets linked to the source documents, tag definitions, and data sets they describe.
+  <Step title="Catalog the document sets">
+    Curated sets publish to Collibra as Deasy Document Set assets with their profiling attributes and a live link back to the files in Deasy.
   </Step>
 </Steps>
 
 ```mermaid
 flowchart LR
-    COL[Collibra<br/>tag definitions · standards] -->|import| DL[Deasy Labs<br/>classification]
-    DL -->|Export to Collibra| ASSETS[Collibra<br/>Deasy Metadata assets<br/>+ relations]
+    COL[Collibra Standards<br/>tag definitions] -->|import| DL[Deasy Labs<br/>classify + curate]
+    DL -->|catalog| DS[Deasy Document Sets<br/>Data Sources domain]
+    DL -->|catalog| TD[Tag definitions<br/>Deasy Glossary domain]
 ```
-
-## What Lands in Collibra
-
-| In Collibra | From Deasy |
-| :-- | :-- |
-| Deasy Metadata assets | Extracted tag values with evidence |
-| Relations to documents and tag definitions | The lineage of every extraction |
-| Document sets | Curated data slices |
-| Retention and governance standards | Governance metadata on tags (record codes, retention periods, dispositions) |
-
-<Note>
-The Collibra export is configured in the app through a Collibra catalog profile. In the SDK, tags expose their Collibra linkage via the `collibra_asset_id` and `collibra_domain_id` fields on `tag_data`, and governance metadata (record code, retention period, disposition) travels with the tag. See [Taxonomies and Tags](/concepts/taxonomies-tags).
-</Note>
 
 ## Why It Matters
 
-Unstructured documents are invisible to most governance programs. With the integration, the metadata Deasy extracts gets the same treatment as any governed data: cataloged, related, and auditable. Retention standards defined in Collibra can drive rule-based tags in Deasy, and detection results flow back as evidence.
+Unstructured documents are invisible to most governance programs. With document sets and tag definitions cataloged, governance teams see what document collections exist, how they are defined, and which vocabulary describes them, with the same lifecycle, responsibilities, and audit trail as any governed asset, and one click back to the live data in Deasy.
 
 ## Next Steps
 

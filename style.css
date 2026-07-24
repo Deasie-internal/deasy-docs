@@ -1,5 +1,5 @@
 /* ============================================================
-   Deasy DesignOS — direct translation of the frontend theme
+   Deasy DesignOS - direct translation of the frontend theme
    Source of truth: libs/unstructured/main/src/config/deasyOsTheme.ts
    (darrren-work branch). Fonts are the same Collibra CDN builds
    the app shell loads (apps/shell/src/fonts-cloud.css).
@@ -24,7 +24,7 @@
   --dos-button-hover: #a3480a;
   --dos-button-pressed: #8f3e08;
 
-  /* palette.secondary — accent/sage */
+  /* palette.secondary - accent/sage */
   --dos-sage-1: #e5eae2;
   --dos-sage-2: #b8c8b7;
   --dos-sage-3: #8ba68c;
@@ -54,7 +54,7 @@
   --dos-action-hover: rgba(183, 80, 12, 0.08);
   --dos-action-selected: #efe5d0;
 
-  /* status (light) — deasyStatusLight bg/text/main */
+  /* status (light) - deasyStatusLight bg/text/main */
   --dos-success-bg: #e7f6ed;
   --dos-success-text: #075b2a;
   --dos-success: #0da54d;
@@ -111,7 +111,7 @@
   --dos-action-hover: rgba(214, 126, 67, 0.12);
   --dos-action-selected: #595551;
 
-  /* status (dark) — deasyStatusDark translucent bg + bright text */
+  /* status (dark) - deasyStatusDark translucent bg + bright text */
   --dos-success-bg: rgba(7, 91, 42, 0.2);
   --dos-success-text: #4ade80;
   --dos-success: #4ade80;
@@ -126,7 +126,7 @@
   --dos-error: #fca5a5;
 }
 
-/* ---- Typography — DesignOS scale (body1 0.875rem/400, h* weight 500) ---- */
+/* ---- Typography - DesignOS scale (body1 0.875rem/400, h* weight 500) ---- */
 body {
   font-family: "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -164,7 +164,7 @@ body {
   line-height: 1.5;
 }
 
-/* Section eyebrows / group labels — DesignOS caption spec */
+/* Section eyebrows / group labels - DesignOS caption spec */
 #sidebar h5,
 #sidebar-content h5,
 #content-side-layout h5 {
@@ -175,7 +175,7 @@ body {
   color: var(--dos-text-tertiary);
 }
 
-/* ---- Code — typography.code: Roboto Mono 0.875rem ---- */
+/* ---- Code - typography.code: Roboto Mono 0.875rem ---- */
 #content-area code,
 #content-area pre code {
   font-family: "Roboto Mono Variable", "Roboto Mono", ui-monospace,
@@ -205,14 +205,14 @@ body {
   background-color: var(--dos-surface-elevated);
 }
 
-/* ---- Chrome: sidebar, navbar, TOC — neutral text, terracotta active ---- */
+/* ---- Chrome: sidebar, navbar, TOC - neutral text, terracotta active ---- */
 #navbar {
   font-size: 0.875rem;
 }
 
 #sidebar,
 #sidebar a {
-  font-size: 0.875rem; /* body1 — sidebar nav items */
+  font-size: 0.875rem; /* body1 - sidebar nav items */
   color: var(--dos-text-secondary);
 }
 
@@ -246,13 +246,13 @@ body {
   color: var(--dos-button-hover);
 }
 
-/* ---- Buttons — flat, weight 500, no uppercase, 4-6px radius ---- */
+/* ---- Buttons - flat, weight 500, no uppercase, 4-6px radius ---- */
 button {
   text-transform: none;
   font-weight: 500;
 }
 
-/* ---- Cards — surface/1 paper, 8px radius, dropdown shadow on hover ---- */
+/* ---- Cards - surface/1 paper, 8px radius, dropdown shadow on hover ---- */
 .card {
   background-color: var(--dos-paper);
   border: 1px solid var(--dos-border);
@@ -266,7 +266,7 @@ button {
   border-color: var(--dos-primary-light);
 }
 
-/* ---- Callouts — exact DesignOS status-bg + status-text pairs ---- */
+/* ---- Callouts - exact DesignOS status-bg + status-text pairs ---- */
 .callout-success,
 .alert-success,
 [class*="callout"][class*="success"] {
@@ -299,7 +299,7 @@ button {
   border-radius: var(--dos-radius-semi);
 }
 
-/* ---- Tables — row hover surface/3, active track (Figma table tokens) ---- */
+/* ---- Tables - row hover surface/3, active track (Figma table tokens) ---- */
 #content-area table {
   border-color: var(--dos-border);
   border-radius: var(--dos-radius-md);
@@ -344,4 +344,225 @@ footer {
 
 hr {
   border-color: var(--dos-divider);
+}
+
+/* ---- How It Works diagram (introduction.mdx) ---- */
+.how-it-works-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.how-it-works-arrow-h {
+  transition: transform 0.2s;
+}
+
+@media (max-width: 640px) {
+  .how-it-works-row {
+    flex-direction: column;
+  }
+  .how-it-works-row > div {
+    flex: 1 1 auto !important;
+  }
+  .how-it-works-arrow-h {
+    transform: rotate(90deg);
+  }
+}
+
+/* ============================================================
+   API Reference sidebar
+   Scoped to nav entries containing a Mintlify method pill
+   (.method-nav-pill) - these only exist in the API tab, so the
+   Documentation tab sidebar is unaffected.
+
+   Verified rendered structure (Mintlify maple client bundles):
+     a.group.flex.items-start.pr-3.py-1.5.gap-x-3
+       div.h-[1lh].flex.items-center.shrink-0          (LineCenter)
+         span.method-nav-pill.flex.items-center.w-8
+           span.px-1.py-0.5.rounded-md.text-[0.55rem].font-bold
+             + per-method colors (inactive):
+               GET  bg-green-400/20  text-green-700
+               POST bg-blue-400/20   text-blue-700
+               PUT  bg-yellow-400/20 text-yellow-700
+               DEL  bg-red-400/20    text-red-700
+             + per-method colors (active page):
+               GET bg-[#2AB673] / POST bg-[#3064E3]
+               PUT bg-[#C28C30] / DEL  bg-[#CB3A32]
+       div.flex-1.flex.min-w-0.items-start.gap-x-2.5
+         div.flex.min-w-0.flex-1.flex-wrap… > span     (label)
+   ============================================================ */
+
+/* Endpoint rows: chip and label on one vertically centered line,
+   consistent breathing room top/bottom */
+:is(#sidebar, #sidebar-content) a:has(.method-nav-pill) {
+  align-items: center;
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+}
+
+/* Fixed-width chip column so every endpoint label starts at the
+   same x position (default w-8 + auto-width chip made the gap
+   between chip and text uneven per method) */
+:is(#sidebar, #sidebar-content) .method-nav-pill {
+  width: 2.625rem;
+  flex: none;
+}
+
+/* The chip itself - DesignOS chip spec: 4px radius,
+   0.6875rem/600 uppercase, vertically centered */
+:is(#sidebar, #sidebar-content) .method-nav-pill > span {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.25rem;
+  border-radius: var(--dos-radius-sm);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* Calm DesignOS status tints instead of saturated Tailwind colors.
+   POST = info, GET = success, PUT = warning, DELETE = error. */
+:is(#sidebar, #sidebar-content) .method-nav-pill > span[class*="bg-blue-400"] {
+  background-color: var(--dos-info-bg);
+  color: var(--dos-info-text);
+}
+
+:is(#sidebar, #sidebar-content) .method-nav-pill > span[class*="bg-green-400"] {
+  background-color: var(--dos-success-bg);
+  color: var(--dos-success-text);
+}
+
+:is(#sidebar, #sidebar-content) .method-nav-pill > span[class*="bg-yellow-400"] {
+  background-color: var(--dos-warning-bg);
+  color: var(--dos-warning-text);
+}
+
+:is(#sidebar, #sidebar-content) .method-nav-pill > span[class*="bg-red-400"] {
+  background-color: var(--dos-error-bg);
+  color: var(--dos-error-text);
+}
+
+/* Active (current page) pill: same calm tint plus a 1px status
+   ring instead of Mintlify's solid saturated fill + white text */
+:is(#sidebar, #sidebar-content) .method-nav-pill > span[class*="bg-[#3064E3]"] {
+  background-color: var(--dos-info-bg);
+  color: var(--dos-info-text);
+  box-shadow: inset 0 0 0 1px var(--dos-info);
+}
+
+:is(#sidebar, #sidebar-content) .method-nav-pill > span[class*="bg-[#2AB673]"] {
+  background-color: var(--dos-success-bg);
+  color: var(--dos-success-text);
+  box-shadow: inset 0 0 0 1px var(--dos-success);
+}
+
+:is(#sidebar, #sidebar-content) .method-nav-pill > span[class*="bg-[#C28C30]"] {
+  background-color: var(--dos-warning-bg);
+  color: var(--dos-warning-text);
+  box-shadow: inset 0 0 0 1px var(--dos-warning);
+}
+
+:is(#sidebar, #sidebar-content) .method-nav-pill > span[class*="bg-[#CB3A32]"] {
+  background-color: var(--dos-error-bg);
+  color: var(--dos-error-text);
+  box-shadow: inset 0 0 0 1px var(--dos-error);
+}
+
+/* Long endpoint names: truncate with ellipsis instead of the
+   default flex-wrap + word-break wrapping */
+:is(#sidebar, #sidebar-content) a:has(.method-nav-pill) > .flex-1 {
+  min-width: 0;
+}
+
+:is(#sidebar, #sidebar-content) a:has(.method-nav-pill) > .flex-1 > div:first-child {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+/* ---- Integration cards (integrations/overview) - same visual language
+   as the introduction's How It Works cards ---- */
+.integration-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 300px;
+  min-width: 260px;
+  max-width: 100%;
+  padding: 12px 14px;
+  background: var(--dos-paper);
+  border: 1px solid var(--dos-border);
+  border-radius: var(--dos-radius-lg);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.integration-card:hover {
+  border-color: var(--dos-primary-light);
+  box-shadow: var(--dos-shadow-dropdown);
+}
+
+.integration-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: var(--dos-radius-semi);
+  background: var(--dos-surface-input);
+  border: 1px solid var(--dos-border);
+}
+
+.integration-logo img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  margin: 0;
+}
+
+.integration-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dos-text);
+  line-height: 1.4;
+}
+
+.integration-detail {
+  font-size: 11px;
+  color: var(--dos-text-tertiary);
+  line-height: 1.5;
+}
+
+/* Coming Soon integration cards */
+.integration-card-soon {
+  background: var(--dos-surface-3);
+  border-style: dashed;
+}
+
+.integration-card-soon:hover {
+  border-color: var(--dos-border);
+  box-shadow: none;
+}
+
+.integration-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--dos-sage-5);
+  background: var(--dos-sage-1);
+  border-radius: 999px;
+  vertical-align: middle;
 }

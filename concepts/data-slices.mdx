@@ -33,10 +33,10 @@ flowchart LR
         ALL[All Documents: 10,000]
     end
     
-    subgraph slices [Data Slices]
-        S1[2024 Contracts: 1,247]
-        S2[High-Value Invoices: 89]
-        S3[Unprocessed: 5,892]
+    subgraph slices [Data Slices, one per use case]
+        S1[Support Chatbot KB: 1,247]
+        S2[Sales Agent Brain: 892]
+        S3[Compliance Review: 3,521]
     end
     
     ALL --> S1
@@ -46,15 +46,18 @@ flowchart LR
 
 ## Example Data Slices
 
-| Slice Name | Filter Conditions | Document Count |
+A slice is a use case: it captures exactly the documents one AI application or initiative should see.
+
+| Slice Name | Feeds | Filter Conditions |
 | :-- | :-- | :-- |
-| "2024 Contracts" | Document Type = Contract AND Year = 2024 | 1,247 |
-| "High-Value Invoices" | Invoice Amount > $10,000 | 89 |
-| "Documents with PII" | SSN_Detected = Yes OR Email_Detected = Yes | 3,521 |
-| "Unprocessed Files" | Document Type = null | 5,892 |
+| "Support Chatbot KB" | Customer-facing chatbot | Document Type = Manual or FAQ AND no Data Quality Status flag AND no PII |
+| "Sales Agent Brain" | Account agent | Document Type = Contract or Pricing AND Data Quality Status not exists |
+| "Contracts 2024" | Legal analysis project | Document Type = Contract AND Year = 2024 |
+| "Compliance Review" | Human review queue | PII = true OR PHI = true |
+| "Needs Processing" | Remediation classify job | Required tags = Not found |
 
 <Tip>
-Use Data Slices to create focused workflows. For example, process only untagged documents to avoid reprocessing, or create a slice of high-priority documents for immediate attention.
+The same document can appear in several slices and be excluded from others. The support chatbot never sees PII; the compliance queue sees nothing else.
 </Tip>
 
 ## Creating Effective Data Slices

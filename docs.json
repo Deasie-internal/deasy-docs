@@ -43,6 +43,15 @@
             ]
           },
           {
+            "group": "Use Cases",
+            "pages": [
+              "use-cases/rag-and-agents",
+              "use-cases/compliance",
+              "use-cases/document-management",
+              "use-cases/governance"
+            ]
+          },
+          {
             "group": "Core Concepts",
             "pages": [
               "concepts/projects",
@@ -88,12 +97,6 @@
               "integrations/overview",
               "integrations/collibra",
               "integrations/vector-databases"
-            ]
-          },
-          {
-            "group": "Reference Architectures",
-            "pages": [
-              "concepts/architecture"
             ]
           }
         ]
@@ -362,6 +365,10 @@
     {
       "source": "/cookbooks/s3-to-qdrant",
       "destination": "/cookbooks/qdrant-to-qdrant"
+    },
+    {
+      "source": "/concepts/architecture",
+      "destination": "/use-cases/rag-and-agents"
     }
   ]
 }
