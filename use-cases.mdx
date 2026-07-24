@@ -9,7 +9,7 @@ A slice is a use case: every application gets exactly the documents it should se
 
 An agent is only as accurate as the context it can reach. Enterprises keep pointing agents at raw document dumps, and the results are the failures everyone recognizes: the agent quotes a 2019 draft because nothing told it which of five copies is current, retrieval returns chunks that sound right but come from the wrong contract, and the customer-facing bot can see the same files as the legal team because nothing scopes access. Bigger models don't fix this. These are context problems, and they live in the data, not the prompt.
 
-Deasy Labs solves them in the data: the agent retrieves from a pre-vetted [Data Slice](/concepts/data-slices), curated, gated, and maintained for that one application. Follow one question through the system to see what that means in practice:
+With Deasy Labs you fully control what your agent accesses at runtime. Because every document carries known metadata for what is sensitive and what is actually relevant to this use case, the agent retrieves from a pre-vetted [Data Slice](/concepts/data-slices) that encodes those decisions: sensitive content never enters it, irrelevant content is filtered out of it, and the boundary is a slice condition you define rather than a prompt instruction you hope the model follows. Follow one question through the system to see what that means in practice:
 
 > "What are the termination terms in our supplier agreements?"
 
