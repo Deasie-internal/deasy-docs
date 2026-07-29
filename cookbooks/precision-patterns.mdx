@@ -96,11 +96,24 @@ Run it in a classification job like any other tag, then gate slices on the resul
 
 ## Why Context Keywords Matter
 
+Context keywords do two jobs. The first trims false positives. The second is one a regex can never do on its own.
+
+**They cut false positives.** A nine-digit number in "SSN: 123-45-6789" is a real match, while the same digits in "Order #123-45-6789" are not, because no SSN context sits nearby.
+
 | | Bare regex | Pattern + context keywords |
 | :-- | :-- | :-- |
 | `123-45-6789` in "SSN: 123-45-6789" | Match | Match |
 | `123-45-6789` in "Order #123-45-6789" | False positive | No match, no corroborating context |
 | Cost at scale | Reprocessing false positives downstream | Deterministic, precise, no LLM |
+
+**They disambiguate identical formats.** This is where keywords earn their keep. Consider two dates in an employee record, byte for byte the same shape. No regex can tell them apart, because the strings are identical. Only the surrounding words can.
+
+| Text | Date regex alone | Pattern + context keywords |
+| :-- | :-- | :-- |
+| "Hired on 2021-06-14" | Match | Tagged `hire_date` from nearby words like hired, start date, joined |
+| "Contract valid through 2026-06-14" | Match | Tagged `expiration_date` from nearby words like expires, valid through, renewal |
+
+Point one date regex at two different keyword sets and you get two precise tags, `hire_date` and `expiration_date`, out of data a pattern alone could never split.
 
 ## Next Steps
 
