@@ -87,7 +87,9 @@
             "group": "Integrations",
             "pages": [
               "integrations/overview",
-              "integrations/collibra"
+              "integrations/collibra",
+              "integrations/databricks",
+              "integrations/microsoft-purview"
             ]
           }
         ]
