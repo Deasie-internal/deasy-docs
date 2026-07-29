@@ -33,10 +33,10 @@ flowchart LR
         ALL[All Documents: 10,000]
     end
     
-    subgraph slices [Data Slices]
-        S1[2024 Contracts: 1,247]
-        S2[High-Value Invoices: 89]
-        S3[Unprocessed: 5,892]
+    subgraph slices [Data Slices, one per use case]
+        S1[Support Chatbot KB: 1,247]
+        S2[Sales Agent Brain: 892]
+        S3[Compliance Review: 3,521]
     end
     
     ALL --> S1
@@ -46,15 +46,18 @@ flowchart LR
 
 ## Example Data Slices
 
-| Slice Name | Filter Conditions | Document Count |
+A slice is a use case: it captures exactly the documents one AI application or initiative should see.
+
+| Slice Name | Feeds | Filter Conditions |
 | :-- | :-- | :-- |
-| "2024 Contracts" | Document Type = Contract AND Year = 2024 | 1,247 |
-| "High-Value Invoices" | Invoice Amount > $10,000 | 89 |
-| "Documents with PII" | SSN_Detected = Yes OR Email_Detected = Yes | 3,521 |
-| "Unprocessed Files" | Document Type = null | 5,892 |
+| "Support Chatbot KB" | Customer-facing chatbot | Document Type = Manual or FAQ AND no Data Quality Status flag AND no PII |
+| "Sales Agent Brain" | Account agent | Document Type = Contract or Pricing AND Data Quality Status not exists |
+| "Contracts 2024" | Legal analysis project | Document Type = Contract AND Year = 2024 |
+| "Compliance Review" | Human review queue | PII = true OR PHI = true |
+| "Needs Processing" | Remediation classify job | Required tags = Not found |
 
 <Tip>
-Use Data Slices to create focused workflows. For example, process only untagged documents to avoid reprocessing, or create a slice of high-priority documents for immediate attention.
+The same document can appear in several slices and be excluded from others. The support chatbot never sees PII; the compliance queue sees nothing else.
 </Tip>
 
 ## Creating Effective Data Slices
@@ -104,65 +107,73 @@ Use Data Slices to create focused workflows. For example, process only untagged 
 from unstructured import UnstructuredClient
 
 client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",
 )
 
 # Create a data slice with filter conditions
-slice = client.dataslice.create(
-    dataslice_name="2024-contracts",
-    connector_name="my-s3-bucket",
-    conditions=[
-        {"field": "document_type", "operator": "eq", "value": "Contract"},
-        {"field": "year", "operator": "eq", "value": 2024},
+slice_condition = {
+    "condition": "AND",
+    "children": [
+        {"tag": {"name": "document_type", "operator": "in", "values": ["Contract"]}},
+        {"tag": {"name": "year", "operator": "in", "values": ["2024"]}},
     ],
+}
+
+slice = client.data_slice.create(
+    data_connector_name="my-s3-bucket",
+    dataslice_name="2024-contracts",
+    description="All contracts from 2024",
+    condition=slice_condition,
 )
-print(f"Created slice with {slice.document_count} documents")
+print(f"Created slice: {slice.dataslice_id}")
+
+# Check how many files the slice captures
+count = client.data_slice.file_count(
+    data_connector_name="my-s3-bucket",
+    condition=slice_condition,
+)
 ```
   </Tab>
   <Tab title="Filter Examples">
 ```python
-# Filter by metadata values
-high_value = client.dataslice.create(
-    dataslice_name="high-value-contracts",
-    connector_name="my-s3-bucket",
-    conditions=[
-        {"field": "contract_value", "operator": "gte", "value": 100000},
-    ],
-)
-
-# Filter unprocessed documents
-unprocessed = client.dataslice.create(
+# Documents missing required metadata (data-quality gate)
+needs_processing = client.data_slice.create(
+    data_connector_name="my-s3-bucket",
     dataslice_name="needs-processing",
-    connector_name="my-s3-bucket",
-    conditions=[
-        {"field": "document_type", "operator": "is_null", "value": True},
-    ],
+    condition={
+        "condition": "OR",
+        "children": [
+            {"tag": {"name": tag, "operator": "in", "values": ["Not found"]}}
+            for tag in ["document_type", "summary"]
+        ],
+    },
 )
 
-# Filter documents with PII
-sensitive = client.dataslice.create(
+# Documents with detected PII
+sensitive = client.data_slice.create(
+    data_connector_name="my-s3-bucket",
     dataslice_name="contains-pii",
-    connector_name="my-s3-bucket",
-    conditions=[
-        {"field": "has_ssn", "operator": "eq", "value": True},
-    ],
+    condition={
+        "tag": {"name": "ssn_detected", "operator": "in", "values": ["Yes"]},
+    },
 )
 ```
   </Tab>
   <Tab title="Export Slice">
 ```python
-# Export a data slice to a destination
-result = client.dataslice.export_metadata(
-    dataslice_name="2024-contracts",
+# Export a data slice's metadata as CSV or JSON
+result = client.data_slice.export(
+    data_connector_name="my-s3-bucket",
+    dataslice_id="your-dataslice-id",
     export_format="csv",
 )
-print(f"Exported to: {result.file_path}")
 
-# Export to a vector database
+# Export the slice to a configured destination (e.g. a vector database)
 client.destination.export(
     destination_name="my-qdrant",
-    dataslice_name="2024-contracts",
+    dataslice_id="your-dataslice-id",
     export_level="chunk",
     export_nodes=True,
 )
@@ -171,12 +182,12 @@ client.destination.export(
   <Tab title="List & Delete">
 ```python
 # List all data slices
-slices = client.dataslice.list()
+slices = client.data_slice.list()
 for s in slices.dataslices:
-    print(f"{s.dataslice_name}: {s.document_count} docs")
+    print(f"{s.name} ({s.id}): {s.data_points} docs")
 
-# Delete a data slice
-client.dataslice.delete(dataslice_name="old-slice")
+# Delete a data slice (by ID)
+client.data_slice.delete(dataslice_id="your-dataslice-id")
 print("Data slice deleted")
 ```
   </Tab>

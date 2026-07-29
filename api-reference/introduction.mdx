@@ -1,0 +1,41 @@
+---
+title: "API Introduction"
+description: "Authentication, conventions, and patterns shared by every endpoint"
+---
+
+The Deasy Labs REST API powers everything the platform does; the [Python SDK](/quickstart) wraps it one-to-one, so every endpoint here has a matching SDK method. Use this page for the conventions shared by all endpoints, then browse the resources in the sidebar.
+
+## Base URL
+
+All requests go to your deployment's base URL. There is no default.
+
+```text
+https://unstructured.your-company.com/rest/unstructured
+```
+
+## Authentication
+
+Two methods are supported:
+
+| Method | Headers | Notes |
+| :-- | :-- | :-- |
+| **Basic** | `Authorization: Basic <credentials>` | Username and password |
+| **API token** | `Authorization: Bearer <token>` plus `X-User-ID: <user id>` | Tokens are long-lived and issued from the web UI |
+
+In the SDK, these map to `username`/`password` or `api_token`/`user_id`, with environment-variable fallbacks (`UNSTRUCTURED_USERNAME`, `UNSTRUCTURED_PASSWORD`, `UNSTRUCTURED_API_TOKEN`, `UNSTRUCTURED_USER_ID`, `UNSTRUCTURED_CLIENT_BASE_URL`).
+
+## Background Jobs
+
+Long-running operations (ingestion, batch classification, versioning, large exports) return immediately and run in the background. Pass a `job_id` of your choosing, then poll Task Tracking:
+
+1. Submit the job with a `job_id` (a UUID you generate).
+2. Poll `POST /progress_tracker/task_status` with that id.
+3. `status` moves through `in_progress` to `completed`, `failed`, or `aborted`, with `percent_complete` along the way.
+
+## Pagination
+
+List endpoints that can return large results offer paginated variants (`/metadata/list_paginated`, `/data/list_paginated`) using `limit` and `offset`, returning `next_offset` until it is null.
+
+## Errors
+
+Standard HTTP status codes: `400` bad request, `401` authentication, `403` permission, `404` not found, `409` conflict, `422` validation, `429` rate limit, `5xx` server. The SDK retries twice by default on retryable failures and raises typed exceptions per status.

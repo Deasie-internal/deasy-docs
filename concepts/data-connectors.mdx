@@ -11,8 +11,17 @@ Data Connectors establish secure connections between the platform and your docum
   <Card title="Amazon S3" icon="aws">
     Connect to AWS S3 buckets for scalable cloud storage.
   </Card>
+  <Card title="Azure Blob Storage" icon="microsoft">
+    Connect to Azure Blob containers.
+  </Card>
+  <Card title="Google Cloud Storage" icon="google">
+    Connect to GCS buckets.
+  </Card>
   <Card title="SharePoint" icon="microsoft">
     Integrate with Microsoft 365 document libraries.
+  </Card>
+  <Card title="OneDrive" icon="cloud">
+    Connect to Microsoft OneDrive sites and folders.
   </Card>
   <Card title="PostgreSQL" icon="database">
     Connect to PostgreSQL databases with pgvector support.
@@ -27,9 +36,14 @@ Data Connectors establish secure connections between the platform and your docum
 | Source Type | Description | Key Configuration | Ideal Use Case |
 | :-- | :-- | :-- | :-- |
 | **Amazon S3** | AWS cloud object storage | Bucket name, Access Key, Secret Key | Large-scale document archives, cloud-native workflows |
+| **Azure Blob Storage** | Azure cloud object storage | Account, Container, Credentials | Azure-native document archives |
+| **Google Cloud Storage** | GCP cloud object storage | Bucket, Service Account | GCP-native document archives |
 | **SharePoint** | Microsoft 365 document management | Client ID, Client Secret, Tenant ID, Site Name | Enterprise document libraries, Office 365 environments |
+| **OneDrive** | Microsoft OneDrive cloud storage | Client ID, Client Secret, Tenant ID, Site | Personal and team drives in Microsoft 365 |
 | **PostgreSQL** | Relational database with pgvector extension | Host URL, Database name, User credentials, Port | Structured + unstructured hybrid data, existing database workflows |
 | **Qdrant** | Purpose-built vector database for AI | API Key, Collection name, URL | Semantic search applications, RAG pipelines |
+
+See the [Integrations Overview](/integrations/overview) for the complete matrix of sources, destinations, and supported file types.
 
 ## Key Features
 
@@ -59,7 +73,7 @@ flowchart LR
         QD[Qdrant]
     end
     
-    subgraph platform [Unstructured Platform]
+    subgraph platform [Deasy Labs Platform]
         DC[Data Connector]
         PROC[Processing Engine]
     end
@@ -96,6 +110,7 @@ flowchart LR
 from unstructured import UnstructuredClient
 
 client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",
 )
@@ -104,7 +119,8 @@ client = UnstructuredClient(
 connector = client.data_source.create(
     connector_name="my-s3-bucket",
     connector_body={
-        "vector_db_type": "s3",
+        "type": "S3DataSourceManager",
+        "name": "my-s3-bucket",
         "bucket_name": "my-documents",
         "aws_access_key_id": "YOUR_ACCESS_KEY",
         "aws_secret_access_key": "YOUR_SECRET_KEY",
@@ -116,20 +132,27 @@ print(f"Created connector: {connector.profile_id}")
   </Tab>
   <Tab title="List Connectors">
 ```python
-# List all connectors
+# List all connectors (returned as a dict keyed by connector name)
 connectors = client.data_source.list()
-for c in connectors.connectors:
-    print(f"{c.connector_name}: {c.vector_db_type}")
+for name, config in connectors.connectors.items():
+    print(f"{name}: {config.type}")
 ```
   </Tab>
   <Tab title="Ingest Data">
 ```python
-# Ingest documents from a connector
-result = client.ocr.ingest(
-    connector_name="my-s3-bucket",
-    prefix="documents/",  # Optional: specific folder
+import uuid
+
+# Ingest documents from a connector (runs as a background job)
+job_id = str(uuid.uuid4())
+client.data_source.ingest(
+    data_connector_name="my-s3-bucket",
+    file_names=["contracts/msa.pdf"],  # Optional: omit to ingest everything
+    job_id=job_id,
 )
-print(f"Ingested {result.document_count} documents")
+
+# Track progress
+progress = client.task_status.get_status(job_id=job_id)
+print(f"Ingestion {progress.percent_complete:.0f}% complete ({progress.status})")
 ```
   </Tab>
   <Tab title="Delete Connector">

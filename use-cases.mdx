@@ -1,0 +1,71 @@
+---
+title: "Use Cases"
+description: "What teams build with Deasy Labs, and the cookbooks that get you there"
+---
+
+A slice is a use case: every application gets exactly the documents it should see, gated by quality, freshness, and sensitivity. These are the four patterns teams build, each with runnable cookbooks.
+
+## RAG and Agent Context
+
+An agent is only as accurate as the context it can reach, and raw document dumps fail it in predictable ways: duplicate copies, stale versions, lookalike chunks from the wrong documents, no access boundaries. These are metadata problems, not model problems.
+
+Deasy Labs gives you two layers of control over what the agent accesses:
+
+- **Curate once.** A [Data Slice](/concepts/data-slices) is the agent's vetted context: deduplicated, current, relevance-filtered, sensitivity-gated. In internal benchmarks, indexing only the latest version of each document improved retrieval accuracy by 46%.
+- **Route at runtime.** Within the slice, every chunk carries its tags. The agent routes by metadata, filtering to the right documents before similarity runs, and you can enforce metadata rules so anything tagged sensitive is never touched.
+
+In practice: for "what are the termination terms in our supplier agreements", the slice already excludes drafts, duplicates, and PII; `Contract Type = Supplier Agreement` narrows tens of thousands of chunks to a few hundred; similarity ranks within them; and the answer cites values that carry evidence and confidence. [Workflows](/concepts/workflows) keep the slice current as documents change.
+
+<CardGroup cols={2}>
+  <Card title="Prepare an AI-Ready Dataset" icon="filter" href="/cookbooks/data-quality">
+    The curation flow that produces the agent's slice.
+  </Card>
+  <Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
+    Serve a curated collection from an existing one, maintained nightly.
+  </Card>
+  <Card title="Scope Chatbot Answers with Metadata" icon="comments" href="/cookbooks/metadata-filtered-rag">
+    Tags as retrieval filters, end to end.
+  </Card>
+  <Card title="Keep Answers Current Over Time" icon="clock" href="/cookbooks/freshness-curation">
+    Freshness rules keep the slice current.
+  </Card>
+</CardGroup>
+
+## Document Management
+
+Not every consumer of metadata is an AI system. Enrich libraries at the source: extracted metadata lands as native SharePoint columns, so people filter, sort, and search where they already work, and a nightly workflow keeps the columns current.
+
+<CardGroup cols={2}>
+  <Card title="Organize a SharePoint Library" icon="microsoft" href="/cookbooks/sharepoint-to-sharepoint">
+    Connect, classify, write columns back, schedule maintenance.
+  </Card>
+  <Card title="Bootstrap a Taxonomy with AI" icon="tags" href="/cookbooks/custom-taxonomy">
+    Let AI design the columns from your actual documents.
+  </Card>
+</CardGroup>
+
+## Governance for Unstructured Data
+
+Document collections become visible to governance: curated sets are cataloged in Collibra as Deasy Document Set assets with profiling attributes, lifecycle status, and a deep link back to the live files, while the tag vocabulary itself is governed in the Deasy Glossary.
+
+<CardGroup cols={2}>
+  <Card title="Collibra Integration" icon="building-columns" href="/integrations/collibra">
+    Document sets and tag definitions, cataloged with relations.
+  </Card>
+  <Card title="Taxonomies and Tags" icon="tags" href="/concepts/taxonomies-tags">
+    Governance metadata on tags: record codes, retention, dispositions.
+  </Card>
+</CardGroup>
+
+## Compliance and Sensitive Data
+
+The platform's built-in classifiers detect PII, PHI, and PCI at scale, write the findings into rule-based tags, and route flagged documents to a restricted review path with an auditable metadata trail. Customer-facing AI systems retrieve only from the clean slice; sensitivity is an opt-in gate chosen per use case.
+
+<CardGroup cols={2}>
+  <Card title="Protect Sensitive Data" icon="shield" href="/cookbooks/pii-detection">
+    Built-in classifiers, rule-based tags, and the gated slice.
+  </Card>
+  <Card title="Projects" icon="folder" href="/concepts/projects">
+    Enable sensitivity detection per workspace.
+  </Card>
+</CardGroup>

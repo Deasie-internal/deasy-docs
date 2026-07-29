@@ -1,0 +1,165 @@
+---
+title: "Integrations Overview"
+description: "Every system Deasy Labs connects to: sources, destinations, file types, and ecosystem integrations in one place"
+---
+
+Deasy Labs sits between your document repositories and the systems that consume curated data. This page is the complete integration matrix: where documents come from, where enriched data goes, and which file types the platform processes.
+
+## Data Sources
+
+Sources are where documents live. Connect them with a [Data Connector](/concepts/data-connectors); ingestion automatically captures source metadata (`Last Modified`, `File Type`, `Created By`, `Folder Structure`) on every document.
+
+<div style={{display: 'flex', flexWrap: 'wrap', gap: '10px', margin: '20px 0'}}>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/s3.svg" alt="Amazon S3" noZoom /></span>
+    <div>
+      <div className="integration-name">Amazon S3</div>
+      <div className="integration-detail">Bucket name, Access Key, Secret Key</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/azure-blob.svg" alt="Azure Blob Storage" noZoom /></span>
+    <div>
+      <div className="integration-name">Azure Blob Storage</div>
+      <div className="integration-detail">Account, Container, Credentials</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/gcs.svg" alt="Google Cloud Storage" noZoom /></span>
+    <div>
+      <div className="integration-name">Google Cloud Storage</div>
+      <div className="integration-detail">Bucket, Service Account</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/sharepoint.svg" alt="SharePoint" noZoom /></span>
+    <div>
+      <div className="integration-name">SharePoint</div>
+      <div className="integration-detail">Client ID/Secret, Tenant ID, Site Name</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/onedrive.svg" alt="OneDrive" noZoom /></span>
+    <div>
+      <div className="integration-name">OneDrive</div>
+      <div className="integration-detail">Client ID/Secret, Tenant ID, Site</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/postgresql.svg" alt="PostgreSQL" noZoom /></span>
+    <div>
+      <div className="integration-name">PostgreSQL (pgvector)</div>
+      <div className="integration-detail">Host URL, Database, Credentials, Port</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/qdrant.svg" alt="Qdrant" noZoom /></span>
+    <div>
+      <div className="integration-name">Qdrant</div>
+      <div className="integration-detail">URL, API Key, Collection</div>
+    </div>
+  </div>
+</div>
+
+## Destinations
+
+Destinations receive enriched documents and metadata. Configure them in the app's Export Destinations tab or through the SDK's [destination resource](/concepts/destinations).
+
+<div style={{display: 'flex', flexWrap: 'wrap', gap: '10px', margin: '20px 0'}}>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/sharepoint.svg" alt="SharePoint" noZoom /></span>
+    <div>
+      <div className="integration-name">SharePoint</div>
+      <div className="integration-detail">Metadata as native library columns, enrich at the source</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/onedrive.svg" alt="OneDrive" noZoom /></span>
+    <div>
+      <div className="integration-name">OneDrive</div>
+      <div className="integration-detail">Enriched documents and metadata in drive libraries</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/postgresql.svg" alt="PostgreSQL" noZoom /></span>
+    <div>
+      <div className="integration-name">PostgreSQL</div>
+      <div className="integration-detail">Metadata rows for analytics and hybrid search</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/s3.svg" alt="Amazon S3" noZoom /></span>
+    <div>
+      <div className="integration-name">Amazon S3</div>
+      <div className="integration-detail">Curated documents and metadata objects</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/gcs.svg" alt="Google Cloud Storage" noZoom /></span>
+    <div>
+      <div className="integration-name">Google Cloud Storage</div>
+      <div className="integration-detail">Curated documents and metadata objects</div>
+    </div>
+  </div>
+  <div className="integration-card">
+    <span className="integration-logo"><img src="/images/logos/qdrant.svg" alt="Qdrant" noZoom /></span>
+    <div>
+      <div className="integration-name">Qdrant</div>
+      <div className="integration-detail">Chunk-level records with tags as payload, via slice export</div>
+    </div>
+  </div>
+</div>
+
+## Ecosystem
+
+<CardGroup cols={2}>
+  <Card title="Collibra" icon="building-columns" href="/integrations/collibra">
+    Deasy document sets and tag definitions, cataloged for governance.
+  </Card>
+  <Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
+    Feed RAG pipelines with curated, metadata-rich chunks.
+  </Card>
+</CardGroup>
+
+## Private Preview
+
+<div style={{display: 'flex', flexWrap: 'wrap', gap: '10px', margin: '20px 0'}}>
+  <div className="integration-card integration-card-soon">
+    <span className="integration-logo"><img src="/images/logos/databricks.png" alt="Databricks" noZoom /></span>
+    <div>
+      <div className="integration-name">Databricks <span className="integration-badge">Private Preview</span></div>
+      <div className="integration-detail">Curated slices delivered to Unity Catalog Volumes with metadata alongside</div>
+    </div>
+  </div>
+  <div className="integration-card integration-card-soon">
+    <span className="integration-logo"><img src="/images/logos/purview.png" alt="Microsoft Purview" noZoom /></span>
+    <div>
+      <div className="integration-name">Microsoft Purview <span className="integration-badge">Private Preview</span></div>
+      <div className="integration-detail">Deasy metadata surfaced in the Purview data map</div>
+    </div>
+  </div>
+</div>
+
+## Supported File Types
+
+| Category | Extensions |
+| :-- | :-- |
+| Documents | `.pdf`, `.docx`, `.rtf` |
+| Spreadsheets | `.xls`, `.xlsx`, `.xlsm`, `.xlsb`, `.odf`, `.ods`, `.odt` |
+| Presentations | `.ppt`, `.pptx` |
+| Email | `.msg` |
+| Web | `.html`, `.htm`, `.aspx`, `.xml` |
+| Data | `.json`, `.csv` |
+| Images (OCR) | `.png`, `.jpg`, `.jpeg` |
+| Plain text | `.txt`, `.log` |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Data Connectors" icon="plug" href="/concepts/data-connectors">
+    Create and manage source connections with the SDK.
+  </Card>
+  <Card title="Destinations" icon="arrow-right" href="/concepts/destinations">
+    Export options, levels, and metadata formats.
+  </Card>
+</CardGroup>

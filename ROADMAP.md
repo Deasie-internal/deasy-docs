@@ -29,13 +29,27 @@ Create a new top-level "Cookbooks" or "Guides" section with end-to-end code samp
 
 Visual learners need to see the "system view". We should add a "Reference Architectures" section.
 
-- **Enterprise RAG Pattern**: Diagram showing SharePoint -> Unstructured -> Vector DB -> LLM App.
-- **Compliance Archive Pattern**: Diagram showing File Server -> PII Detection -> Redacted Archive.
+- [x] **Enterprise RAG Pattern**: Diagram showing SharePoint -> Unstructured -> Vector DB -> LLM App. (`concepts/architecture.mdx`)
+- [x] **Compliance Archive Pattern**: Diagram showing File Server -> PII Detection -> Redacted Archive. (`concepts/architecture.mdx`)
+- [x] **Document Enrichment Pattern**: S3 -> Classification -> SharePoint metadata columns. (`concepts/architecture.mdx`)
 
 ## 4. Feedback & Iteration
 
-- **"Was this helpful?" Feedback**: Enable page-level feedback widgets (Mintlify supports this) to identify weak spots.
-- **Search Analytics**: Monitor search queries to see what terms users are looking for but not finding.
+- [x] **"Was this helpful?" Feedback**: Enabled via `feedback.thumbsRating` in `docs.json`.
+- [ ] **Search Analytics**: Monitor search queries to see what terms users are looking for but not finding.
+
+## 5. SDK Accuracy & Theming (July 2026)
+
+- [x] **SDK v0.21.0 alignment**: All code samples now use the real Stainless-generated surface (`metadata.generate.generate_batch`, `data_slice.*`, `task_status.get_status`, `tags.upsert(tag_data=...)`, typed `connector_body` with `type` discriminators, required `base_url`).
+- [x] **DesignOS theming**: Docs colors/fonts now mirror the frontend `darrren-work` DesignOS theme (terracotta `#B7500C` primary, sage secondary, warm cream/charcoal surfaces, Inter + Roboto Mono).
+- [x] **Projects SDK coverage**: `concepts/projects.mdx` now documents `client.projects.*`.
+- [x] **Landing page**: Replaced Mintlify starter `introduction.mdx` with a real product introduction; removed orphaned starter template pages under `essentials/`.
+- [x] **Workflows coverage**: New `concepts/workflows.mdx` documents `client.workflows.*` (cron-scheduled ingest → classify pipelines, matching the web UI's predefined workflows).
+- [x] **Data Quality cookbook**: New `cookbooks/data-quality.mdx` (completeness scan → DQ slice → remediation → standardization → scorecard), ported from the SDK's own example notebooks 04 & 06.
+- [x] **Standardization SDK examples**: `concepts/metadata.mdx` now shows `standardization_suggest` / `standardization_bulk`.
+- [ ] **Post-redesign screenshots**: Refresh UI screenshots after the agent-centric shell ships (planned Aug 30, 2026).
+- [ ] **Versioning docs**: `client.versioning.*` (run / retrieve_versions) is exposed by the SDK but the underlying semantics need PM input before documenting.
+- [ ] **AI-Readiness score docs**: Document the 0-100 quality score and rule-based "AI-ready" tags once the SDK exposes the full flow.
 
 ## Benchmark Comparison
 

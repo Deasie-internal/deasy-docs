@@ -1,250 +1,159 @@
 ---
-title: 'PII Detection'
-description: 'Automatically detect sensitive data like SSNs, emails, and phone numbers in your documents'
+title: 'Protect Sensitive Data'
+description: "Run the platform's built-in sensitive data detection and gate what AI systems are allowed to see"
 ---
 
-This cookbook shows you how to configure sensitive data detection (PII) in your document processing pipeline. You'll learn to automatically identify and flag personally identifiable information for compliance and data governance.
+A customer-facing agent must not see PII. Deasy Labs ships a proprietary sensitive-data classification engine with 40+ built-in classifiers (Social Security Number, Credit Card, Date of Birth, Physical Address, and more) that combines pattern matching with AI context, understanding meaning, not just format. This cookbook runs that detection through the SDK and gates a data slice on the result, so restricted content never reaches downstream AI systems.
 
-## What You'll Build
+Sensitivity is an opt-in component of readiness, chosen per use case. In the app you enable it when creating a [Project](/concepts/projects); here you run it headlessly.
 
-A pipeline that automatically detects and flags sensitive information in documents:
+<Note>
+You do not write detection logic. The classifiers are built in, and when sensitivity detection runs, the platform automatically adds three rule-based tags: `PII (Personally Identifiable Information)`, `PCI (Payment Card Industry Data)`, and `PHI (Protected Health Information)`. PII detection currently supports English documents only.
+</Note>
+
+## The Flow
 
 ```mermaid
 flowchart LR
-    DOCS[Documents] --> PROC[Processing]
-    PROC --> PII[PII Detection]
-    PII --> FLAG[Flagged Records]
-    PII --> CLEAN[Clean Records]
+    CAT[Built-in classifiers<br/>40+ sensitivity tags] --> RUN[Classification job<br/>sensitivity strategy]
+    RUN --> ROLL[Rule-based tags<br/>PII · PCI · PHI]
+    ROLL --> GATE[Gated slice<br/>no sensitive content]
+    GATE --> AI[Agents · RAG · exports]
 ```
 
-## Quick Start
+## Step 1. Review the Built-In Sensitivity Catalog
 
 ```python
 from unstructured import UnstructuredClient
 
 client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",
 )
 
-# Create a PII-focused taxonomy
-taxonomy = client.taxonomy.upsert(
-    taxonomy_name="pii-detection",
-    taxonomy_description="Detect sensitive personal information",
-    tags=[
-        {
-            "name": "contains_ssn",
-            "description": "Whether the document contains Social Security Numbers",
-            "output_type": "boolean",
-        },
-        {
-            "name": "contains_email",
-            "description": "Whether the document contains email addresses",
-            "output_type": "boolean",
-        },
-        {
-            "name": "contains_phone",
-            "description": "Whether the document contains phone numbers",
-            "output_type": "boolean",
-        },
-        {
-            "name": "pii_types_found",
-            "description": "List of PII types detected (SSN, email, phone, address, etc.)",
-            "output_type": "list[string]",
-        },
-        {
-            "name": "sensitivity_level",
-            "description": "Overall sensitivity: low, medium, high, critical",
-            "output_type": "word",
-        },
-    ],
-)
+CONNECTOR = "my-sharepoint"
 
-# Process documents
-results = client.classify.generate_batch(
-    connector_name="my-documents",
-    taxonomy_name="pii-detection",
-)
-
-# Filter sensitive documents
-sensitive_docs = [
-    r for r in results.metadata 
-    if r.tags.get("sensitivity_level") in ["high", "critical"]
-]
-
-print(f"Found {len(sensitive_docs)} highly sensitive documents")
-for doc in sensitive_docs:
-    print(f"  - {doc.file_name}: {doc.tags.get('pii_types_found')}")
+# The platform's built-in sensitivity classifiers
+catalog = client.tags.list_sensitivity_defaults()
 ```
 
-## Using Regex Patterns for PII
+The catalog covers identity, financial, health, and contact data: Social Security Number, Credit Card, Tax ID, Date of Birth, Full Name, Physical Address, Phone Number, Policy Number, and more.
 
-For precise PII detection, use regex patterns in your tags:
+## Step 2. Run Sensitivity Detection
+
+Include the sensitivity tags in a classification job. The platform runs its sensitivity strategy at the highest merge priority and writes the detected values, plus the `PII`, `PCI`, and `PHI` rule-based tags, as file-level metadata.
 
 ```python
-# Get AI-suggested patterns for common PII types
-ssn_pattern = client.suggest.patterns(
-    description="US Social Security Number in XXX-XX-XXXX format"
-)
-# Returns: r"\b\d{3}-\d{2}-\d{4}\b"
+import time
+import uuid
 
-email_pattern = client.suggest.patterns(
-    description="Email addresses"
-)
-# Returns: r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+SENSITIVITY_TAGS = ["Social Security Number", "Credit Card", "Date of Birth", "Full Name"]
 
-# Create taxonomy with pattern-based tags
-taxonomy = client.taxonomy.upsert(
-    taxonomy_name="pii-regex-detection",
-    taxonomy_description="Pattern-based PII detection",
-    tags=[
-        {
-            "name": "ssn_matches",
-            "description": "Social Security Numbers found",
-            "output_type": "list[string]",
-            "regex_pattern": r"\b\d{3}-\d{2}-\d{4}\b",
-        },
-        {
-            "name": "email_matches",
-            "description": "Email addresses found",
-            "output_type": "list[string]",
-            "regex_pattern": r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",
-        },
-        {
-            "name": "phone_matches",
-            "description": "Phone numbers found",
-            "output_type": "list[string]",
-            "regex_pattern": r"\b\d{3}[-.]?\d{3}[-.]?\d{4}\b",
-        },
-    ],
+job_id = str(uuid.uuid4())
+client.metadata.generate.generate_batch(
+    data_connector_name=CONNECTOR,
+    tag_names=SENSITIVITY_TAGS,
+    job_id=job_id,
 )
+while True:
+    progress = client.task_status.get_status(job_id=job_id)
+    if progress.status in ("completed", "failed", "aborted"):
+        break
+    print(f"  Sensitivity scan {progress.percent_complete:.0f}%...")
+    time.sleep(10)
+print(f"Scan {progress.status}")
 ```
 
-## Complete Compliance Pipeline
+## Step 3. Review What Was Found
 
-Here's a production-ready pipeline for handling sensitive documents:
+Every detection carries evidence and confidence, so findings are auditable.
 
 ```python
-from unstructured import UnstructuredClient
-
-client = UnstructuredClient(
-    username="your-username",
-    password="your-password",
+results = client.metadata.list(
+    data_connector_name=CONNECTOR,
+    tag_names=["PII (Personally Identifiable Information)"],
 )
 
-# ============================================
-# Step 1: Set up connectors
-# ============================================
-# Source: where documents come from
-source = client.data_source.create(
-    connector_name="incoming-documents",
-    connector_body={
-        "vector_db_type": "s3",
-        "bucket_name": "incoming-docs",
-        "aws_access_key_id": "...",
-        "aws_secret_access_key": "...",
-        "region": "us-east-1",
-    },
-)
+flagged = []
+for file_name, tags in (results.metadata or {}).items():
+    pii = tags.get("PII (Personally Identifiable Information)")
+    values = pii.file_level.values if pii and pii.file_level else []
+    if values and str(values[0]).lower() in ("true", "yes"):
+        flagged.append(file_name)
 
-# Destination: where clean documents go
-clean_dest = client.destination.create(
-    destination_name="clean-archive",
-    destination_body={
-        "vector_db_type": "s3",
-        "bucket_name": "clean-documents",
-        "aws_access_key_id": "...",
-        "aws_secret_access_key": "...",
-        "region": "us-east-1",
-    },
-)
+print(f"{len(flagged)} file(s) contain PII")
+```
 
-# Destination: where sensitive documents go for review
-sensitive_dest = client.destination.create(
-    destination_name="sensitive-review",
-    destination_body={
-        "vector_db_type": "s3",
-        "bucket_name": "sensitive-documents",
-        "aws_access_key_id": "...",
-        "aws_secret_access_key": "...",
-        "region": "us-east-1",
-    },
-)
+## Step 4. Encode the Policy as a Rule-Based Tag
 
-# ============================================
-# Step 2: Create PII taxonomy
-# ============================================
-taxonomy = client.taxonomy.upsert(
-    taxonomy_name="compliance-pii",
-    taxonomy_description="Comprehensive PII detection for compliance",
-    tags=[
+Turn the detection results into a deterministic access verdict. A rule-based tag evaluates conditions over other tags' values at zero LLM cost: if a rule matches, the value resolves deterministically, and if none match, the tag falls back to its other configured strategy, pattern matching or LLM classification, depending on the tag definition.
+
+```python
+client.tags.upsert(tag_data={
+    "name": "AI Agent Access",
+    "description": "Whether AI agents may access this document",
+    "output_type": "string",
+    "available_values": ["Restricted", "Allowed"],
+    "visual_rules": [
         {
-            "name": "has_pii",
-            "description": "Whether document contains any PII",
-            "output_type": "boolean",
-        },
-        {
-            "name": "pii_categories",
-            "description": "Categories: financial, health, identity, contact",
-            "output_type": "list[string]",
-        },
-        {
-            "name": "risk_score",
-            "description": "Risk score from 1-10 based on PII sensitivity",
-            "output_type": "integer",
+            "condition": {
+                "condition": "OR",
+                "children": [
+                    {"tag": {"name": "PII (Personally Identifiable Information)",
+                             "operator": "in", "values": ["true"]}},
+                    {"tag": {"name": "PHI (Protected Health Information)",
+                             "operator": "in", "values": ["true"]}},
+                ],
+            },
+            "tag_value": "Restricted",
         },
     ],
-)
+})
+```
 
-# ============================================
-# Step 3: Process and classify
-# ============================================
-results = client.classify.generate_batch(
-    connector_name="incoming-documents",
-    taxonomy_name="compliance-pii",
-)
+The policy now lives on the documents themselves: re-running classification re-evaluates the rule, and every downstream system reads one tag instead of re-deriving the logic.
 
-# ============================================
-# Step 4: Create slices for routing
-# ============================================
-# Slice for clean documents (no PII or low risk)
-clean_slice = client.dataslice.create(
-    dataslice_name="clean-documents",
-    connector_name="incoming-documents",
-    conditions=[
-        {"field": "has_pii", "operator": "eq", "value": False},
-    ],
-)
+## Step 5. Gate the Slice
 
-# Slice for sensitive documents (high risk)
-sensitive_slice = client.dataslice.create(
-    dataslice_name="sensitive-documents",
-    connector_name="incoming-documents",
-    conditions=[
-        {"field": "risk_score", "operator": "gte", "value": 7},
-    ],
-)
+Build the use case's slice so restricted content is excluded. This is the sensitivity component of the AI-ready gate: which dimensions matter, including whether sensitivity is part of the gate, is decided per use case.
 
-# ============================================
-# Step 5: Export to appropriate destinations
-# ============================================
-# Send clean docs to archive
-client.destination.export(
-    destination_name="clean-archive",
-    dataslice_name="clean-documents",
-    export_level="file",
-    export_metadata=True,
+```python
+safe_for_agents = client.data_slice.create(
+    data_connector_name=CONNECTOR,
+    dataslice_name="agent-safe-knowledge",
+    description="No PII, PCI, or PHI. Approved for customer-facing agent access.",
+    condition={
+        "condition": "AND",
+        "children": [
+            {"tag": {"name": "PII (Personally Identifiable Information)", "operator": "not_exists"}},
+            {"tag": {"name": "PCI (Payment Card Industry Data)", "operator": "not_exists"}},
+            {"tag": {"name": "PHI (Protected Health Information)", "operator": "not_exists"}},
+        ],
+    },
 )
+print(f"Gated slice: {safe_for_agents.dataslice_id}")
+```
 
-# Send sensitive docs for review
-client.destination.export(
-    destination_name="sensitive-review",
-    dataslice_name="sensitive-documents",
-    export_level="file",
-    export_metadata=True,
+Export this slice, and only it, to the systems your agents read from. Documents with sensitive content stay behind the gate for review.
+
+## Custom Patterns
+
+For organization-specific identifiers (employee IDs, claim numbers, internal codes), describe the pattern and let the platform engineer it, including the context keywords that keep precision high. The full loop, with generated test cases that prove the pattern before it runs at scale, is in [Precision Patterns for Sensitive Data](/cookbooks/precision-patterns).
+
+```python
+suggestion = client.tags.pattern.suggest_patterns(
+    pattern_description="Internal employee ID in the format EMP-XXXXXX",
+    tag_data={"name": "employee_id", "description": "Internal employee identifier"},
 )
+print(f"Suggested pattern: {suggestion.regex} (confidence: {suggestion.confidence_score})")
 
-print("✓ Documents routed based on PII content")
+client.tags.upsert(tag_data={
+    "name": "employee_id",
+    "description": "Internal employee identifier",
+    "output_type": "string",
+    "patterns": [{"pattern": suggestion.regex}],
+})
 ```
 
 ## PII Categories Reference
@@ -255,79 +164,27 @@ print("✓ Documents routed based on PII content")
 | **Financial** | Credit Card, Bank Account, Tax ID | Critical |
 | **Health** | Medical Records, Insurance ID, Diagnoses | High |
 | **Contact** | Email, Phone, Address | Medium |
-| **Biometric** | Fingerprints, Face Data, Voice | Critical |
-| **Demographic** | Age, Gender, Ethnicity | Low-Medium |
+| **Demographic** | Age, Gender, Religion | Low-Medium |
 
-## Best Practices
+## How to Use This
 
-<AccordionGroup>
-  <Accordion title="Combine AI + Regex" icon="wand-magic-sparkles">
-    Use AI-based detection for context-aware classification, and regex patterns for precise matching:
-    
-    ```python
-    tags=[
-        # AI understands context
-        {
-            "name": "discusses_salary",
-            "description": "Document discusses employee salary information",
-            "output_type": "boolean",
-        },
-        # Regex catches exact patterns
-        {
-            "name": "ssn_values",
-            "description": "Exact SSN values found",
-            "output_type": "list[string]",
-            "regex_pattern": r"\b\d{3}-\d{2}-\d{4}\b",
-        },
-    ]
-    ```
-  </Accordion>
-  
-  <Accordion title="Audit Trail" icon="clock-rotate-left">
-    Keep metadata for compliance audits:
-    
-    ```python
-    # Export with full metadata for audit
-    client.destination.export(
-        destination_name="audit-archive",
-        connector_name="processed-documents",
-        export_level="file",
-        export_metadata=True,
-        metadata_format="column_store",  # Easy to query
-        export_tags=["has_pii", "pii_categories", "risk_score", "processed_date"],
-    )
-    ```
-  </Accordion>
-  
-  <Accordion title="Incremental Scanning" icon="rotate">
-    Process only new documents to save time:
-    
-    ```python
-    # Slice for unprocessed documents
-    new_docs = client.dataslice.create(
-        dataslice_name="unscanned",
-        connector_name="incoming-documents",
-        conditions=[
-            {"field": "pii_scanned", "operator": "is_null", "value": True},
-        ],
-    )
-    ```
-  </Accordion>
-</AccordionGroup>
+- **Per use case.** An internal legal workspace may allow PII that a customer-facing agent must never see. Gate each slice with its own rules.
+- **In a project.** Enable Sensitive Data Detection when creating a [Project](/concepts/projects) to make the scan part of the standard workspace setup.
+- **Composed with quality.** Combine the sensitivity conditions with the `Data Quality Status` exclusion from [Prepare an AI-Ready Dataset](/cookbooks/data-quality) for a gate that covers both.
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="S3 to SharePoint" icon="microsoft" href="/cookbooks/s3-to-sharepoint">
-    Export enriched metadata to SharePoint.
+  <Card title="Prepare an AI-Ready Dataset" icon="filter" href="/cookbooks/data-quality">
+    Add the quality dimensions to the gate.
   </Card>
-  <Card title="S3 to Qdrant" icon="database" href="/cookbooks/s3-to-qdrant">
-    Build a complete RAG pipeline.
+  <Card title="Projects" icon="folder" href="/concepts/projects">
+    Enable sensitivity detection per workspace.
   </Card>
-  <Card title="Custom Taxonomies" icon="tags" href="/cookbooks/custom-taxonomy">
-    Use AI to generate custom taxonomies.
+  <Card title="Clean Up a RAG Index" icon="database" href="/cookbooks/qdrant-to-qdrant">
+    Ship the gated slice to a vector database.
   </Card>
-  <Card title="Data Slices" icon="filter" href="/concepts/data-slices">
-    Learn advanced filtering techniques.
+  <Card title="Taxonomies and Tags" icon="tags" href="/concepts/taxonomies-tags">
+    Tag strategies: LLM, Pattern, Rule-based, Sensitivity.
   </Card>
 </CardGroup>

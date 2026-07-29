@@ -1,71 +1,95 @@
 ---
-title: Introduction
-description: "Welcome to the home of your new documentation"
+title: "Introduction"
+description: "The right slice of your organization's knowledge, ready for AI in minutes"
+icon: "hand-wave"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.png"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.png"
-  alt="Hero Dark"
-/>
+**Deasy Labs** delivers the right slice of your organization's knowledge, ready for AI in minutes. It turns unstructured data, from a sprawling SharePoint to decades of PDFs, into the exact dataset your team is building against. Connect your storage, tag thousands of files per minute with AI-extracted metadata, slice your data any way you want, and deliver AI-ready datasets to vector databases, SharePoint, SQL warehouses, and the Collibra platform.
 
-## Setting up
+## How It Works
 
-The first step to world-class documentation is setting up your editing environments.
+<div className="how-it-works-row" style={{margin: '28px 0'}}>
+  <div className="hiw-card">
+    <span className="hiw-icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /></svg></span>
+    <div className="hiw-title">Data Sources</div>
+    <div className="hiw-chips"><span className="hiw-chip"><img src="/images/logos/s3.svg" alt="Amazon S3" noZoom /></span><span className="hiw-chip"><img src="/images/logos/sharepoint.svg" alt="SharePoint" noZoom /></span><span className="hiw-chip"><img src="/images/logos/onedrive.svg" alt="OneDrive" noZoom /></span><span className="hiw-chip"><img src="/images/logos/postgresql.svg" alt="PostgreSQL" noZoom /></span><span className="hiw-chip"><img src="/images/logos/qdrant.svg" alt="Qdrant" noZoom /></span></div>
+  </div>
+  <span className="how-it-works-arrow-h hiw-arrow" aria-hidden="true">&#8594;</span>
+  <div className="hiw-card">
+    <span className="hiw-icon"><svg class="lucide lucide-plug" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M12 22v-5" /> <path d="M15 8V2" /> <path d="M17 8a1 1 0 0 1 1 1v4a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1z" /> <path d="M9 8V2" /> </svg></span>
+    <div className="hiw-title">Connect & Ingest</div>
+    <div className="hiw-detail">OCR + source metadata</div>
+  </div>
+  <span className="how-it-works-arrow-h hiw-arrow" aria-hidden="true">&#8594;</span>
+  <div className="hiw-card">
+    <span className="hiw-icon"><svg class="lucide lucide-tag" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" /> <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" /> </svg></span>
+    <div className="hiw-title">Tag</div>
+    <div className="hiw-detail">AI metadata extraction</div>
+  </div>
+  <span className="how-it-works-arrow-h hiw-arrow" aria-hidden="true">&#8594;</span>
+  <div className="hiw-card">
+    <span className="hiw-icon"><svg class="lucide lucide-layers" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" /> <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" /> <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" /> </svg></span>
+    <div className="hiw-title">Slice</div>
+    <div className="hiw-detail">curated datasets</div>
+  </div>
+  <span className="how-it-works-arrow-h hiw-arrow" aria-hidden="true">&#8594;</span>
+  <div className="hiw-card">
+    <span className="hiw-icon"><svg class="lucide lucide-send" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" /> <path d="m21.854 2.147-10.94 10.939" /> </svg></span>
+    <div className="hiw-title">Deliver</div>
+    <div className="hiw-chips"><span className="hiw-chip"><img src="/images/logos/sharepoint.svg" alt="SharePoint" noZoom /></span><span className="hiw-chip"><img src="/images/logos/azure-sql-database.png" alt="Azure SQL" noZoom /></span><span className="hiw-chip"><img src="/images/logos/s3.svg" alt="Amazon S3" noZoom /></span><span className="hiw-chip"><img src="/images/logos/qdrant.svg" alt="Qdrant" noZoom /></span></div>
+  </div>
+</div>
+
+<div className="hiw-maintain">
+  <span className="hiw-icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg></span>
+  <span>Maintained over time: [Workflows](/concepts/workflows) re-ingest, re-classify, and re-export on a schedule</span>
+</div>
+
+<Steps>
+  <Step title="Connect">
+    Point a [Data Connector](/concepts/data-connectors) at your document store. No data migration needed.
+  </Step>
+  <Step title="Tag">
+    Define what you want to know about your documents with [Tags and Taxonomies](/concepts/taxonomies-tags), or let AI suggest them. Classification generates [Metadata](/concepts/metadata) with values, evidence, and confidence for every document.
+  </Step>
+  <Step title="Slice">
+    Build [Data Slices](/concepts/data-slices) that capture the exact subset each use case needs.
+  </Step>
+  <Step title="Deliver">
+    Export slices to [Destinations](/concepts/destinations) and enrich documents at the source.
+  </Step>
+  <Step title="Maintain">
+    Schedule [Workflows](/concepts/workflows) so datasets stay fresh as documents change.
+  </Step>
+</Steps>
+
+## Start Building
 
 <CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="/quickstart"
-  >
-    Get your docs set up locally for easy development
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Go from zero to extracted metadata in under 5 minutes with the Python SDK.
   </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="/quickstart"
-  >
-    Preview your changes before you push to make sure they're perfect
+  <Card title="Use Cases" icon="lightbulb" href="/use-cases">
+    What teams build: RAG context, compliance, document management, governance.
+  </Card>
+  <Card title="Cookbooks" icon="utensils" href="/cookbooks/qdrant-to-qdrant">
+    End-to-end recipes for RAG pipelines, PII detection, and data quality.
+  </Card>
+  <Card title="API Reference" icon="brackets-curly" href="/api-reference">
+    Every endpoint, generated from the live OpenAPI specification.
   </Card>
 </CardGroup>
 
-## Make it yours
+## Why Teams Use It
 
-Update your docs to your brand and add valuable content for the best user conversion.
-
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize your docs to your company's colors and brands
+<CardGroup cols={3}>
+  <Card title="Better AI Results" icon="sparkles">
+    Curate before you compute. Retrieval works on high-quality, relevant knowledge instead of raw document dumps.
   </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="/api-reference"
-  >
-    Automatically generate endpoints from an OpenAPI spec
+  <Card title="Protect Sensitive Data" icon="shield-check">
+    Detect PII, PHI, and PCI automatically at scale and route sensitive content before it reaches downstream systems.
   </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="/essentials/reusable-snippets"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="/concepts/overview"
-  >
-    Check out our showcase of our favorite documentation
+  <Card title="Reliable Over Time" icon="clock">
+    Scheduled workflows keep datasets fresh, so answers stay grounded in current documents.
   </Card>
 </CardGroup>

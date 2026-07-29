@@ -97,73 +97,101 @@ For a contract document with a "Contract Type" classification tag:
 from unstructured import UnstructuredClient
 
 client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",
 )
 
-# Generate metadata for a single document
-result = client.classify.generate(
-    file_path="s3://my-bucket/contract.pdf",
-    taxonomy_name="contract-analysis",
+# Generate metadata for specific documents
+result = client.metadata.generate.generate(
+    data_connector_name="my-s3-bucket",
+    file_names=["contract.pdf"],
+    tag_names=["contract_type", "effective_date", "total_value"],
 )
-
-print(f"Document: {result.file_name}")
-for tag, value in result.tags.items():
-    print(f"  {tag}: {value}")
+print(result.message)
 ```
   </Tab>
   <Tab title="Batch Processing">
 ```python
-# Generate metadata for all documents in a connector
-results = client.classify.generate_batch(
-    connector_name="my-s3-bucket",
-    taxonomy_name="contract-analysis",
+import uuid
+
+# Generate metadata for all documents in a connector (background job)
+job_id = str(uuid.uuid4())
+client.metadata.generate.generate_batch(
+    data_connector_name="my-s3-bucket",
+    tag_names=["contract_type", "effective_date", "total_value"],
+    job_id=job_id,
 )
 
-print(f"Processed {len(results.metadata)} documents")
-for doc in results.metadata:
-    print(f"\n{doc.file_name}:")
-    print(f"  Type: {doc.tags.get('contract_type')}")
-    print(f"  Value: ${doc.tags.get('total_value', 0):,.2f}")
+# Track progress
+progress = client.task_status.get_status(job_id=job_id)
+print(f"Classification {progress.percent_complete:.0f}% complete ({progress.status})")
 ```
   </Tab>
   <Tab title="List Metadata">
 ```python
-# List metadata for documents
+# List metadata for documents (dict keyed by file name)
 metadata = client.metadata.list(
-    connector_name="my-s3-bucket",
+    data_connector_name="my-s3-bucket",
     tag_names=["contract_type", "effective_date"],
 )
-
-for doc in metadata.documents:
-    print(f"{doc.file_name}: {doc.tags}")
+for file_name, tags in metadata.metadata.items():
+    print(f"{file_name}: {tags}")
 
 # Paginated listing for large datasets
-page = client.metadata.list_paginated(
-    connector_name="my-s3-bucket",
-    page_size=100,
-    page_number=1,
-)
-print(f"Page 1 of {page.total_pages}")
+all_metadata, offset = {}, 0
+while offset is not None:
+    page = client.metadata.list_paginated(
+        data_connector_name="my-s3-bucket",
+        limit=200,
+        offset=offset,
+    )
+    all_metadata.update(page.metadata or {})
+    offset = page.next_offset
+print(f"Fetched metadata for {len(all_metadata)} files")
 ```
   </Tab>
   <Tab title="Upsert & Delete">
 ```python
-# Manually upsert metadata
+# Manually upsert metadata (e.g. write a review status back)
 client.metadata.upsert(
-    file_name="contract.pdf",
-    connector_name="my-s3-bucket",
-    tags={
-        "contract_type": "NDA",
-        "reviewed": True,
-        "reviewer": "John Doe",
+    data_connector_name="my-s3-bucket",
+    metadata={
+        "contract.pdf": {
+            "contract_type": {
+                "file_level": {
+                    "values": ["NDA"],
+                    "evidence": "Manually verified by legal team.",
+                },
+            },
+        },
     },
 )
 
 # Delete metadata for specific files
 client.metadata.delete(
-    connector_name="my-s3-bucket",
+    data_connector_name="my-s3-bucket",
     file_names=["old-contract.pdf"],
+)
+```
+  </Tab>
+  <Tab title="Standardize">
+```python
+import uuid
+
+# Preview AI-suggested standardizations for messy values
+suggestion = client.metadata.standardization_suggest(
+    data_connector_name="my-s3-bucket",
+    tag_names=["counterparty_name"],
+    description="Consolidate company-name variants into one canonical legal name",
+    processing_mode="entity_resolution",  # or: deduplicate, smart_clustering, map_to_categories
+)
+
+# Apply standardization across tags in bulk (background job)
+client.metadata.standardization_bulk(
+    vdb_profile_name="my-s3-bucket",
+    tag_names=["counterparty_name", "contract_type"],
+    job_id=str(uuid.uuid4()),
 )
 ```
   </Tab>

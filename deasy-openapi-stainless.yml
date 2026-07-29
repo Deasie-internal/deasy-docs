@@ -6346,7 +6346,7 @@ paths:
       tags:
       - Versioning
       summary: Run Versioning
-      description: Test the GPU
+      description: Run version detection across a data connector.
       operationId: run_versioning_versioning_run_post
       requestBody:
         content:
@@ -6416,7 +6416,7 @@ paths:
       tags:
       - Versioning
       summary: Retrieve Versions
-      description: Test the GPU get versions
+      description: Retrieve stored document versions.
       operationId: retrieve_versions_versioning_retrieve_versions_post
       requestBody:
         content:

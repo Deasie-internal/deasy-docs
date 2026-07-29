@@ -8,17 +8,23 @@ Destinations are target systems where enriched metadata and document data can be
 ## Supported Destinations
 
 <CardGroup cols={2}>
-  <Card title="Qdrant" icon="bullseye">
-    Vector database for AI applications and semantic search.
-  </Card>
   <Card title="PostgreSQL" icon="database">
     Relational database with vector support for hybrid search.
   </Card>
-  <Card title="Azure SQL" icon="microsoft">
-    Enterprise-grade SQL database in the Azure cloud.
-  </Card>
   <Card title="SharePoint" icon="microsoft">
     Enrich original documents with metadata columns in Microsoft 365.
+  </Card>
+  <Card title="OneDrive" icon="cloud">
+    Push enriched documents and metadata to OneDrive libraries.
+  </Card>
+  <Card title="Amazon S3" icon="aws">
+    Write enriched output to S3 buckets.
+  </Card>
+  <Card title="Google Cloud Storage" icon="google">
+    Write enriched output to GCS buckets.
+  </Card>
+  <Card title="Qdrant" icon="bullseye">
+    Serve curated chunks to RAG pipelines via slice export.
   </Card>
 </CardGroup>
 
@@ -26,10 +32,18 @@ Destinations are target systems where enriched metadata and document data can be
 
 | Destination Type | Description | Key Configuration | Ideal Use Case |
 | :-- | :-- | :-- | :-- |
-| **Qdrant** | Vector database for AI applications | Collection name, URL, API Key | Semantic search, RAG pipelines |
-| **PostgreSQL** | Relational database with vector support | Host, Database, Collection, Credentials | Structured analytics, hybrid search |
-| **Azure SQL** | Microsoft cloud database | Server, Database, Table, Credentials | Enterprise data warehouses |
+| **PostgreSQL** | Relational database with vector support | Host URL, Port, Database, Collection, Credentials | Structured analytics, hybrid search |
 | **SharePoint** | Microsoft 365 document management | Client ID/Secret, Tenant ID, Site Name | Enriching original documents with metadata columns |
+| **OneDrive** | Microsoft OneDrive cloud storage | Client ID/Secret, Tenant ID, Site, Library folder | Team drives in Microsoft 365 |
+| **Amazon S3** | AWS cloud object storage | Bucket name, Access Key, Secret Key | Cloud-native archives and pipelines |
+| **Google Cloud Storage** | GCP cloud object storage | Bucket, Service Account | GCP-native archives and pipelines |
+| **Qdrant** | Vector database | URL, API Key, Collection | RAG serving collections |
+
+See the [Integrations Overview](/integrations/overview) for the complete matrix of sources, destinations, and supported file types.
+
+<Tip>
+To export a data slice into a **vector database** (e.g. Qdrant) for RAG pipelines, use `client.data_slice.export_vdb(...)`. See [Data Slices](/concepts/data-slices).
+</Tip>
 
 ## Export Options
 
@@ -51,7 +65,7 @@ Destinations are target systems where enriched metadata and document data can be
 
 ```mermaid
 flowchart LR
-    subgraph platform [Unstructured Platform]
+    subgraph platform [Deasy Labs Platform]
         META[Enriched Metadata]
         EXP[Export Engine]
     end
@@ -59,14 +73,12 @@ flowchart LR
     subgraph destinations [Your Destinations]
         QD[Qdrant]
         PG[PostgreSQL]
-        AZ[Azure SQL]
         SP[SharePoint]
     end
     
     META --> EXP
     EXP --> QD
     EXP --> PG
-    EXP --> AZ
     EXP --> SP
 ```
 
@@ -95,55 +107,58 @@ flowchart LR
 from unstructured import UnstructuredClient
 
 client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",
 )
 
-# Create a Qdrant destination
+# Create a PostgreSQL destination
 destination = client.destination.create(
-    destination_name="my-vector-db",
-    destination_body={
-        "vector_db_type": "qdrant",
-        "url": "https://your-cluster.qdrant.io",
-        "api_key": "YOUR_QDRANT_API_KEY",
+    connector_name="my-postgres-destination",
+    connector_body={
+        "type": "PostgresNodeDestinationManager",
+        "name": "my-postgres-destination",
+        "url": "your-db-host.example.com",
+        "port": 5432,
+        "database_name": "analytics",
         "collection_name": "documents",
+        "db_user": "postgres",
+        "password": "YOUR_DB_PASSWORD",
     },
 )
-print(f"Created destination: {destination.destination_id}")
+print(f"Created destination: {destination.profile_id}")
 ```
   </Tab>
   <Tab title="Export Data">
 ```python
-# Export enriched data to destination
+# Export enriched data to a destination
 result = client.destination.export(
-    destination_name="my-vector-db",
-    connector_name="my-s3-bucket",
+    destination_name="my-postgres-destination",
+    data_connector_name="my-s3-bucket",
     export_level="chunk",       # "file", "chunk", or "both"
-    export_nodes=True,          # Include vector embeddings
     export_metadata=True,       # Include extracted metadata
     metadata_format="json_store",
 )
+print(f"Exported {result.success} files ({result.failed} failed)")
 
 # For large exports, track progress
 if result.tracker_id:
-    status = client.progress_tracker.get_status(
-        tracker_id=result.tracker_id
-    )
-    print(f"Export status: {status.status}")
+    status = client.task_status.get_status(job_id=result.tracker_id)
+    print(f"Export {status.percent_complete:.0f}% complete ({status.status})")
 ```
   </Tab>
   <Tab title="List Destinations">
 ```python
-# List all destinations
+# List all destinations (returned as a dict keyed by destination name)
 destinations = client.destination.list()
-for d in destinations.destinations:
-    print(f"{d.destination_name}: {d.vector_db_type}")
+for name, config in destinations.connectors.items():
+    print(name)
 ```
   </Tab>
   <Tab title="Delete Destination">
 ```python
 # Delete a destination
-client.destination.delete(destination_name="my-vector-db")
+client.destination.delete(connector_name="my-postgres-destination")
 print("Destination deleted")
 ```
   </Tab>
