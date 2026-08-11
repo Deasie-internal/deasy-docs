@@ -71,7 +71,8 @@
                 "group": "Power RAG and Agents",
                 "pages": [
                   "cookbooks/qdrant-to-qdrant",
-                  "cookbooks/metadata-filtered-rag"
+                  "cookbooks/metadata-filtered-rag",
+                  "cookbooks/redact-sensitive-text"
                 ]
               },
               {
