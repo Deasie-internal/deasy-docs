@@ -63,6 +63,7 @@
                 "pages": [
                   "cookbooks/data-quality",
                   "cookbooks/pii-detection",
+                  "cookbooks/redact-sensitive-text",
                   "cookbooks/freshness-curation"
                 ]
               },
