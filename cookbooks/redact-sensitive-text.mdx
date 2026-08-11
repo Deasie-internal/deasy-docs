@@ -5,10 +5,6 @@ description: 'Use detected sensitive values to redact text client-side, without 
 
 Sometimes a document should not be withheld entirely, only the sensitive parts inside it. A support ticket might be fine for an agent to read except for the customer's credit card number. This cookbook takes the values Deasy Labs already detected and masks them out of the text your application sends to an LLM, using plain Python.
 
-<Note>
-Deasy Labs detects sensitive values today. It does not modify document content. Masking the matched values out of text is something your application does, using the detections as input. This is a best-effort, literal-value replacement, not a guarantee: the platform returns the matched strings, not character offsets, so formatting variants that were not themselves detected will not be caught. If you need certainty, exclude the whole file from the slice instead, as covered in [Protect Sensitive Data](/cookbooks/pii-detection).
-</Note>
-
 ## The Flow
 
 ```mermaid
@@ -117,7 +113,7 @@ card is [REDACTED]. You can reach me at [REDACTED]
 or [REDACTED] if you need to verify my identity.
 ```
 
-Only the four matched values changed. Everything else in the ticket, the parts an agent needs to actually help the customer, is untouched. If the classification job did not catch a value (a typo'd SSN, a phone number in an unexpected format), it will not be in the list and will not be masked, which is the literal-value limitation called out above.
+Only the four matched values changed. Everything else in the ticket, the parts an agent needs to actually help the customer, is untouched. If the classification job did not catch a value (a typo'd SSN, a phone number in an unexpected format), it will not be in the list and will not be masked.
 
 ## How to Use This
 
