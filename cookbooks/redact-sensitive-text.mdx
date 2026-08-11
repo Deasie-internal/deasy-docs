@@ -93,6 +93,32 @@ safe_text = redact(raw_text, matches_by_file.get(file_name, []))
 response = your_llm_client.complete(prompt=safe_text)
 ```
 
+## A Worked Example
+
+Say the source file is a support ticket. This is the text your application already has, before any masking:
+
+```text
+Hi, I'm locked out of my account. My SSN on file is 123-45-6789 and my
+card is 4111 1111 1111 1111. You can reach me at jane.doe@example.com
+or 415-555-0192 if you need to verify my identity.
+```
+
+After Step 1 and Step 2, `matches_by_file["ticket-4821.txt"]` holds the literal values the classification job found in that file:
+
+```python
+["123-45-6789", "4111 1111 1111 1111", "jane.doe@example.com", "415-555-0192"]
+```
+
+Running `redact(raw_text, matches_by_file["ticket-4821.txt"])` from Step 3 on that text produces:
+
+```text
+Hi, I'm locked out of my account. My SSN on file is [REDACTED] and my
+card is [REDACTED]. You can reach me at [REDACTED]
+or [REDACTED] if you need to verify my identity.
+```
+
+Only the four matched values changed. Everything else in the ticket, the parts an agent needs to actually help the customer, is untouched. If the classification job did not catch a value (a typo'd SSN, a phone number in an unexpected format), it will not be in the list and will not be masked, which is the literal-value limitation called out above.
+
 ## How to Use This
 
 - **For inline masking, not exclusion.** Use this when a document is mostly fine to share and only specific values need to be hidden. To keep a whole file out of AI systems, gate a slice instead, as in [Protect Sensitive Data](/cookbooks/pii-detection).
