@@ -10,8 +10,8 @@ Sometimes a document should not be withheld entirely, only the sensitive parts i
 ```mermaid
 flowchart LR
     RUN[Classification job<br/>sensitivity strategy] --> VAL[Matched values<br/>metadata.list]
-    VAL --> MASK[Custom Python<br/>str.replace]
-    RAW[Your app's raw text] --> MASK
+    TXT[Document text<br/>data_source.document_text] --> MASK[Custom Python<br/>str.replace]
+    VAL --> MASK
     MASK --> LLM[LLM prompt · agent context]
 ```
 
@@ -80,18 +80,25 @@ def redact(text, matched_values, placeholder="[REDACTED]"):
 
 ## Step 4. Mask Before You Prompt
 
-Apply it wherever your application builds the text it sends to an LLM or agent, using the file's own raw content, however your pipeline already reads it.
+Pull the document's own text through the SDK rather than re-reading it from the source yourself. `document_text` returns each file's content keyed by node, since a file is chunked into nodes for retrieval.
 
 ```python
-raw_text = load_text_from_source(file_name)  # your app's own file read, not a Deasy Labs call
-safe_text = redact(raw_text, matches_by_file.get(file_name, []))
+text_response = client.data_source.document_text(
+    data_connector_name=CONNECTOR,
+    file_names=[file_name],
+)
 
-response = your_llm_client.complete(prompt=safe_text)
+safe_nodes = {
+    node_id: redact(text, matches_by_file.get(file_name, []))
+    for node_id, text in text_response.file_to_nodes_to_text[file_name].items()
+}
+
+response = your_llm_client.complete(prompt="\n".join(safe_nodes.values()))
 ```
 
 ## A Worked Example
 
-Say the source file is a support ticket. This is the text your application already has, before any masking:
+Say the source file is a support ticket short enough to be a single node. This is the text `document_text` returns for it, before any masking:
 
 ```text
 Hi, I'm locked out of my account. My SSN on file is 123-45-6789 and my
@@ -105,7 +112,7 @@ After Step 1 and Step 2, `matches_by_file["ticket-4821.txt"]` holds the literal 
 ["123-45-6789", "4111 1111 1111 1111", "jane.doe@example.com", "415-555-0192"]
 ```
 
-Running `redact(raw_text, matches_by_file["ticket-4821.txt"])` from Step 3 on that text produces:
+Running `redact(text, matches_by_file["ticket-4821.txt"])` from Step 3 on that node's text produces:
 
 ```text
 Hi, I'm locked out of my account. My SSN on file is [REDACTED] and my
