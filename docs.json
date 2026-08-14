@@ -97,7 +97,7 @@
       },
       {
         "tab": "API Reference",
-        "openapi": "./deasy-openapi-stainless.yml",
+        "openapi": "./deasy-openapi.yml",
         "groups": [
           {
             "group": "Overview",
