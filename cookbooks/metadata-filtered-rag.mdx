@@ -21,7 +21,7 @@ flowchart LR
 - Python 3.9+ with `qdrant-client`, `fastembed`, and `openai` installed
 
 ```bash
-pip install unstructured_sdk-*.whl qdrant-client fastembed openai
+pip install deasy_sdk-*.whl qdrant-client fastembed openai
 ```
 
 ## Step 1. Pull Chunk Text and File-Level Tags
@@ -29,9 +29,9 @@ pip install unstructured_sdk-*.whl qdrant-client fastembed openai
 Fetch each file's tags with `metadata.list_paginated`, then the chunk text with `data_source.list_ingested_data`. Each chunk record carries its file's tag values.
 
 ```python
-from unstructured import UnstructuredClient
+from deasy import DeasyClient
 
-client = UnstructuredClient(
+client = DeasyClient(
     base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",

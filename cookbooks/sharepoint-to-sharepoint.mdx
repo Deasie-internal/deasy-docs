@@ -20,15 +20,15 @@ flowchart LR
 - Python 3.9+
 
 ```bash
-pip install unstructured_sdk-*.whl
+pip install deasy_sdk-*.whl
 ```
 
 ## Step 1. Connect the SharePoint Source
 
 ```python
-from unstructured import UnstructuredClient
+from deasy import DeasyClient
 
-client = UnstructuredClient(
+client = DeasyClient(
     base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",

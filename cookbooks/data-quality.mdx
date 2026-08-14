@@ -27,9 +27,9 @@ flowchart LR
 The quality tags below are the platform's standard extracted tags. The coverage threshold and freshness cutoff are your use case's rules; the same file can be ready for one use case and not another.
 
 ```python
-from unstructured import UnstructuredClient
+from deasy import DeasyClient
 
-client = UnstructuredClient(
+client = DeasyClient(
     base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",
