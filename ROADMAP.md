@@ -40,7 +40,7 @@ Visual learners need to see the "system view". We should add a "Reference Archit
 
 ## 5. SDK Accuracy & Theming (July 2026)
 
-- [x] **SDK v0.21.0 alignment**: All code samples now use the real Stainless-generated surface (`metadata.generate.generate_batch`, `data_slice.*`, `task_status.get_status`, `tags.upsert(tag_data=...)`, typed `connector_body` with `type` discriminators, required `base_url`).
+- [x] **SDK v0.21.0 alignment**: All code samples now use the real generated SDK surface (`metadata.generate.generate_batch`, `data_slice.*`, `task_status.get_status`, `tags.upsert(tag_data=...)`, typed `connector_body` with `type` discriminators, required `base_url`).
 - [x] **DesignOS theming**: Docs colors/fonts now mirror the frontend `darrren-work` DesignOS theme (terracotta `#B7500C` primary, sage secondary, warm cream/charcoal surfaces, Inter + Roboto Mono).
 - [x] **Projects SDK coverage**: `concepts/projects.mdx` now documents `client.projects.*`.
 - [x] **Landing page**: Replaced Mintlify starter `introduction.mdx` with a real product introduction; removed orphaned starter template pages under `essentials/`.

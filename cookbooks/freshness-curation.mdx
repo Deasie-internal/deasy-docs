@@ -24,9 +24,9 @@ flowchart LR
 The cutoff is your use case's rule. A policy library might expire documents after three years; a contracts workspace might never expire signed agreements.
 
 ```python
-from unstructured import UnstructuredClient
+from deasy import DeasyClient
 
-client = UnstructuredClient(
+client = DeasyClient(
     base_url="https://unstructured.your-company.com/rest/unstructured",
     username="your-username",
     password="your-password",
