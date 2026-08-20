@@ -1,0 +1,177 @@
+---
+title: 'Quickstart'
+description: 'Go from zero to extracting metadata in under 5 minutes'
+---
+
+Get started with Deasy Labs by running this complete example. You'll connect to a data source, define what metadata to extract, and see results in minutes.
+
+## Installation
+
+Download and install the Python SDK wheel file:
+
+<Card title="Request Access" icon="envelope" href="mailto:leonard.platzer@collibra.com?subject=Unstructured%20SDK%20Access%20Request">
+  Contact us to get the SDK wheel file
+</Card>
+
+```bash
+pip install unstructured_sdk-*.whl
+```
+
+## Supported Filetypes
+
+Deasy Labs can process a wide variety of document formats:
+
+<CardGroup cols={3}>
+  <Card title="Documents" icon="file-pdf">
+    .pdf, .docx, .rtf
+  </Card>
+  <Card title="Spreadsheets" icon="file-excel">
+    .xls, .xlsx, .xlsm, .xlsb, .odf, .ods, .odt
+  </Card>
+  <Card title="Presentations" icon="file-powerpoint">
+    .ppt, .pptx
+  </Card>
+  <Card title="Email" icon="envelope">
+    .msg
+  </Card>
+  <Card title="Web" icon="code">
+    .html, .htm, .aspx, .xml
+  </Card>
+  <Card title="Data Formats" icon="brackets-curly">
+    .json, .csv
+  </Card>
+  <Card title="Plain Text" icon="file">
+    .txt, .log
+  </Card>
+</CardGroup>
+
+## Language Support
+
+| Capability | Supported Languages |
+| :-- | :-- |
+| **Document Processing** | Multilingual (all UTF-8 supported languages) |
+| **LLM Classification** | Multilingual (dependent on model) |
+| **PII Detection** | English only |
+
+## Complete Example
+
+Copy and run this script to extract metadata from your documents:
+
+```python
+import time
+import uuid
+
+from unstructured import UnstructuredClient
+
+# 1. Initialize the client (basic auth)
+client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
+    username="your-username",
+    password="your-password",
+)
+# Alternatively, authenticate with an API token issued from the web UI:
+#   client = UnstructuredClient(
+#       base_url="https://unstructured.your-company.com/rest/unstructured",
+#       api_token="your-api-token",
+#       user_id="your-username",  # sent as the X-User-ID header
+#   )
+
+# 2. Create a data connector (S3 example)
+connector = client.data_source.create(
+    connector_name="my-s3-bucket",
+    connector_body={
+        "type": "S3DataSourceManager",
+        "name": "my-s3-bucket",
+        "bucket_name": "my-documents",
+        "aws_access_key_id": "YOUR_ACCESS_KEY",
+        "aws_secret_access_key": "YOUR_SECRET_KEY",
+        "region": "us-east-1",
+    },
+)
+print(f"✓ Created connector: {connector.profile_id}")
+
+# 3. Define the tags you want to extract
+for tag in [
+    {
+        "name": "document_type",
+        "description": "Type of document (invoice, contract, report, etc.)",
+        "output_type": "string",
+        "available_values": ["invoice", "contract", "report", "other"],
+    },
+    {
+        "name": "summary",
+        "description": "A brief 2-3 sentence summary of the document",
+        "output_type": "string",
+    },
+    {
+        "name": "key_date",
+        "description": "The most important date mentioned in the document",
+        "output_type": "date",
+    },
+]:
+    client.tags.upsert(tag_data=tag)
+print("✓ Created tags: document_type, summary, key_date")
+
+# 4. Extract metadata from all documents (runs as a background job)
+job_id = str(uuid.uuid4())
+client.metadata.generate.generate_batch(
+    data_connector_name="my-s3-bucket",
+    tag_names=["document_type", "summary", "key_date"],
+    job_id=job_id,
+)
+
+while True:
+    progress = client.task_status.get_status(job_id=job_id)
+    print(f"  Classification {progress.percent_complete:.0f}% complete")
+    if progress.status in ("completed", "failed", "aborted"):
+        break
+    time.sleep(10)
+
+# 5. View the results
+results = client.metadata.list(data_connector_name="my-s3-bucket")
+for file_name, tags in results.metadata.items():
+    print(f"\nFile: {file_name}")
+    for tag_name, data in tags.items():
+        if data.file_level:
+            print(f"  {tag_name}: {data.file_level.values}")
+```
+
+<Note>
+  **About client configuration**
+
+  - **`base_url`** is required and points to your Deasy deployment (e.g. `https://unstructured.your-company.com/rest/unstructured`). There is no default.
+  - Any constructor argument can be set via an environment variable instead: `UNSTRUCTURED_CLIENT_BASE_URL`, `UNSTRUCTURED_USERNAME`, `UNSTRUCTURED_PASSWORD`, `UNSTRUCTURED_API_TOKEN`, `UNSTRUCTURED_USER_ID`.
+  - **API tokens** are long-lived and issued from your Deasy deployment's web UI. The SDK does not create, refresh, or revoke them.
+</Note>
+
+## What Just Happened?
+
+<Steps>
+  <Step title="Connected to Your Data">
+    The Data Connector established a secure connection to your S3 bucket, allowing the platform to read your documents.
+  </Step>
+  <Step title="Defined What to Extract">
+    The Tags told the platform what information to look for: document type, summary, and key date. Tags can be grouped into hierarchical Taxonomies for conditional extraction.
+  </Step>
+  <Step title="Extracted Metadata">
+    The platform's AI analyzed each document in a background job (tracked via `task_status`) and extracted the structured metadata you defined.
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Explore Concepts" icon="book" href="/concepts/projects">
+    Learn how Data Connectors, Taxonomies, and Metadata work together.
+  </Card>
+  <Card title="Organize a SharePoint Library" icon="microsoft" href="/cookbooks/sharepoint-to-sharepoint">
+    Export enriched metadata to SharePoint.
+  </Card>
+  <Card title="API Reference" icon="brackets-curly" href="/api-reference">
+    Explore all available endpoints and SDK methods.
+  </Card>
+  <Card title="Protect Sensitive Data" icon="shield" href="/cookbooks/pii-detection">
+    Set up sensitive data detection for compliance.
+  </Card>
+</CardGroup>
+

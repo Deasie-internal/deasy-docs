@@ -1,0 +1,190 @@
+---
+title: "Data Connectors"
+description: "Connect to your document repositories and storage systems"
+---
+
+Data Connectors establish secure connections between the platform and your document storage. Once connected, the platform can discover documents, read content for metadata extraction, and write enriched metadata back to the source.
+
+## Supported Data Connectors
+
+<CardGroup cols={2}>
+  <Card title="Amazon S3" icon="aws">
+    Connect to AWS S3 buckets for scalable cloud storage.
+  </Card>
+  <Card title="Azure Blob Storage" icon="microsoft">
+    Connect to Azure Blob containers.
+  </Card>
+  <Card title="Google Cloud Storage" icon="google">
+    Connect to GCS buckets.
+  </Card>
+  <Card title="SharePoint" icon="microsoft">
+    Integrate with Microsoft 365 document libraries.
+  </Card>
+  <Card title="OneDrive" icon="cloud">
+    Connect to Microsoft OneDrive sites and folders.
+  </Card>
+  <Card title="PostgreSQL" icon="database">
+    Connect to PostgreSQL databases with pgvector support.
+  </Card>
+  <Card title="Qdrant" icon="bullseye">
+    Vector database integration for semantic search.
+  </Card>
+</CardGroup>
+
+### Configuration Details
+
+| Source Type | Description | Key Configuration | Ideal Use Case |
+| :-- | :-- | :-- | :-- |
+| **Amazon S3** | AWS cloud object storage | Bucket name, Access Key, Secret Key | Large-scale document archives, cloud-native workflows |
+| **Azure Blob Storage** | Azure cloud object storage | Account, Container, Credentials | Azure-native document archives |
+| **Google Cloud Storage** | GCP cloud object storage | Bucket, Service Account | GCP-native document archives |
+| **SharePoint** | Microsoft 365 document management | Client ID, Client Secret, Tenant ID, Site Name | Enterprise document libraries, Office 365 environments |
+| **OneDrive** | Microsoft OneDrive cloud storage | Client ID, Client Secret, Tenant ID, Site | Personal and team drives in Microsoft 365 |
+| **PostgreSQL** | Relational database with pgvector extension | Host URL, Database name, User credentials, Port | Structured + unstructured hybrid data, existing database workflows |
+| **Qdrant** | Purpose-built vector database for AI | API Key, Collection name, URL | Semantic search applications, RAG pipelines |
+
+See the [Integrations Overview](/integrations/overview) for the complete matrix of sources, destinations, and supported file types.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Multiple Profiles" icon="layer-group">
+    Create and manage multiple Data Connector connections
+  </Card>
+  <Card title="Connection Testing" icon="vial">
+    Validate credentials before saving
+  </Card>
+  <Card title="Active Profile Selection" icon="toggle-on">
+    Switch between Data Connectors with one click
+  </Card>
+  <Card title="Schema Configuration" icon="table-columns">
+    Customize field mappings (filename key, text key, tags key)
+  </Card>
+</CardGroup>
+
+## How Data Connectors Work
+
+```mermaid
+flowchart LR
+    subgraph sources [Your Data Sources]
+        S3[Amazon S3]
+        SP[SharePoint]
+        PG[PostgreSQL]
+        QD[Qdrant]
+    end
+    
+    subgraph platform [Deasy Labs Platform]
+        DC[Data Connector]
+        PROC[Processing Engine]
+    end
+    
+    S3 --> DC
+    SP --> DC
+    PG --> DC
+    QD --> DC
+    DC --> PROC
+```
+
+<Steps>
+  <Step title="Create a Connector">
+    Select your storage type and provide the required credentials.
+  </Step>
+  <Step title="Test the Connection">
+    Validate that the platform can access your documents before saving.
+  </Step>
+  <Step title="Configure Schema Mapping">
+    Map your data fields (filename, text content, tags) to the platform's expected format.
+  </Step>
+  <Step title="Start Processing">
+    Your documents are now available for metadata extraction.
+  </Step>
+</Steps>
+
+---
+
+## Python SDK
+
+<Tabs>
+  <Tab title="Create Connector">
+```python
+from unstructured import UnstructuredClient
+
+client = UnstructuredClient(
+    base_url="https://unstructured.your-company.com/rest/unstructured",
+    username="your-username",
+    password="your-password",
+)
+
+# Create an S3 connector
+connector = client.data_source.create(
+    connector_name="my-s3-bucket",
+    connector_body={
+        "type": "S3DataSourceManager",
+        "name": "my-s3-bucket",
+        "bucket_name": "my-documents",
+        "aws_access_key_id": "YOUR_ACCESS_KEY",
+        "aws_secret_access_key": "YOUR_SECRET_KEY",
+        "region": "us-east-1",
+    },
+)
+print(f"Created connector: {connector.profile_id}")
+```
+  </Tab>
+  <Tab title="List Connectors">
+```python
+# List all connectors (returned as a dict keyed by connector name)
+connectors = client.data_source.list()
+for name, config in connectors.connectors.items():
+    print(f"{name}: {config.type}")
+```
+  </Tab>
+  <Tab title="Ingest Data">
+```python
+import uuid
+
+# Ingest documents from a connector (runs as a background job)
+job_id = str(uuid.uuid4())
+client.data_source.ingest(
+    data_connector_name="my-s3-bucket",
+    file_names=["contracts/msa.pdf"],  # Optional: omit to ingest everything
+    job_id=job_id,
+)
+
+# Track progress
+progress = client.task_status.get_status(job_id=job_id)
+print(f"Ingestion {progress.percent_complete:.0f}% complete ({progress.status})")
+```
+  </Tab>
+  <Tab title="Delete Connector">
+```python
+# Delete a connector
+client.data_source.delete(connector_name="my-s3-bucket")
+print("Connector deleted")
+```
+  </Tab>
+</Tabs>
+
+---
+
+## API Reference
+
+<CardGroup cols={2}>
+  <Card title="Create Connector" icon="plus" href="/api-reference/data-connectors/create">
+    Create a new data connector
+  </Card>
+  <Card title="Update Connector" icon="pen" href="/api-reference/data-connectors/update">
+    Update an existing connector configuration
+  </Card>
+  <Card title="List Connectors" icon="list" href="/api-reference/data-connectors/list">
+    List all your data connectors
+  </Card>
+  <Card title="Delete Connector" icon="trash" href="/api-reference/data-connectors/delete">
+    Remove a data connector
+  </Card>
+  <Card title="Ingest Data" icon="upload" href="/api-reference/data-connectors/ingest">
+    Ingest documents from a connector
+  </Card>
+  <Card title="List Ingested Data" icon="database" href="/api-reference/data-connectors/list-ingested-data">
+    View ingested document metadata
+  </Card>
+</CardGroup>
