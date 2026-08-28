@@ -13500,14 +13500,12 @@ components:
             format: date-time
           - type: 'null'
           title: Created At
-          default: '2026-08-11T22:37:35.243657'
         updated_at:
           anyOf:
           - type: string
             format: date-time
           - type: 'null'
           title: Updated At
-          default: '2026-08-11T22:37:35.243660'
         user_id:
           anyOf:
           - type: string
@@ -13568,14 +13566,12 @@ components:
             format: date-time
           - type: 'null'
           title: Created At
-          default: '2026-08-11T22:37:35.243657'
         updated_at:
           anyOf:
           - type: string
             format: date-time
           - type: 'null'
           title: Updated At
-          default: '2026-08-11T22:37:35.243660'
         user_id:
           anyOf:
           - type: string
