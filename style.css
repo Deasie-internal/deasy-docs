@@ -736,3 +736,332 @@ hr {
   color: var(--dos-text-secondary) !important;
   fill: var(--dos-text-secondary) !important;
 }
+
+/* ============================================================
+   Live Map (live-map/build-with-us.mdx)
+   The page ships its own hero (eyebrow, title, subtitle, CTA),
+   so the default page header is hidden when the hero is present.
+   ============================================================ */
+#header:has(~ #content-area .lm-hero),
+#header:has(~ * .lm-hero) {
+  display: none;
+}
+
+.lm-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Hero */
+.lm-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.lm-eyebrow {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--dos-primary);
+  background: var(--dos-paper);
+  border: 1px solid var(--dos-primary-light);
+  border-radius: var(--dos-radius-sm);
+}
+
+#content-area .lm-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 0;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--dos-text);
+}
+
+.lm-title-icon {
+  flex-shrink: 0;
+}
+
+#content-area .lm-subtitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--dos-text-secondary);
+}
+
+.lm-button,
+.lm-cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-decoration: none;
+  border-radius: var(--dos-radius-sm);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.lm-button {
+  margin-top: 6px;
+  color: #ffffff;
+  background: var(--dos-primary);
+}
+
+.lm-button:hover {
+  color: #ffffff;
+  background: var(--dos-button-hover);
+}
+
+/* Intro row: graph image + copy */
+.lm-intro {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 12px;
+}
+
+.lm-graph {
+  display: flex;
+  align-self: center;
+  flex: 0 0 60%;
+  width: 60%;
+  padding: 6px;
+  box-sizing: border-box;
+  background: var(--dos-paper);
+  border: 1px solid var(--dos-border);
+  border-radius: var(--dos-radius-sm);
+}
+
+#content-area .lm-graph img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: var(--dos-radius-xs);
+}
+
+#content-area .lm-intro-copy {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--dos-text);
+}
+
+/* Stat box */
+.lm-stat {
+  padding: 16px 14px;
+  background: var(--dos-track);
+  border-radius: var(--dos-radius-sm);
+}
+
+.lm-stat-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--dos-text);
+}
+
+.lm-stat-copy {
+  margin-top: 14px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--dos-text);
+}
+
+/* How it works flow */
+#content-area .lm-page h2 {
+  margin: 8px 0 0;
+}
+
+.lm-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  margin-top: -8px;
+}
+
+.lm-flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 108px;
+  padding: 14px 10px;
+  text-align: center;
+  background: var(--dos-surface-input);
+  border: 1px solid var(--dos-primary-light);
+  border-radius: var(--dos-radius-sm);
+}
+
+.lm-flow-title {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--dos-text);
+}
+
+.lm-flow-detail {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--dos-text-secondary);
+}
+
+.lm-flow-arrow {
+  align-self: center;
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--dos-primary);
+}
+
+.lm-flow-maintain {
+  margin-top: -14px;
+  padding: 8px 14px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--dos-text-secondary);
+  background: var(--dos-surface-input);
+  border: 1px solid var(--dos-border);
+  border-radius: var(--dos-radius-sm);
+}
+
+/* What's live now */
+#content-area .lm-checklist {
+  list-style: none;
+  margin: -12px 0 0;
+  padding: 0;
+}
+
+#content-area .lm-checklist li {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+#content-area .lm-checklist li::marker {
+  content: none;
+}
+
+#content-area .lm-checklist li + li {
+  margin-top: 2px;
+}
+
+/* Mintlify draws its bullet as a background circle on li::before,
+   so reset those properties and print the check mark instead */
+#content-area .lm-checklist li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: auto;
+  height: auto;
+  background: none;
+  border-radius: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--dos-text);
+}
+
+/* For design partners */
+.lm-partners {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: -8px;
+}
+
+.lm-partner-card {
+  padding: 16px;
+  background: var(--dos-track);
+  border-radius: var(--dos-radius-sm);
+}
+
+.lm-partner-title {
+  margin-bottom: 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--dos-text);
+}
+
+#content-area .lm-partner-card p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--dos-text);
+}
+
+#content-area .lm-partner-card p + p {
+  margin-top: 14px;
+}
+
+/* Closing CTA bar */
+.lm-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+  padding: 16px;
+  color: #ffffff;
+  background: var(--dos-primary);
+  border-radius: var(--dos-radius-sm);
+}
+
+.lm-cta-copy {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.lm-cta-button {
+  flex-shrink: 0;
+  color: var(--dos-primary);
+  background: #ffffff;
+}
+
+.lm-cta-button:hover {
+  color: var(--dos-primary-dark);
+  background: var(--dos-bg);
+}
+
+@media (max-width: 768px) {
+  .lm-intro {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .lm-graph {
+    width: 100%;
+    flex-basis: auto;
+  }
+  .lm-flow {
+    flex-direction: column;
+  }
+  .lm-flow-step {
+    min-height: 0;
+  }
+  .lm-flow-arrow {
+    transform: rotate(90deg);
+  }
+  .lm-partners {
+    grid-template-columns: 1fr;
+  }
+  .lm-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
