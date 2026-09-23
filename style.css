@@ -785,8 +785,19 @@ hr {
   color: var(--dos-text);
 }
 
-.lm-title-icon {
+/* Mintlify wraps heading children in a span, so lay out the row there */
+#content-area .lm-title > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#content-area .lm-title-icon {
+  display: inline-block;
   flex-shrink: 0;
+  height: 34px;
+  width: auto;
+  margin: 0;
 }
 
 #content-area .lm-subtitle {

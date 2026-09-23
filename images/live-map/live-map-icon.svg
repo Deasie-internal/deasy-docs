@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="86 122 268 188">
+  <defs>
+    <style>
+      .st0, .st1, .st2, .st3 {
+        fill: none;
+        stroke: #48463f;
+        stroke-miterlimit: 10;
+        stroke-width: .5px;
+      }
+
+      .st4 {
+        fill: #607193;
+      }
+
+      .st5 {
+        fill: #8ba58b;
+      }
+
+      .st6 {
+        fill: #d67e42;
+      }
+
+      .st7 {
+        fill: #96aeda;
+      }
+
+      .st8 {
+        fill: #b65227;
+      }
+
+      .st9 {
+        fill: #48463f;
+      }
+
+      .st1 {
+        stroke-dasharray: 3.06 3.06;
+      }
+
+      .st2 {
+        stroke-dasharray: 2.95 2.95;
+      }
+
+      .st3 {
+        stroke-dasharray: 2.94 2.94;
+      }
+
+      .st10 {
+        fill: #3e5a40;
+      }
+    </style>
+  </defs>
+  <path class="st9" d="M216.94,197.13c17.6-20.93,37.61-44.2,55.68-64.73-17.6,20.93-37.62,44.19-55.68,64.73h0Z"/>
+  <g>
+    <line class="st0" x1="105.16" y1="170.61" x2="106.62" y2="170.96"/>
+    <line class="st2" x1="109.48" y1="171.66" x2="211.07" y2="196.43"/>
+    <line class="st0" x1="212.5" y1="196.77" x2="213.96" y2="197.13"/>
+  </g>
+  <g>
+    <line class="st0" x1="216.7" y1="198.47" x2="218.16" y2="198.1"/>
+    <line class="st1" x1="221.12" y1="197.34" x2="332.15" y2="168.75"/>
+    <line class="st0" x1="333.63" y1="168.37" x2="335.09" y2="167.99"/>
+  </g>
+  <g>
+    <line class="st0" x1="216.7" y1="197.13" x2="217.74" y2="198.22"/>
+    <line class="st3" x1="219.76" y1="200.35" x2="311.83" y2="297.44"/>
+    <line class="st0" x1="312.84" y1="298.51" x2="313.87" y2="299.6"/>
+  </g>
+  <path class="st9" d="M156.48,221.27c4.99-1.99,9.98-3.95,14.99-5.88l15.03-5.75,15.08-5.65c5.03-1.87,10.07-3.71,15.12-5.52-4.99,1.99-9.98,3.95-14.99,5.88l-15.03,5.75-15.08,5.64c-5.03,1.87-10.07,3.71-15.12,5.52Z"/>
+  <circle class="st8" cx="216.94" cy="197.13" r="16.8"/>
+  <circle class="st4" cx="105.16" cy="170.6" r="12.6"/>
+  <circle class="st10" cx="304.66" cy="291.24" r="12.6"/>
+  <circle class="st5" cx="267.46" cy="140.76" r="12.6"/>
+  <circle class="st7" cx="156.48" cy="221.27" r="12.6"/>
+  <circle class="st6" cx="335.09" cy="167.44" r="12.6"/>
+</svg>
