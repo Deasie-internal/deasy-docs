@@ -3,15 +3,11 @@ title: 'Quickstart'
 description: 'Go from zero to extracting metadata in under 5 minutes'
 ---
 
-Get started with Deasy Labs by running this complete example. You'll connect to a data source, define what metadata to extract, and see results in minutes.
+This example connects to a data source, defines the metadata to extract, and shows the results.
 
 ## Installation
 
-Download and install the Python SDK wheel file:
-
-<Card title="Request Access" icon="envelope" href="mailto:leonard.platzer@collibra.com?subject=Unstructured%20SDK%20Access%20Request">
-  Contact us to get the SDK wheel file
-</Card>
+[Request access](mailto:leonard.platzer@collibra.com?subject=Unstructured%20SDK%20Access%20Request) to get the SDK wheel file, then install it:
 
 ```bash
 pip install deasy_sdk-*.whl
@@ -21,29 +17,15 @@ pip install deasy_sdk-*.whl
 
 Deasy Labs can process a wide variety of document formats:
 
-<CardGroup cols={3}>
-  <Card title="Documents" icon="file-pdf">
-    .pdf, .docx, .rtf
-  </Card>
-  <Card title="Spreadsheets" icon="file-excel">
-    .xls, .xlsx, .xlsm, .xlsb, .odf, .ods, .odt
-  </Card>
-  <Card title="Presentations" icon="file-powerpoint">
-    .ppt, .pptx
-  </Card>
-  <Card title="Email" icon="envelope">
-    .msg
-  </Card>
-  <Card title="Web" icon="code">
-    .html, .htm, .aspx, .xml
-  </Card>
-  <Card title="Data Formats" icon="brackets-curly">
-    .json, .csv
-  </Card>
-  <Card title="Plain Text" icon="file">
-    .txt, .log
-  </Card>
-</CardGroup>
+| Type | Extensions |
+| :-- | :-- |
+| Documents | .pdf, .docx, .rtf |
+| Spreadsheets | .xls, .xlsx, .xlsm, .xlsb, .odf, .ods, .odt |
+| Presentations | .ppt, .pptx |
+| Email | .msg |
+| Web | .html, .htm, .aspx, .xml |
+| Data Formats | .json, .csv |
+| Plain Text | .txt, .log |
 
 ## Language Support
 
@@ -161,16 +143,16 @@ for file_name, tags in results.metadata.items():
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Explore Concepts" icon="book" href="/concepts/projects">
+  <Card title="Explore Concepts" href="/concepts/projects">
     Learn how Data Connectors, Taxonomies, and Metadata work together.
   </Card>
-  <Card title="Organize a SharePoint Library" icon="microsoft" href="/cookbooks/sharepoint-to-sharepoint">
+  <Card title="Organize a SharePoint Library" href="/cookbooks/sharepoint-to-sharepoint">
     Export enriched metadata to SharePoint.
   </Card>
-  <Card title="API Reference" icon="brackets-curly" href="/api-reference">
+  <Card title="API Reference" href="/api-reference">
     Explore all available endpoints and SDK methods.
   </Card>
-  <Card title="Protect Sensitive Data" icon="shield" href="/cookbooks/pii-detection">
+  <Card title="Protect Sensitive Data" href="/cookbooks/pii-detection">
     Set up sensitive data detection for compliance.
   </Card>
 </CardGroup>

@@ -1076,3 +1076,181 @@ hr {
     align-items: flex-start;
   }
 }
+
+/* ============================================================
+   Calm pass (2026-10): one accent, flat surfaces, no decoration.
+   Terracotta is reserved for links, the active nav item and the
+   primary button. Everything else is neutral.
+   ============================================================ */
+
+/* Eyebrow above the page title: neutral, not accent */
+#content-area .eyebrow,
+#content-area header > div:first-child,
+#content-area [class*="eyebrow"] {
+  color: var(--dos-text-tertiary) !important;
+  font-weight: 500;
+}
+
+/* Page title: slightly larger, tighter, with a muted subtitle */
+#content-area h1,
+#page-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+#page-description,
+#content-area header p {
+  color: var(--dos-text-secondary);
+  font-size: 0.9375rem;
+}
+
+/* Body copy: readable measure and size; headings plain */
+#content-area p,
+#content-area li {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+#content-area h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2.5rem;
+}
+#content-area h3 {
+  font-weight: 600;
+}
+
+/* Bold in running text should not shout */
+#content-area strong,
+#content-area b {
+  font-weight: 600;
+  color: var(--dos-text);
+}
+#content-area p a strong,
+#content-area li a strong {
+  color: inherit;
+}
+
+/* Links: accent colour, quiet underline instead of a heavy rule */
+#content-area p a,
+#content-area li a,
+#content-area td a {
+  font-weight: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--dos-primary) 35%, transparent);
+  text-underline-offset: 3px;
+  border-bottom: none !important;
+}
+#content-area p a:hover,
+#content-area li a:hover,
+#content-area td a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* Cards: flat bordered rows, no lift, no shadow, no icon tiles */
+.card {
+  background-color: transparent;
+  box-shadow: none;
+  border-radius: var(--dos-radius-md);
+}
+.card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--dos-text-tertiary);
+}
+.card h2,
+.card [data-component-part="card-title"] {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+/* Callouts: neutral bar, no tinted fill */
+.callout {
+  border-radius: var(--dos-radius-semi);
+  box-shadow: none;
+}
+
+/* Steps: plain numerals, no filled badges */
+[data-component-part="step-number"] {
+  background: transparent !important;
+  border: 1px solid var(--dos-border);
+  color: var(--dos-text-secondary);
+}
+
+/* Tables: header rule only, quiet header text */
+#content-area th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--dos-text-tertiary);
+}
+
+/* Sidebar group labels: no uppercase shouting, neutral */
+#sidebar h5,
+#sidebar-content h5 {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--dos-text);
+}
+
+/* How It Works: a plain row of steps, no icon tiles, no pill */
+.hiw-card {
+  background: transparent;
+  border-radius: var(--dos-radius-md);
+  padding: 12px 8px;
+}
+.hiw-title {
+  font-weight: 600;
+}
+.hiw-arrow {
+  opacity: 0.6;
+}
+.hiw-maintain {
+  display: block;
+  width: auto;
+  margin: -12px 0 28px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  text-align: left;
+  font-size: 0.8125rem;
+  color: var(--dos-text-tertiary);
+}
+
+/* Integration rows: flat, no hover shadow, no dashed pill badge */
+.integration-card {
+  background: transparent;
+  border-radius: var(--dos-radius-md);
+}
+.integration-card:hover {
+  box-shadow: none;
+  border-color: var(--dos-text-tertiary);
+}
+.integration-card-soon {
+  background: transparent;
+}
+.integration-badge {
+  background: transparent;
+  border: 1px solid var(--dos-border);
+  color: var(--dos-text-tertiary);
+  border-radius: var(--dos-radius-sm);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.hiw-card {
+  justify-content: flex-start;
+  gap: 10px;
+}
+.hiw-detail {
+  margin-top: 0;
+}
+
+/* Tighter card padding now that cards carry no icon */
+[data-component-part="card-content-container"] {
+  padding: 0.875rem 1rem !important;
+}
